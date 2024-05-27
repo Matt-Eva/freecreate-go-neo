@@ -1,25 +1,17 @@
 package routes
 
 import (
-	"encoding/json"
-	"net/http"
+	// "encoding/json"
 	"github.com/gorilla/mux"
+	"net/http"
+	"freecreate/internal/api/handlers"
 )
 
-func CreateRoutes() error {
+func CreateRoutes(neo, mongo string) error {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
-		type Message struct {
-			Content string `json:"content"`
-		}
-
-		message := Message {
-			"hello world!",
-		}
-
-		json.NewEncoder(w).Encode(message)
-	})
+	router.HandleFunc("/", handlers.TestHandler(neo, mongo))
 
 	return http.ListenAndServe(":8080", router)
 }
+
