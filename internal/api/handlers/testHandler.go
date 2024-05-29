@@ -2,11 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
-	// "fmt"
+	"fmt"
 	"net/http"
 )
 
 func TestHandler(w http.ResponseWriter, r *http.Request, neo, mongo, redis string) {
+	params := r.URL.Query()
+	fmt.Println(params)
 
 	type Message struct {
 		Neo   string `json:neo`
