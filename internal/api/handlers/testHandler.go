@@ -6,18 +6,17 @@ import (
 	"net/http"
 )
 
-func TestHandler(neo, mongo string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func TestHandler(w http.ResponseWriter, r *http.Request, neo, mongo string) {
 
-		type Message struct {
-			Neo   string `json:neo`
-			Mongo string `json:mongo`
-		}
-
-		message := Message{
-			neo, mongo,
-		}
-
-		json.NewEncoder(w).Encode(message)
+	type Message struct {
+		Neo   string `json:neo`
+		Mongo string `json:mongo`
 	}
+
+	message := Message{
+		neo, mongo,
+	}
+
+	json.NewEncoder(w).Encode(message)
+
 }
