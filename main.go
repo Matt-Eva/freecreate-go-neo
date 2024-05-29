@@ -4,14 +4,15 @@ import (
 	"context"
 	"fmt"
 	"freecreate/internal/api/routes"
-	"freecreate/internal/database"
+	"freecreate/internal/databases"
 	"os"
 )
 
 func run(ctx context.Context) error {
-	neo := database.InitNeo(ctx)
-	mongo := database.InitMongo(ctx)
-	if err := routes.CreateRoutes(neo, mongo); err != nil {
+	neo := databases.InitNeo(ctx)
+	mongo := databases.InitMongo(ctx)
+	redis := databases.InitRedis(ctx)
+	if err := routes.CreateRoutes(neo, mongo, redis); err != nil {
 		return err
 	}
 	return nil

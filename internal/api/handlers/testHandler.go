@@ -6,15 +6,16 @@ import (
 	"net/http"
 )
 
-func TestHandler(w http.ResponseWriter, r *http.Request, neo, mongo string) {
+func TestHandler(w http.ResponseWriter, r *http.Request, neo, mongo, redis string) {
 
 	type Message struct {
 		Neo   string `json:neo`
 		Mongo string `json:mongo`
+		Redis string `json:redis`
 	}
 
 	message := Message{
-		neo, mongo,
+		neo, mongo, redis,
 	}
 
 	json.NewEncoder(w).Encode(message)
