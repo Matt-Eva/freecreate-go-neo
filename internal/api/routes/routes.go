@@ -13,12 +13,12 @@ import (
 func CreateRoutes(neo, mongo, redis string) error {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/api", middleware.AddDrivers(handlers.TestHandler, neo, mongo, redis))
+	router.HandleFunc("/api", middleware.AddDrivers(handlers.TestHandler, neo, mongo, redis)).Methods("GET")
 	router.HandleFunc("/api/search", func(w http.ResponseWriter, r *http.Request){
 		params := r.URL.Query()
 		fmt.Println(params)
 		json.NewEncoder(w).Encode(params)
-	})
+	}).Methods("GET")
 
 	return http.ListenAndServe(":8080", router)
 }
