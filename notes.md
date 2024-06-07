@@ -1,5 +1,19 @@
 # Notes
 
+## Dependecies
+
+### Databases
+
+- Neo4j - primary query database
+- MongoDB - bulk writing storage / potential cache
+- Redis - session cache / query cache
+
+### Payment processing
+
+- Stripe
+  - Supports Apple Pay and Google Pay
+- (Paypal?)
+
 ## Neo4j Internal Structure
 
 - <a href="https://neo4j.com/docs/operations-manual/current/tutorial/tutorial-composite-database/#tutorial-composite-database-get-results">Composite Database Query Docs</a>
@@ -13,7 +27,7 @@
     - Tag nodes
     - Bookshelf nodes
     - HAS_WRIT_GENRE relationships - Creator -> Genre
-    - HAS_TAG relationships - Creator -> Tag
+    - HAS_WRIT_TAG relationships - Creator -> Tag
     - IS_CREATOR relationships - User -> Creator
     - FOLLOWS relationships - User -> Creator
     - SUBSCRIBED relationships - User -> Creator
@@ -44,7 +58,7 @@
 This is how the following queries will be run.
 
 - Querying for writing:
-  - The most recent database will be targeted, and the genre
+  - The most recent database will be targeted, unless a prior year is specified.
 - Loading Donations:
   - For a creator user:
     - Will query the central database for all of the user's creator profiles
@@ -71,3 +85,12 @@ This is how the following queries will be run.
     - Writing Type
     - Alphabetical
   - They can also search their library
+  - Query:
+    - Simple version:
+      - When a user visits any portion of their library, their whole library is loaded.
+      - This would load all bookshelves and creators from the central user db
+      - This would load each piece of writing and its associated creator and bookshelf IDs from across all sharded databases
+      - Once all this data is loaded, the view update logic will be handled client side.
+      - There is a high potential for caching this data, either in MongoDB or Redis.
+        - This cache could be updated each time a user adds or removes something from their library.
+          - This approach could result in stale data, but also only updates library caches when absolutely necessary.
