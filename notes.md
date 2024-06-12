@@ -8,6 +8,15 @@
 - MongoDB - bulk writing storage / potential cache
 - Redis - session cache / query cache
 
+## Deployment Strategy
+
+Just use AWS, dude. It's going to cost money regardless, and you don't have your own servers. Plus, Neo4j is available on AWS, and hosting on AWS will give you good industry experience.
+
+- Neo4j, MongoDB, and Redis will be deployed on Amazon EC2 instances
+- Backend API will be hosted on an EC2 instance as well
+- Frontend assets can be delivered by Netlify or Cloudfront
+- Media assets can be stored in S3
+
 ### Payment processing
 
 - Stripe
@@ -42,6 +51,7 @@
       - One solution to this is to just replicate the blocked creators whenever a new user node is added to a database
       - This would entail getting the blocked creators from the main user database, then MERGEing them into the new database as needed.
       - It's possible that this would require round trips to and from the database - first to check if the user node exists in the sharded database - if they don't, run the query.
+      - This could also simply be handled client side by loading a users blocked creators, then checking if a piece of content has that creator id and name using a hash table.
     - AUTHOR_IN_LIB relationships - User -> Creator
     - HAS_BOOKSHELF relationships - User -> Bookshelf
 - There will be a sharded content-centric database into which user and creator information will be federated
