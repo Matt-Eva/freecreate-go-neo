@@ -31,6 +31,17 @@
     - IS_CREATOR relationships - User -> Creator
     - FOLLOWS relationships - User -> Creator
     - SUBSCRIBED relationships - User -> Creator
+    - BLOCKED relationship - User -> Creator
+      - This one will be tricky to model. Because the query we want to run will be
+      ```
+      MATCH (u:User {uId: $userId})
+      MATCH (w:Writing) [...]
+      WHERE NOT (w) - [:CREATED_BY] -> (c:Creator) <- [:BLOCKED] - (u)
+      ```
+      - The trouble with this is that we are going to be running these queries on the sharded datasets, but this core relationship will be specified in the user database
+      - One solution to this is to just replicate the blocked creators whenever a new user node is added to a database
+      - This would entail getting the blocked creators from the main user database, then MERGEing them into the new database as needed.
+      - It's possible that this would require round trips to and from the database - first to check if the user node exists in the sharded database - if they don't, run the query.
     - AUTHOR_IN_LIB relationships - User -> Creator
     - HAS_BOOKSHELF relationships - User -> Bookshelf
 - There will be a sharded content-centric database into which user and creator information will be federated
