@@ -45,6 +45,3 @@ func AddMongoAndRedis(handler func(w http.ResponseWriter, r *http.Request, mongo
 		handler(w, r, mongo, redis)
 	}
 }
-
-
-
