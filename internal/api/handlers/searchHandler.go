@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+	"freecreate/internal/utils"
 )
 
 func SearchHandler(w http.ResponseWriter, r *http.Request, neo, mongo, redis string) {
@@ -45,7 +46,7 @@ func buildWritingQuery(params url.Values) ([]string, error) {
 }
 
 func buildWritingGenreQuery(genres []string) string {
-	genreLabels := []string{"Action", "Adventure", "Comedy", "Drama", "HistoricalFiction", "Horror", "Fantasy", "LiteraryFiction", "MagicalRealism", "Mystery", "Realism", "Romance", "SliceOfLife", "SocialFiction", "Superhero", "Thriller"}
+	genreLabels := utils.GetGenres()
 
 	queryLabels := "w:Writing"
 
