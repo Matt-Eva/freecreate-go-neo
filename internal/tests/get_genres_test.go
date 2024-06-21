@@ -1,38 +1,44 @@
 package test
 
 import (
-	"testing"
 	"freecreate/internal/utils"
+	"testing"
 )
 
 func TestGetGenres(t *testing.T) {
-	genres := []string{"Action", "Adventure", "Comedy", "Drama", "HistoricalFiction", "Horror", "Fantasy", "LiteraryFiction", "MagicalRealism", "Mystery", "Realism", "Romance", "SliceOfLife", "SocialFiction", "Superhero", "Thriller"}
-	genreMap := make(map[string]bool)
+	genreMap := map[string]bool{
+		"Action": false,
+		"Adventure": false, 
+		"Comedy": false, 
+		"Drama": false, 
+		"HistoricalFiction": false, 
+		"Horror": false, 
+		"Fantasy": false, 
+		"LiteraryFiction": false, 
+		"MagicalRealism": false, 
+		"Mystery": false, 
+		"Realism": false, 
+		"Romance": false, 
+		"SliceOfLife": false, 
+		"SocialFiction": false, 
+		"Superhero": false, 
+		"Thriller": false,
+	}
+
+	genres := utils.GetGenres()
 
 	for _, genre := range genres {
-		genreMap[genre] = false
-	}
-
-	generatedGenres := utils.GetGenres()
-
-	for _, generatedGenre := range generatedGenres {
-		match := false
-		for _, genre := range genres {
-			if generatedGenre == genre{
-				genreMap[genre] = true
-				match = true
-				break
-			}
-		}
-
-		if !match {
-			t.Errorf("%s from result does not exist in test case", generatedGenre)
+		_, ok := genreMap[genre]
+		if ok {
+			genreMap[genre] = true
+		} else {
+			t.Errorf("'%s' genre from generated genres not present in test case", genre)
 		}
 	}
 
-	for key, val := range genreMap{
-		if !val{
-			t.Errorf("%s missing from result", key)
+	for key, val := range genreMap {
+		if !val {
+			t.Errorf("'%s' genre missing from generated genres", key)
 		}
 	}
 }
