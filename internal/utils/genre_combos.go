@@ -102,7 +102,7 @@ func CalculateGenreAppearances() int{
 		totalGenreNumFactorialLessOne = totalGenreNumFactorialLessOne * i
 	}
 
-	appearanceComboCount := 1 // to account for case of C(15, 0) with C(16, 1)
+	appearanceComboCount := 1 // to account for case of C(len(genres) - 1, 0) with C(len(genres), 1)
 	maxComboLessOne := maxCombo - 1
 
 	for comboNum := 1; comboNum <= maxComboLessOne; comboNum ++ {
