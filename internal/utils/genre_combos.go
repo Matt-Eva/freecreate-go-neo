@@ -71,7 +71,7 @@ func CalculateGenreCombos() int{
 	}
 
 	comboCount := 0 // should be 696 // that means we will be running 696 * 5 queries to cache frequent search data!
-	maxCombo := 3
+	maxCombo := genMaxCombo()
 
 	for comboNum := 1; comboNum <= maxCombo; comboNum ++ {
 		comboFactorial := 1
@@ -93,7 +93,7 @@ func CalculateGenreCombos() int{
 func CalculateGenreAppearances() int{
 	genres := GetGenres()
 	numberOfGenres := len(genres)
-	maxCombo := 3
+	maxCombo := genMaxCombo()
 
 	numberOfGenresLessOne := numberOfGenres - 1
 	totalGenreNumFactorialLessOne := 1
@@ -121,4 +121,8 @@ func CalculateGenreAppearances() int{
 	}
 
 	return appearanceComboCount
+}
+
+func genMaxCombo() int{
+	return 3
 }
