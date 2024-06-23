@@ -5,24 +5,24 @@ import (
 	"slices"
 )
 
-func AssembleCachePopulationCombos () map[string][][]string{
+func AssembleCachePopulationCombos() map[string][][]string {
 	genreCombos := GenerateGenreCombos()
 	comboMap := map[string][][]string{
-		"Past Day": genreCombos,
-		"Past Week": genreCombos,
+		"Past Day":   genreCombos,
+		"Past Week":  genreCombos,
 		"Past Month": genreCombos,
-		"Past Year": genreCombos,
-		"All Time": genreCombos,
+		"Past Year":  genreCombos,
+		"All Time":   genreCombos,
 	}
 	return comboMap
 }
 
-func GenerateGenreCombos () [][]string {
+func GenerateGenreCombos() [][]string {
 	genres := GetGenres()
 	genreMap := make(map[string]bool)
 	genreCombos := make([][]string, 0, 696)
 
-	for _, genre := range genres{
+	for _, genre := range genres {
 		genreCombos = append(genreCombos, []string{genre})
 	}
 
@@ -38,16 +38,16 @@ func GenerateGenreCombos () [][]string {
 		}
 	}
 
-	for _, genre := range genres{
-		for _, gen := range genres{
-			for _, g := range genres{
+	for _, genre := range genres {
+		for _, gen := range genres {
+			for _, g := range genres {
 				sorted := []string{genre, gen, g}
 				slices.Sort(sorted)
-				combo := fmt.Sprintf("%s:%s:%s", sorted[0],sorted[1], sorted[2])
-				if genre != gen && genre != g && gen != g && !genreMap[combo]{
+				combo := fmt.Sprintf("%s:%s:%s", sorted[0], sorted[1], sorted[2])
+				if genre != gen && genre != g && gen != g && !genreMap[combo] {
 					genreCombos = append(genreCombos, sorted)
 					genreMap[combo] = true
-				} 
+				}
 			}
 		}
 	}
@@ -72,28 +72,28 @@ func GenerateGenreCombos () [][]string {
 // To calculate the number of times it appears, run C(n-1, r-1)
 // Rationale behind formula below.
 
-func CalculateGenreCombos() int{
+func CalculateGenreCombos() int {
 	genres := GetGenres()
 
 	numberOfGenres := len(genres)
 	totalGenreNumFactorial := 1
 
-	for i:= 1; i <= numberOfGenres; i ++{
+	for i := 1; i <= numberOfGenres; i++ {
 		totalGenreNumFactorial = totalGenreNumFactorial * i
 	}
 
 	comboCount := 0 // should be 696 // that means we will be running 696 * 5 queries to cache frequent search data!
 	maxCombo := genMaxCombo()
 
-	for comboNum := 1; comboNum <= maxCombo; comboNum ++ {
+	for comboNum := 1; comboNum <= maxCombo; comboNum++ {
 		comboFactorial := 1
-		for i := 1; i <= comboNum; i++{
+		for i := 1; i <= comboNum; i++ {
 			comboFactorial = comboFactorial * i
 		}
-		
+
 		genreNumLessComboFactorial := 1
-		for i:= 1; i<= numberOfGenres - comboNum; i++{
-			
+		for i := 1; i <= numberOfGenres-comboNum; i++ {
+
 			genreNumLessComboFactorial = genreNumLessComboFactorial * i
 		}
 		comboCount += (totalGenreNumFactorial / (comboFactorial * genreNumLessComboFactorial))
@@ -102,7 +102,7 @@ func CalculateGenreCombos() int{
 	return comboCount
 }
 
-func CalculateGenreAppearances() int{
+func CalculateGenreAppearances() int {
 	genres := GetGenres()
 	numberOfGenres := len(genres)
 	maxCombo := genMaxCombo()
@@ -110,22 +110,22 @@ func CalculateGenreAppearances() int{
 	numberOfGenresLessOne := numberOfGenres - 1
 	totalGenreNumFactorialLessOne := 1
 
-	for i:= 1; i <= numberOfGenresLessOne; i++ {
+	for i := 1; i <= numberOfGenresLessOne; i++ {
 		totalGenreNumFactorialLessOne = totalGenreNumFactorialLessOne * i
 	}
 
 	appearanceComboCount := 1 // to account for case of C(len(genres) - 1, 0) with C(len(genres), 1)
 	maxComboLessOne := maxCombo - 1
 
-	for comboNum := 1; comboNum <= maxComboLessOne; comboNum ++ {
+	for comboNum := 1; comboNum <= maxComboLessOne; comboNum++ {
 		comboFactorial := 1
-		for i := 1; i <= comboNum; i++{
+		for i := 1; i <= comboNum; i++ {
 			comboFactorial = comboFactorial * i
 		}
-		
+
 		genreNumLessComboFactorial := 1
-		for i:= 1; i<= numberOfGenresLessOne - comboNum; i++{
-			
+		for i := 1; i <= numberOfGenresLessOne-comboNum; i++ {
+
 			genreNumLessComboFactorial = genreNumLessComboFactorial * i
 		}
 
@@ -135,6 +135,6 @@ func CalculateGenreAppearances() int{
 	return appearanceComboCount
 }
 
-func genMaxCombo() int{
+func genMaxCombo() int {
 	return 3
 }

@@ -3,10 +3,10 @@ package handlers
 import (
 	"errors"
 	"fmt"
+	"freecreate/internal/utils"
 	"net/http"
 	"net/url"
 	"time"
-	"freecreate/internal/utils"
 )
 
 func SearchHandler(w http.ResponseWriter, r *http.Request, neo, mongo, redis string) {
@@ -65,7 +65,7 @@ func buildWritingGenreQuery(genres []string) string {
 func handleDateQueryType(date string) string {
 	if date == "All Time" {
 		return ""
-	} else if date == "Most Recent"{
+	} else if date == "Most Recent" {
 		return ""
 	} else {
 		return buildDateQuery(date)
@@ -82,11 +82,11 @@ func buildDateQuery(date string) string {
 	day := now - 86400000
 
 	dateMap := map[string]int64{
-		"Past Year": year,
+		"Past Year":  year,
 		"Past Month": month,
-		"Past Week": week,
-		"Past Day": day,
-	} 
+		"Past Week":  week,
+		"Past Day":   day,
+	}
 
 	dateValue := dateMap[date]
 	dateQuery := fmt.Sprintf("WHERE (w).date >%d", dateValue)

@@ -7,22 +7,22 @@ import (
 
 func TestGetGenres(t *testing.T) {
 	genreMap := map[string]bool{
-		"Action": false,
-		"Adventure": false, 
-		"Comedy": false, 
-		"Drama": false, 
-		"HistoricalFiction": false, 
-		"Horror": false, 
-		"Fantasy": false, 
-		"LiteraryFiction": false, 
-		"MagicalRealism": false, 
-		"Mystery": false, 
-		"Realism": false, 
-		"Romance": false, 
-		"SliceOfLife": false, 
-		"SocialFiction": false, 
-		"Superhero": false, 
-		"Thriller": false,
+		"Action":            false,
+		"Adventure":         false,
+		"Comedy":            false,
+		"Drama":             false,
+		"HistoricalFiction": false,
+		"Horror":            false,
+		"Fantasy":           false,
+		"LiteraryFiction":   false,
+		"MagicalRealism":    false,
+		"Mystery":           false,
+		"Realism":           false,
+		"Romance":           false,
+		"SliceOfLife":       false,
+		"SocialFiction":     false,
+		"Superhero":         false,
+		"Thriller":          false,
 	}
 
 	genres := utils.GetGenres()

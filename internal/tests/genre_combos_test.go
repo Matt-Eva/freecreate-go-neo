@@ -17,15 +17,15 @@ import (
 // then divide it by len(genres) to get the number of times each genre appears
 // Rationale behind formula below.
 
-func TestAssembleCachePopulationCombos(t *testing.T){
+func TestAssembleCachePopulationCombos(t *testing.T) {
 	comboMap := utils.AssembleCachePopulationCombos()
 	genres := utils.GenerateGenreCombos()
 	timeMap := map[string]bool{
-		"Past Day": false,
-		"Past Week": false,
+		"Past Day":   false,
+		"Past Week":  false,
 		"Past Month": false,
-		"Past Year": false,
-		"All Time": false,
+		"Past Year":  false,
+		"All Time":   false,
 	}
 
 	for key, slice := range comboMap {
@@ -33,13 +33,13 @@ func TestAssembleCachePopulationCombos(t *testing.T){
 		for index, comboSlice := range slice {
 			// genreComboSlice and comboSlice should be identical
 			genreComboSlice := genres[index]
-			for index, genre := range comboSlice{
+			for index, genre := range comboSlice {
 				if genreComboSlice[index] != genre {
 					t.Errorf("Mismatch in genre combo slice and slice stored in combo map.")
 				}
 			}
 		}
-		
+
 		_, ok := timeMap[key]
 		if ok {
 			timeMap[key] = true
@@ -49,13 +49,13 @@ func TestAssembleCachePopulationCombos(t *testing.T){
 	}
 
 	for key, _ := range timeMap {
-		if !timeMap[key]{
+		if !timeMap[key] {
 			t.Errorf("'%s' not present in comboMap", key)
 		}
 	}
 }
 
-func TestGenerateGenreCombos(t *testing.T){
+func TestGenerateGenreCombos(t *testing.T) {
 	genres := utils.GetGenres()
 	genreMap := make(map[string]int)
 
@@ -65,35 +65,35 @@ func TestGenerateGenreCombos(t *testing.T){
 
 	generatedGenres := utils.GenerateGenreCombos()
 	comboCount := utils.CalculateGenreCombos()
-	
-	if len(generatedGenres) != comboCount{
+
+	if len(generatedGenres) != comboCount {
 		t.Errorf("Number of generated genres is %d, when it should be %d", len(generatedGenres), comboCount)
 	}
 
-	for _, slice := range generatedGenres{
-		for _, genre := range slice{
+	for _, slice := range generatedGenres {
+		for _, genre := range slice {
 			genreMap[genre] += 1
 		}
 	}
 
 	genreAppearances := utils.CalculateGenreAppearances()
-	for key, val := range genreMap{
-		if val != genreAppearances{
+	for key, val := range genreMap {
+		if val != genreAppearances {
 			t.Errorf("Count for genre '%s' does not match %d: instead is %d", key, genreAppearances, val)
 		}
 	}
 }
 
-func TestGenreCombos(t *testing.T){
+func TestGenreCombos(t *testing.T) {
 	comboCount := utils.CalculateGenreCombos()
 	if comboCount != 696 {
-		t.Errorf("combo count does not match 696; instead == %d", comboCount )
+		t.Errorf("combo count does not match 696; instead == %d", comboCount)
 	}
 }
 
 func TestGenreAppearances(t *testing.T) {
 	appearanceCount := utils.CalculateGenreAppearances()
-	if appearanceCount != 121{
+	if appearanceCount != 121 {
 		t.Errorf("appearance count does not match 120; instead == %d", appearanceCount)
 	}
 }
