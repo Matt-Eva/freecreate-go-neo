@@ -5,6 +5,18 @@ import (
 	"slices"
 )
 
+func AssembleCachePopulationCombos () map[string][][]string{
+	genreCombos := GenerateGenreCombos()
+	comboMap := map[string][][]string{
+		"Past Day": genreCombos,
+		"Past Week": genreCombos,
+		"Past Month": genreCombos,
+		"Past Year": genreCombos,
+		"All Time": genreCombos,
+	}
+	return comboMap
+}
+
 func GenerateGenreCombos () [][]string {
 	genres := GetGenres()
 	genreMap := make(map[string]bool)

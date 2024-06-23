@@ -17,6 +17,44 @@ import (
 // then divide it by len(genres) to get the number of times each genre appears
 // Rationale behind formula below.
 
+func TestAssembleCachePopulationCombos(t *testing.T){
+	comboMap := utils.AssembleCachePopulationCombos()
+	genres := utils.GenerateGenreCombos()
+	timeMap := map[string]bool{
+		"Past Day": false,
+		"Past Week": false,
+		"Past Month": false,
+		"Past Year": false,
+		"All Time": false,
+	}
+
+	for key, slice := range comboMap {
+		// slice and genres should be identical
+		for index, comboSlice := range slice {
+			// genreComboSlice and comboSlice should be identical
+			genreComboSlice := genres[index]
+			for index, genre := range comboSlice{
+				if genreComboSlice[index] != genre {
+					t.Errorf("Mismatch in genre combo slice and slice stored in combo map.")
+				}
+			}
+		}
+		
+		_, ok := timeMap[key]
+		if ok {
+			timeMap[key] = true
+		} else {
+			t.Errorf("'%s' key in combo map not present in test case map", key)
+		}
+	}
+
+	for key, _ := range timeMap {
+		if !timeMap[key]{
+			t.Errorf("'%s' not present in comboMap", key)
+		}
+	}
+}
+
 func TestGenerateGenreCombos(t *testing.T){
 	genres := utils.GetGenres()
 	genreMap := make(map[string]int)
