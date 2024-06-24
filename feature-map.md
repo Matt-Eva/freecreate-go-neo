@@ -25,4 +25,30 @@
 
 Information input will be as follows:
 
+- Writing or Writer?
+- Writing:
+  - Genres
+  - Writing Type
+  - Date Posted
+  - Tags
+  - Name
+- Writer:
+  - Genres
+  - Tags
+  - Name
+
 Logical flow will be as follows:
+
+- Writing or Writer:
+  - Writing: Writing Search
+    - No Tags or Title, Date Posted not Most Recent or Specific Year: Cache Search
+      - Query Redis Cache for Cached search results
+    - Tags, Title, or Date Posted Most Recent or Specific Year: Neo Search
+      - Date Posted Most Recent
+        - Query current year database, order by date
+      - Date Posted All Time
+        - Query all time database, order by rank and rel rank
+      - Date Posted Specific Year
+        - Query specific year database, order by rank and rel rank
+      - None of above
+        - Query current year database, order by rank and rel rank
