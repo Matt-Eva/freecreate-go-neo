@@ -20,3 +20,9 @@
 [] - Follow Creator
 [] - Subscribe to Creator
 [] - Save Reading (allow reader to pick up from where left off)
+
+## Search
+
+Information input will be as follows:
+
+Logical flow will be as follows:
