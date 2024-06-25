@@ -1,6 +1,7 @@
 package databases
 
 import (
+	"errors"
 	"freecreate/internal/utils"
 )
 
@@ -14,7 +15,7 @@ func BuildSearchQuery(searchType, writingType, name, datePosted string, genres, 
 	}
 }
 
-func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags []string){
+func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags []string)(string, string, error){
 	validatedType := utils.ValidateWritingType(writingType)
 	validatedGenres := utils.ValidateGenres(genres)
 
@@ -28,45 +29,51 @@ func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags 
 
 	if name == "" && len(tags) == 0 && checkDateMap[datePosted] {
 		// search cache
+		query := BuildRedisCacheQuery()
+		return query, "redis", nil
 	} else if datePosted == "Most Recent"{
 		// query most recent database
 		// order by date posted
-		BuildMostRecentNeoQuery()
+		query := BuildMostRecentNeoQuery()
+		return query, "neo", nil
 	} else if datePosted == "All Time"{
 		// query all time database
 		// order by absolute rank
-		BuildAllTimeNeoQuery()
+		query := BuildAllTimeNeoQuery()
+		return query, "neo", nil
 	} else if utils.GetYearMap()[datePosted] {
 		// query specific year database
 		// order by absolute rank and relative rank
-		BuildSpecificYearNeoQuery()
+		query := BuildSpecificYearNeoQuery()
+		return query, "neo", nil
 	} else if (name != "" || len(tags) != 0) && checkDateMap[datePosted] {
 		// query most recent database
 		// order by absolute rank and relative rank
-		BuildStandardWritingNeoQuery()
+		query := BuildStandardWritingNeoQuery()
+		return query, "neo", nil
 	} else {
-		// return error
+		return "", "", errors.New("error")
 	}
 }
 
-func BuildRedisCacheQuery(){
-
+func BuildRedisCacheQuery()string{
+return ""
 }
 
-func BuildMostRecentNeoQuery(){
-
+func BuildMostRecentNeoQuery()string{
+return ""
 }
 
-func BuildAllTimeNeoQuery(){
-
+func BuildAllTimeNeoQuery()string{
+return ""
 }
 
-func BuildSpecificYearNeoQuery(){
-
+func BuildSpecificYearNeoQuery()string{
+return ""
 }
 
-func BuildStandardWritingNeoQuery(){
-
+func BuildStandardWritingNeoQuery()string{
+return ""
 }
 
 func BuildWriterSearchQuery(name string, genres, tags []string){

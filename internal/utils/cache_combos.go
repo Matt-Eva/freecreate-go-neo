@@ -5,14 +5,37 @@ import (
 	"slices"
 )
 
-func AssembleCachePopulationCombos() map[string][][]string {
+func AssembleCachePopulationCombos() map[string]map[string][][]string {
 	genreCombos := GenerateGenreCombos()
-	comboMap := map[string][][]string{
-		"Past Day":   genreCombos,
-		"Past Week":  genreCombos,
-		"Past Month": genreCombos,
-		"Past Year":  genreCombos,
-		"All Time":   genreCombos,
+	comboMap := map[string]map[string][][]string{
+		"shortStory": {
+			"Past Day":   genreCombos,
+			"Past Week":  genreCombos,
+			"Past Month": genreCombos,
+			"Past Year":  genreCombos,
+			"All Time":   genreCombos,
+		},
+		"novellete": {
+			"Past Day":   genreCombos,
+			"Past Week":  genreCombos,
+			"Past Month": genreCombos,
+			"Past Year":  genreCombos,
+			"All Time":   genreCombos,
+		},
+		"novella": {
+			"Past Day":   genreCombos,
+			"Past Week":  genreCombos,
+			"Past Month": genreCombos,
+			"Past Year":  genreCombos,
+			"All Time":   genreCombos,
+		},
+		"novel": {
+			"Past Day":   genreCombos,
+			"Past Week":  genreCombos,
+			"Past Month": genreCombos,
+			"Past Year":  genreCombos,
+			"All Time":   genreCombos,
+		},
 	}
 	return comboMap
 }
