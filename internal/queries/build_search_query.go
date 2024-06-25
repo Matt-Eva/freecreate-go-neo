@@ -15,6 +15,9 @@ func BuildSearchQuery(searchType, writingType, name, datePosted string, genres, 
 }
 
 func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags []string){
+	validatedType := utils.ValidateWritingType(writingType)
+	validatedGenres := utils.ValidateGenres(genres)
+
 	checkDateMap := map[string]bool {
 		"Past Day": true,
 		"Past Week": true,
@@ -26,16 +29,44 @@ func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags 
 	if name == "" && len(tags) == 0 && checkDateMap[datePosted] {
 		// search cache
 	} else if datePosted == "Most Recent"{
-
+		// query most recent database
+		// order by date posted
+		BuildMostRecentNeoQuery()
 	} else if datePosted == "All Time"{
-
+		// query all time database
+		// order by absolute rank
+		BuildAllTimeNeoQuery()
 	} else if utils.GetYearMap()[datePosted] {
-
-	} else if name != "" || len(tags) != 0 {
-
+		// query specific year database
+		// order by absolute rank and relative rank
+		BuildSpecificYearNeoQuery()
+	} else if (name != "" || len(tags) != 0) && checkDateMap[datePosted] {
+		// query most recent database
+		// order by absolute rank and relative rank
+		BuildStandardWritingNeoQuery()
 	} else {
 		// return error
 	}
+}
+
+func BuildRedisCacheQuery(){
+
+}
+
+func BuildMostRecentNeoQuery(){
+
+}
+
+func BuildAllTimeNeoQuery(){
+
+}
+
+func BuildSpecificYearNeoQuery(){
+
+}
+
+func BuildStandardWritingNeoQuery(){
+
 }
 
 func BuildWriterSearchQuery(name string, genres, tags []string){
