@@ -7,42 +7,19 @@ import (
 
 func AssembleCachePopulationCombos() map[string]map[string][][]string {
 	genreCombos := GenerateGenreCombos()
+	timeFrameMap := map[string][][]string {
+		"Past Day":   genreCombos,
+		"Past Week":  genreCombos,
+		"Past Month": genreCombos,
+		"Past Year":  genreCombos,
+		"All Time":   genreCombos,
+	}
 	comboMap := map[string]map[string][][]string{
-		"noType": {
-			"Past Day":   genreCombos,
-			"Past Week":  genreCombos,
-			"Past Month": genreCombos,
-			"Past Year":  genreCombos,
-			"All Time":   genreCombos,
-		},
-		"shortStory": {
-			"Past Day":   genreCombos,
-			"Past Week":  genreCombos,
-			"Past Month": genreCombos,
-			"Past Year":  genreCombos,
-			"All Time":   genreCombos,
-		},
-		"novellete": {
-			"Past Day":   genreCombos,
-			"Past Week":  genreCombos,
-			"Past Month": genreCombos,
-			"Past Year":  genreCombos,
-			"All Time":   genreCombos,
-		},
-		"novella": {
-			"Past Day":   genreCombos,
-			"Past Week":  genreCombos,
-			"Past Month": genreCombos,
-			"Past Year":  genreCombos,
-			"All Time":   genreCombos,
-		},
-		"novel": {
-			"Past Day":   genreCombos,
-			"Past Week":  genreCombos,
-			"Past Month": genreCombos,
-			"Past Year":  genreCombos,
-			"All Time":   genreCombos,
-		},
+		"noType": timeFrameMap,
+		"shortStory": timeFrameMap,
+		"novellete": timeFrameMap,
+		"novella": timeFrameMap,
+		"novel": timeFrameMap,
 	}
 	return comboMap
 }
