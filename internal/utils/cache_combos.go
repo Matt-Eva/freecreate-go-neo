@@ -8,6 +8,13 @@ import (
 func AssembleCachePopulationCombos() map[string]map[string][][]string {
 	genreCombos := GenerateGenreCombos()
 	comboMap := map[string]map[string][][]string{
+		"noType": {
+			"Past Day":   genreCombos,
+			"Past Week":  genreCombos,
+			"Past Month": genreCombos,
+			"Past Year":  genreCombos,
+			"All Time":   genreCombos,
+		},
 		"shortStory": {
 			"Past Day":   genreCombos,
 			"Past Week":  genreCombos,
