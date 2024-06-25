@@ -1,6 +1,6 @@
 package databases
 
-func TimeFrameQuery (timeFrame string) string {
+func TimeFrameQuery(timeFrame string) string {
 	timeFrameQuery := ""
 
 	if timeFrame == "Most Recent" {

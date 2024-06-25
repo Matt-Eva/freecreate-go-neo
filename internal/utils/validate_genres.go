@@ -1,6 +1,6 @@
 package utils
 
-func ValidateGenres(genreLabels []string) []string{
+func ValidateGenres(genreLabels []string) []string {
 	genres := GetGenres()
 	validatedLabels := make([]string, 0, 3)
 
@@ -12,6 +12,6 @@ func ValidateGenres(genreLabels []string) []string{
 			}
 		}
 	}
-	
+
 	return validatedLabels
 }

@@ -4,7 +4,7 @@ import "time"
 
 type TimeFrame struct {
 	Start int64
-	End int64
+	End   int64
 }
 
 func CalculateTimeFrame(timeFrame string) TimeFrame {
@@ -15,7 +15,7 @@ func CalculateTimeFrame(timeFrame string) TimeFrame {
 	day := now - 86400000
 
 	dateMap := map[string]TimeFrame{
-		"Past Year":  TimeFrame{ month, year},
+		"Past Year":  TimeFrame{month, year},
 		"Past Month": TimeFrame{week, month},
 		"Past Week":  TimeFrame{day, week},
 		"Past Day":   TimeFrame{now, day},

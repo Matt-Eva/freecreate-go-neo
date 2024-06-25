@@ -1,5 +1,5 @@
 package utils
 
-func GetWritingTypes() []string{
+func GetWritingTypes() []string {
 	return []string{"shortStory", "novellete", "novela", "novel"}
 }

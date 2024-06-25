@@ -5,38 +5,38 @@ import (
 	"freecreate/internal/utils"
 )
 
-func BuildSearchQuery(searchType, writingType, name, datePosted string, genres, tags []string){
-	if searchType == "writing"{
+func BuildSearchQuery(searchType, writingType, name, datePosted string, genres, tags []string) {
+	if searchType == "writing" {
 		BuildWritingSearchQuery(writingType, name, datePosted, genres, tags)
-	} else if searchType == "writers"{
+	} else if searchType == "writers" {
 		BuildWriterSearchQuery(name, genres, tags)
 	} else {
 		// return error
 	}
 }
 
-func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags []string)(string, string, error){
+func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags []string) (string, string, error) {
 	validatedType := utils.ValidateWritingType(writingType)
 	validatedGenres := utils.ValidateGenres(genres)
 
-	checkDateMap := map[string]bool {
-		"Past Day": true,
-		"Past Week": true,
+	checkDateMap := map[string]bool{
+		"Past Day":   true,
+		"Past Week":  true,
 		"Past Month": true,
-		"Past Year": true,
-		"All Time": true,
+		"Past Year":  true,
+		"All Time":   true,
 	}
 
 	if name == "" && len(tags) == 0 && checkDateMap[datePosted] {
 		// search cache
 		query := BuildRedisCacheQuery()
 		return query, "redis", nil
-	} else if datePosted == "Most Recent"{
+	} else if datePosted == "Most Recent" {
 		// query most recent database
 		// order by date posted
 		query := BuildMostRecentNeoQuery()
 		return query, "neo", nil
-	} else if datePosted == "All Time"{
+	} else if datePosted == "All Time" {
 		// query all time database
 		// order by absolute rank
 		query := BuildAllTimeNeoQuery()
@@ -56,26 +56,26 @@ func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags 
 	}
 }
 
-func BuildRedisCacheQuery()string{
-return ""
+func BuildRedisCacheQuery() string {
+	return ""
 }
 
-func BuildMostRecentNeoQuery()string{
-return ""
+func BuildMostRecentNeoQuery() string {
+	return ""
 }
 
-func BuildAllTimeNeoQuery()string{
-return ""
+func BuildAllTimeNeoQuery() string {
+	return ""
 }
 
-func BuildSpecificYearNeoQuery()string{
-return ""
+func BuildSpecificYearNeoQuery() string {
+	return ""
 }
 
-func BuildStandardWritingNeoQuery()string{
-return ""
+func BuildStandardWritingNeoQuery() string {
+	return ""
 }
 
-func BuildWriterSearchQuery(name string, genres, tags []string){
+func BuildWriterSearchQuery(name string, genres, tags []string) {
 
 }
