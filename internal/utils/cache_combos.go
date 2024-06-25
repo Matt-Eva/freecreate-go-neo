@@ -19,7 +19,7 @@ func AssembleCachePopulationCombos() map[string]map[string][][]string {
 	comboMap := map[string]map[string][][]string{
 		"noType":     timeFrameMap,
 		"shortStory": timeFrameMap,
-		"novellete":  timeFrameMap,
+		"novelette":  timeFrameMap,
 		"novella":    timeFrameMap,
 		"novel":      timeFrameMap,
 	}
@@ -34,6 +34,7 @@ func GenerateGenreCombos() [][]string {
 
 	for _, genre := range genres {
 		genreCombos = append(genreCombos, []string{genre})
+		genreMap[genre] = true
 	}
 
 	for _, genre := range genres {

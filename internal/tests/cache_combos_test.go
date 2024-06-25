@@ -28,6 +28,11 @@ func TestAssembleCachePopulationCombos(t *testing.T) {
 		"All Time":   false,
 	}
 
+	typeMap := map[string]bool{
+		"shortStory": false,
+		"novelette": false
+	}
+
 	for key, slice := range comboMap {
 		// slice and genres should be identical
 		for index, comboSlice := range slice {

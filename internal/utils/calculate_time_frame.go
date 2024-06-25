@@ -15,10 +15,10 @@ func CalculateTimeFrame(timeFrame string) TimeFrame {
 	day := now - 86400000
 
 	dateMap := map[string]TimeFrame{
-		"Past Year":  TimeFrame{month, year},
-		"Past Month": TimeFrame{week, month},
-		"Past Week":  TimeFrame{day, week},
-		"Past Day":   TimeFrame{now, day},
+		"Past Year":  {month, year},
+		"Past Month": {week, month},
+		"Past Week":  {day, week},
+		"Past Day":   {now, day},
 	}
 
 	dateQueryStruct := dateMap[timeFrame]
