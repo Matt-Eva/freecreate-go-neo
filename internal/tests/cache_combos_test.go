@@ -30,7 +30,7 @@ func TestAssembleCachePopulationCombos(t *testing.T) {
 
 	typeMap := map[string]bool{
 		"shortStory": false,
-		"novelette": false
+		"novelette": false,
 	}
 
 	for key, slice := range comboMap {
