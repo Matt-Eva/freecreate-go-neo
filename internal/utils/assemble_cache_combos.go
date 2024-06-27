@@ -10,17 +10,16 @@ func AssembleCachePopulationCombos() map[string]map[string][][]string {
 	timeFrames := GetTimeFrames()
 	timeFrameMap := make(map[string][][]string)
 
-	for _, timeFrame := range timeFrames{
+	for _, timeFrame := range timeFrames {
 		timeFrameMap[timeFrame] = genreCombos
 	}
 
 	writingTypes := GetWritingTypes()
 	writingTypeMap := make(map[string]map[string][][]string)
-	
+
 	for _, writingType := range writingTypes {
 		writingTypeMap[writingType] = timeFrameMap
 	}
-
 
 	return writingTypeMap
 }

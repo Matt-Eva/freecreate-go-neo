@@ -21,8 +21,8 @@ func ValidateGenres(genreLabels []string) ([]string, error) {
 		}
 	}
 
-	for key, present := range validatedMap{
-		if !present{
+	for key, present := range validatedMap {
+		if !present {
 			errorMsg := fmt.Sprintf("%s is not a valid genre", key)
 			return []string{}, errors.New(errorMsg)
 		}

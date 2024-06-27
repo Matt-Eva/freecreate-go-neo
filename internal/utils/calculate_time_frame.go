@@ -13,7 +13,7 @@ type TimeFrame struct {
 
 func CalculateTimeFrame(timeFrame string) (TimeFrame, error) {
 	now := time.Now().UTC().UnixMilli()
-	year := now - 31556952000 
+	year := now - 31556952000
 	month := now - 2628000000
 	week := now - 604800000
 	day := now - 86400000

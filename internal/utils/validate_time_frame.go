@@ -5,10 +5,10 @@ import (
 	"fmt"
 )
 
-func ValidateTimeFrame(timeFrame string) (string, error){
+func ValidateTimeFrame(timeFrame string) (string, error) {
 	timeFrames := GetTimeFrames()
 
-	for _, frame := range timeFrames{
+	for _, frame := range timeFrames {
 		if timeFrame == frame {
 			return frame, nil
 		}

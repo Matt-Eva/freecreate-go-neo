@@ -19,6 +19,7 @@ func TestGetGenres(t *testing.T) {
 		"Mystery":           false,
 		"Realism":           false,
 		"Romance":           false,
+		"ScienceFiction":	false,
 		"SliceOfLife":       false,
 		"SocialFiction":     false,
 		"Superhero":         false,
