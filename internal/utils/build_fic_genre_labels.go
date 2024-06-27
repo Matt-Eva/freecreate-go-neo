@@ -1,6 +1,9 @@
 package utils
 
-import "strings"
+import (
+	"slices"
+	"strings"
+)
 
 func BuildFicGenreLabel(genres []string) (string, error){
 	if len(genres) == 0{
@@ -11,6 +14,8 @@ func BuildFicGenreLabel(genres []string) (string, error){
 	if err != nil{
 		return "", err
 	}
+
+	slices.Sort(validated)
 
 	labels := ":" + strings.Join(validated, ":")
 
