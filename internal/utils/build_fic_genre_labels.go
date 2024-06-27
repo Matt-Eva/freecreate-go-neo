@@ -15,6 +15,7 @@ func BuildFicGenreLabel(genres []string) (string, error){
 		return "", err
 	}
 
+	// need to sort for exact match on redis cache query
 	slices.Sort(validated)
 
 	labels := ":" + strings.Join(validated, ":")
