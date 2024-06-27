@@ -6,9 +6,9 @@ import (
 	"freecreate/internal/utils"
 )
 
-func BuildSearchQuery(searchType, writingType, name, datePosted string, genres, tags []string) (string, string, error) {
+func BuildSearchQuery(searchType, writingType, name, timeFrame string, genres, tags []string) (string, string, error) {
 	if searchType == "writing" {
-		return BuildWritingSearchQuery(writingType, name, datePosted, genres, tags)
+		return BuildWritingSearchQuery(writingType, name, timeFrame, genres, tags)
 	} else if searchType == "writers" {
 		return BuildWriterSearchQuery(name, genres, tags)
 	} else {
@@ -19,13 +19,13 @@ func BuildSearchQuery(searchType, writingType, name, datePosted string, genres, 
 
 // WRITING SEARCH
 
-func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags []string) (string, string, error) {
+func BuildWritingSearchQuery(writingType, name, timeFrame string, genres, tags []string) (string, string, error) {
 	validatedWritingType, wErr := utils.ValidateWritingType(writingType)
 	if wErr != nil {
 		return "", "", wErr
 	}
 
-	validatedTimeFrame, tErr := utils.ValidateTimeFrame(datePosted)
+	validatedTimeFrame, tErr := utils.ValidateTimeFrame(timeFrame)
 	if tErr != nil {
 		return "", "", tErr
 	}
@@ -35,21 +35,21 @@ func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags 
 		return "", "", gErr
 	}
 
-	if name == "" && len(tags) == 0 && datePosted != "mostRecent" {
+	if name == "" && len(tags) == 0 && validatedTimeFrame != "mostRecent" {
 		// search cache
 		query := BuildRedisCacheQuery(validatedWritingType, validatedTimeFrame, validatedGenres)
 		return query, "redis", nil
-	} else if datePosted == "mostRecent" {
+	} else if validatedTimeFrame == "mostRecent" {
 		// query most recent database
 		// order by date posted
 		query := BuildMostRecentNeoQuery()
 		return query, "neo", nil
-	} else if datePosted == "allTime" {
+	} else if validatedTimeFrame == "allTime" {
 		// query all time database
 		// order by absolute rank
 		query := BuildAllTimeNeoQuery()
 		return query, "neo", nil
-	} else if utils.GetYearMap()[datePosted] {
+	} else if utils.GetYearMap()[validatedTimeFrame] {
 		// query specific year database
 		// order by absolute rank and relative rank
 		query := BuildSpecificYearNeoQuery()
@@ -57,7 +57,7 @@ func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags 
 	} else if name != "" || len(tags) != 0 {
 		// query most recent database
 		// order by absolute rank and relative rank
-		query := BuildStandardWritingNeoQuery()
+		query := BuildStandardWritingNeoQuery(validatedWritingType, name, validatedTimeFrame, validatedGenres, tags)
 		return query, "neo", nil
 	} else {
 		return "", "", errors.New("error")
@@ -80,7 +80,7 @@ func BuildSpecificYearNeoQuery() string {
 	return ""
 }
 
-func BuildStandardWritingNeoQuery() string {
+func BuildStandardWritingNeoQuery(writingType, name, timeFrame string, genres, tags []string) string {
 	return ""
 }
 
