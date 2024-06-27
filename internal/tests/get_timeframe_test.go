@@ -6,7 +6,7 @@ import (
 )
 
 func TestGetTimeFrames(t *testing.T){
-	timeFrames := []string{"Most Recent", "Past Day", "Past Week", "Past Month", "Past Year", "All Time"}
+	timeFrames := []string{"mostRecent", "pastDay", "pastWeek", "pastMonth", "pastYear", "allTime"}
 	result := utils.GetTimeFrames()
 	frameMap := make(map[string]bool)
 
