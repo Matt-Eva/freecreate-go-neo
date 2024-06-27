@@ -15,7 +15,7 @@ func CreateRoutes(neo, mongo, redis string) error {
 	router.HandleFunc("/api/search/cache", middleware.AddRedisDriver(handlers.SearchCacheHandler, redis)).Methods("GET")
 	router.HandleFunc("/api/search/most-recent", middleware.AddNeoDriver(handlers.SearchMostRecentHandler, neo)).Methods("GET")
 	router.HandleFunc("/api/search/all-time", middleware.AddNeoDriver(handlers.SearchAllTimeHandler, neo)).Methods("GET")
-	// router.HandleFunc("/api/search/year", )
+	router.HandleFunc("/api/search/year", middleware.AddNeoDriver(handlers.SearchYearHandler, neo)).Methods("GET")
 
 	return http.ListenAndServe(":8080", router)
 }
