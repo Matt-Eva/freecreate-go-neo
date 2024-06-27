@@ -1,13 +1,17 @@
 package utils
 
-import "time"
+import (
+	"errors"
+	"fmt"
+	"time"
+)
 
 type TimeFrame struct {
 	Start int64
 	End   int64
 }
 
-func CalculateTimeFrame(timeFrame string) TimeFrame {
+func CalculateTimeFrame(timeFrame string) (TimeFrame, error) {
 	now := time.Now().UTC().UnixMilli()
 	year := now - 31556952000 // this is technically not necessary, since databases will be sharded by year.
 	month := now - 2628000000
@@ -15,13 +19,17 @@ func CalculateTimeFrame(timeFrame string) TimeFrame {
 	day := now - 86400000
 
 	dateMap := map[string]TimeFrame{
-		"Past Year":  {month, year},
-		"Past Month": {week, month},
-		"Past Week":  {day, week},
-		"Past Day":   {now, day},
+		"pastYear":  {month, year},
+		"pastMonth": {week, month},
+		"pastWeek":  {day, week},
+		"pastDay":   {now, day},
 	}
 
-	dateQueryStruct := dateMap[timeFrame]
+	dateQueryStruct, ok := dateMap[timeFrame]
+	if !ok {
+		errorMsg := fmt.Sprintf("%s time frame cannot be used in calculate time frame - calculate_time_frame.go", timeFrame)
+		return TimeFrame{}, errors.New(errorMsg)
+	}
 
-	return dateQueryStruct
+	return dateQueryStruct, nil
 }
