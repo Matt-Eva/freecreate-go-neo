@@ -20,23 +20,31 @@ func BuildSearchQuery(searchType, writingType, name, datePosted string, genres, 
 // WRITING SEARCH
 
 func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags []string) (string, string, error) {
-	_, err := utils.ValidateWritingType(writingType)
-	if err != nil {
-		return "", "", err
+	validatedWritingType, wErr := utils.ValidateWritingType(writingType)
+	if wErr != nil {
+		return "", "", wErr
 	}
 
-	
+	validatedTimeFrame, tErr := utils.ValidateTimeFrame(datePosted)
+	if tErr != nil {
+		return "", "", tErr
+	}
+
+	validatedGenres, gErr := utils.ValidateGenres(genres)
+	if gErr != nil {
+		return "", "", gErr
+	}
 
 	if name == "" && len(tags) == 0 && datePosted != "mostRecent" {
 		// search cache
-		query := BuildRedisCacheQuery(writingType, datePosted, genres)
+		query := BuildRedisCacheQuery(validatedWritingType, validatedTimeFrame, validatedGenres)
 		return query, "redis", nil
-	} else if datePosted == "Most Recent" {
+	} else if datePosted == "mostRecent" {
 		// query most recent database
 		// order by date posted
 		query := BuildMostRecentNeoQuery()
 		return query, "neo", nil
-	} else if datePosted == "All Time" {
+	} else if datePosted == "allTime" {
 		// query all time database
 		// order by absolute rank
 		query := BuildAllTimeNeoQuery()
