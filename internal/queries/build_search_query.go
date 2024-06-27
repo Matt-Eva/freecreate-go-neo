@@ -6,33 +6,33 @@ import (
 	"freecreate/internal/utils"
 )
 
-func BuildSearchQuery(searchType, writingType, name, timeFrame string, genres, tags []string) (string, string, error) {
+func BuildSearchQuery(searchType, writingType, name, timeFrame string, genres, tags []string) (string, string, map[string]any, error) {
 	if searchType == "writing" {
 		return BuildWritingSearchQuery(writingType, name, timeFrame, genres, tags)
 	} else if searchType == "writers" {
 		return BuildWriterSearchQuery(name, genres, tags)
 	} else {
 		errorMessage := fmt.Sprintf("search type %s does not match valid search types", searchType)
-		return "", "", errors.New(errorMessage)
+		return "", "", map[string]any{}, errors.New(errorMessage)
 	}
 }
 
 // WRITING SEARCH
 
-func BuildWritingSearchQuery(writingType, name, timeFrame string, genres, tags []string) (string, string, error) {
+func BuildWritingSearchQuery(writingType, name, timeFrame string, genres, tags []string) (string, string, map[string]any, error) {
 	validatedWritingType, wErr := utils.ValidateWritingType(writingType)
 	if wErr != nil {
-		return "", "", wErr
+		return "", "", map[string]any{}, wErr
 	}
 
 	validatedTimeFrame, tErr := utils.ValidateTimeFrame(timeFrame)
 	if tErr != nil {
-		return "", "", tErr
+		return "", "", map[string]any{}, tErr
 	}
 
 	validatedGenres, gErr := utils.ValidateGenres(genres)
 	if gErr != nil {
-		return "", "", gErr
+		return "", "", map[string]any{}, gErr
 	}
 
 	if name == "" && len(tags) == 0 && validatedTimeFrame != "mostRecent" {
@@ -42,7 +42,7 @@ func BuildWritingSearchQuery(writingType, name, timeFrame string, genres, tags [
 	} else if validatedTimeFrame == "mostRecent" {
 		// query most recent database
 		// order by date posted
-		query := BuildMostRecentNeoQuery()
+		query := BuildMostRecentNeoQuery(validatedWritingType, name, validatedGenres, tags)
 		return query, "neo", nil
 	} else if validatedTimeFrame == "allTime" {
 		// query all time database
@@ -68,7 +68,7 @@ func BuildRedisCacheQuery(writingType, datePosted string, genres []string) strin
 	return ""
 }
 
-func BuildMostRecentNeoQuery() string {
+func BuildMostRecentNeoQuery(writingType, name string, genres, tags []string) string {
 	return ""
 }
 
