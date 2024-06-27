@@ -7,24 +7,22 @@ import (
 
 func AssembleCachePopulationCombos() map[string]map[string][][]string {
 	genreCombos := GenerateGenreCombos()
+	timeFrames := GetTimeFrames()
+	timeFrameMap := make(map[string][][]string)
 
-	timeFrameMap := map[string][][]string{
-		"Past Day":   genreCombos,
-		"Past Week":  genreCombos,
-		"Past Month": genreCombos,
-		"Past Year":  genreCombos,
-		"All Time":   genreCombos,
+	for _, timeFrame := range timeFrames{
+		timeFrameMap[timeFrame] = genreCombos
 	}
 
-	comboMap := map[string]map[string][][]string{
-		"noType":     timeFrameMap,
-		"shortStory": timeFrameMap,
-		"novelette":  timeFrameMap,
-		"novella":    timeFrameMap,
-		"novel":      timeFrameMap,
+	writingTypes := GetWritingTypes()
+	writingTypeMap := make(map[string]map[string][][]string)
+	
+	for _, writingType := range writingTypes {
+		writingTypeMap[writingType] = timeFrameMap
 	}
 
-	return comboMap
+
+	return writingTypeMap
 }
 
 func GenerateGenreCombos() [][]string {

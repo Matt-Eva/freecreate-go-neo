@@ -19,37 +19,47 @@ import (
 
 func TestAssembleCachePopulationCombos(t *testing.T) {
 	comboMap := utils.AssembleCachePopulationCombos()
-	genres := utils.GenerateGenreCombos()
-	timeMap := map[string]bool{
-		"Past Day":   false,
-		"Past Week":  false,
-		"Past Month": false,
-		"Past Year":  false,
-		"All Time":   false,
+	genreCombos := utils.GenerateGenreCombos()
+
+	timeFrames := utils.GetTimeFrames()
+	timeMap := make(map[string]bool)
+
+	for _, t := range timeFrames {
+		timeMap[t] = false
 	}
 
-	typeMap := map[string]bool{
-		"shortStory": false,
-		"novelette": false,
+	writingTypes := utils.GetWritingTypes()
+	typeMap := make(map[string]bool)
+
+	for _, t := range writingTypes {
+		typeMap[t] = false
 	}
 
-	for key, slice := range comboMap {
-		// slice and genres should be identical
-		for index, comboSlice := range slice {
-			// genreComboSlice and comboSlice should be identical
-			genreComboSlice := genres[index]
-			for index, genre := range comboSlice {
-				if genreComboSlice[index] != genre {
-					t.Errorf("Mismatch in genre combo slice and slice stored in combo map.")
+	for typeKey, comboTimeMap := range comboMap {
+
+		for timeKey, comboSlice := range comboTimeMap {
+			for i, combo := range comboSlice {
+				genreComboSlice := genreCombos[i]
+				for index, genre := range combo {
+					if genreComboSlice[index] != genre {
+						t.Errorf("Mismatch in genre combo slice and slice stored in combo map.")
+					}
 				}
+			}
+
+			_, ok := timeMap[timeKey]
+			if ok {
+				timeMap[timeKey] = true
+			} else {
+				t.Errorf("'%s' key in combo map not present in test case time map", timeKey)
 			}
 		}
 
-		_, ok := timeMap[key]
+		_, ok := typeMap[typeKey]
 		if ok {
-			timeMap[key] = true
+			typeMap[typeKey] = true
 		} else {
-			t.Errorf("'%s' key in combo map not present in test case map", key)
+			t.Errorf("'%s' key in combo map not present in test case type map", typeKey)
 		}
 	}
 
