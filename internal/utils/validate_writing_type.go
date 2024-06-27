@@ -1,12 +1,18 @@
 package utils
 
-func ValidateWritingType(writingType string) string {
+import (
+	"errors"
+	"fmt"
+)
+
+func ValidateWritingType(writingType string) (string, error) {
 	types := GetWritingTypes()
 	for _, t := range types {
 		if writingType == t {
-			return t
+			return t, nil
 		}
 	}
 
-	return ""
+	errorMessage := fmt.Sprintf("%s is not a valid writing type", writingType)
+	return "", errors.New(errorMessage)
 }

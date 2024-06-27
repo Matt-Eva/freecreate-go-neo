@@ -2,34 +2,34 @@ package databases
 
 import (
 	"errors"
+	"fmt"
 	"freecreate/internal/utils"
 )
 
-func BuildSearchQuery(searchType, writingType, name, datePosted string, genres, tags []string) {
+func BuildSearchQuery(searchType, writingType, name, datePosted string, genres, tags []string) (string, string, error) {
 	if searchType == "writing" {
-		BuildWritingSearchQuery(writingType, name, datePosted, genres, tags)
+		return BuildWritingSearchQuery(writingType, name, datePosted, genres, tags)
 	} else if searchType == "writers" {
-		BuildWriterSearchQuery(name, genres, tags)
+		return BuildWriterSearchQuery(name, genres, tags)
 	} else {
-		// return error
+		errorMessage := fmt.Sprintf("search type %s does not match valid search types", searchType)
+		return "", "", errors.New(errorMessage)
 	}
 }
 
-func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags []string) (string, string, error) {
-	validatedType := utils.ValidateWritingType(writingType)
-	validatedGenres := utils.ValidateGenres(genres)
+// WRITING SEARCH
 
-	checkDateMap := map[string]bool{
-		"Past Day":   true,
-		"Past Week":  true,
-		"Past Month": true,
-		"Past Year":  true,
-		"All Time":   true,
+func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags []string) (string, string, error) {
+	_, err := utils.ValidateWritingType(writingType)
+	if err != nil {
+		return "", "", err
 	}
 
-	if name == "" && len(tags) == 0 && checkDateMap[datePosted] {
+	
+
+	if name == "" && len(tags) == 0 && datePosted != "mostRecent" {
 		// search cache
-		query := BuildRedisCacheQuery()
+		query := BuildRedisCacheQuery(writingType, datePosted, genres)
 		return query, "redis", nil
 	} else if datePosted == "Most Recent" {
 		// query most recent database
@@ -46,7 +46,7 @@ func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags 
 		// order by absolute rank and relative rank
 		query := BuildSpecificYearNeoQuery()
 		return query, "neo", nil
-	} else if (name != "" || len(tags) != 0) && checkDateMap[datePosted] {
+	} else if name != "" || len(tags) != 0 {
 		// query most recent database
 		// order by absolute rank and relative rank
 		query := BuildStandardWritingNeoQuery()
@@ -56,7 +56,7 @@ func BuildWritingSearchQuery(writingType, name, datePosted string, genres, tags 
 	}
 }
 
-func BuildRedisCacheQuery() string {
+func BuildRedisCacheQuery(writingType, datePosted string, genres []string) string {
 	return ""
 }
 
@@ -76,6 +76,8 @@ func BuildStandardWritingNeoQuery() string {
 	return ""
 }
 
-func BuildWriterSearchQuery(name string, genres, tags []string) {
+// WRITER SEARCH
 
+func BuildWriterSearchQuery(name string, genres, tags []string) (string, string, error) {
+	return "", "", nil
 }
