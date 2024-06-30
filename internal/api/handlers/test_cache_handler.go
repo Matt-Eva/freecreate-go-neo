@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
+	"freecreate/internal/utils"
 	"net/http"
 
 	"github.com/redis/go-redis/v9"
@@ -13,14 +13,11 @@ func TestCachePostHandler(w http.ResponseWriter, r *http.Request, redis *redis.C
 		Name string `json:"name"`
 	}
 
-	var body PostData
-	err := json.NewDecoder(r.Body).Decode(&body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	var postData PostData
+	utils.DecodePostBody(w, r.Body, &postData)
+	
 
-	fmt.Println(body.Name)
+	fmt.Println(postData.Name)
 }
 
 func TestCacheGetHandler(w http.ResponseWriter, r *http.Request, redis *redis.Client) {
