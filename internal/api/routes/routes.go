@@ -9,10 +9,17 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func CreateRoutes(neo, mongo string, redis *redis.Client ) error {
+func CreateRoutes(neo, mongo string, redis *redis.Client) error {
 	router := mux.NewRouter()
 
+	// TEST ENDPOINTS
+	// =====================
+
 	router.HandleFunc("/api", middleware.AddDrivers(handlers.TestHandler, neo, mongo, redis)).Methods("GET")
+	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(handlers.TestCacheHandler, redis)).Methods("POST")
+
+	// APPLICATION ENDPOINTS
+	// =====================
 
 	// no name, no tags, time frame != mostRecent, query Redis cache
 	router.HandleFunc("/api/search/cache", middleware.AddRedisDriver(handlers.SearchCacheHandler, redis)).Methods("GET")
