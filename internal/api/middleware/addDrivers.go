@@ -2,9 +2,11 @@ package middleware
 
 import (
 	"net/http"
+
+	"github.com/redis/go-redis/v9"
 )
 
-func AddDrivers(handler func(w http.ResponseWriter, r *http.Request, neo, mongo, redis string), neo, mongo, redis string) http.HandlerFunc {
+func AddDrivers(handler func(w http.ResponseWriter, r *http.Request, neo, mongo string, redis *redis.Client), neo, mongo string, redis *redis.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, neo, mongo, redis)
 	}
@@ -22,7 +24,7 @@ func AddNeoDriver(handler func(w http.ResponseWriter, r *http.Request, neo strin
 	}
 }
 
-func AddRedisDriver(handler func(w http.ResponseWriter, r *http.Request, redis string), redis string) http.HandlerFunc {
+func AddRedisDriver(handler func(w http.ResponseWriter, r *http.Request, redis *redis.Client), redis *redis.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, redis)
 	}
@@ -34,13 +36,13 @@ func AddNeoAndMongo(handler func(w http.ResponseWriter, r *http.Request, neo, mo
 	}
 }
 
-func AddNeoAndRedis(handler func(w http.ResponseWriter, r *http.Request, neo, redis string), neo, redis string) http.HandlerFunc {
+func AddNeoAndRedis(handler func(w http.ResponseWriter, r *http.Request, neo string, redis *redis.Client), neo string, redis *redis.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, neo, redis)
 	}
 }
 
-func AddMongoAndRedis(handler func(w http.ResponseWriter, r *http.Request, mongo, redis string), mongo, redis string) http.HandlerFunc {
+func AddMongoAndRedis(handler func(w http.ResponseWriter, r *http.Request, mongo string, redis *redis.Client), mongo string, redis *redis.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, mongo, redis)
 	}

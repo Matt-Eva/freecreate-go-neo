@@ -6,9 +6,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/redis/go-redis/v9"
 )
 
-func CreateRoutes(neo, mongo, redis string) error {
+func CreateRoutes(neo, mongo string, redis *redis.Client ) error {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api", middleware.AddDrivers(handlers.TestHandler, neo, mongo, redis)).Methods("GET")
