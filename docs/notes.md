@@ -1,8 +1,6 @@
 # Notes
 
-## Dependecies
-
-### Databases
+## Databases
 
 - Neo4j - primary query database
 - MongoDB - bulk writing storage / potential cache
@@ -17,13 +15,23 @@ Just use AWS, dude. It's going to cost money regardless, and you don't have your
 - Frontend assets can be delivered by Netlify or Cloudfront
 - Media assets can be stored in S3
 
-### Payment processing
+## Payment processing
 
 - Stripe
   - Supports Apple Pay and Google Pay
 - (Paypal?)
 
 ## Neo4j Internal Structure
+
+### Non-Sharded architecture
+
+All of these problems go away if we simply don't shard Neo4j.
+
+If we use an Amazon Ec2 i4i.metal instance, we get almost a terabyte of memory and potentially up to 30 TB of ssd storage.
+
+So, I think it's best to ditch this sharding strategy and just focus on leveraging the full potential of Neo4j.
+
+### Sharded Architecture (deprecated)
 
 - <a href="https://neo4j.com/docs/operations-manual/current/tutorial/tutorial-composite-database/#tutorial-composite-database-get-results">Composite Database Query Docs</a>
 
@@ -94,7 +102,7 @@ Just use AWS, dude. It's going to cost money regardless, and you don't have your
   - This could also be where we store collections
   - There could also be fictional universe nodes that a series or collection could belong to.
 
-## Donations
+### Donations
 
 - There is a problem with this current model - if a specific piece of content is relegated to a specific year, we won't be able to get the most recent donations for that piece of content
 - We might instead need to create a separate donations db where we can track donations given to creators / users, specific pieces of content, and who donated them.
@@ -107,7 +115,7 @@ Just use AWS, dude. It's going to cost money regardless, and you don't have your
   - If we store donations in their own independent database, and just federate creator, user, and creation nodes
     based on id, we could easily see an individual donation as a line by line item.
 
-## Querying
+### Querying
 
 This is how the following queries will be run.
 
@@ -149,10 +157,36 @@ This is how the following queries will be run.
         - This cache could be updated each time a user adds or removes something from their library.
           - This approach could result in stale data, but also only updates library caches when absolutely necessary.
 
-## Non-Sharded architecture
+## Rank Indexing
 
-All of these problems go away if we simply don't shard Neo4j.
+In order to improve the performance of order_by queries, we want to have indexes for rank and relative rank.
+However, these are updated every time there is a new like, new read, new donation, etc. This high frequency update
+of an indexed field could be quite detrimental to the platform, as neo4j would basically be constantly updating the index.
 
-If we use an Amazon Ec2 i4i.metal instance, we get almost a terabyte of memory and potentially up to 30 TB of ssd storage.
+So, we want to instead update the rank and rel_rank fields of an item periodically.
 
-So, I think it's best to ditch this sharding strategy and just focus on leveraging the full potential of Neo4j.
+When updating the rank or rel_rank of a node, we want to put a lock on the affected node.
+
+There are a few approaches for doing this - setting a time window, or setting a number of updates.
+
+We can actually do both
+
+WHERE w.updateTime < timeFrame OR w.rankIncrease < rankIncreaseFrame
+
+We also want to check when the item was posted - things that are posted more recently should be updated more frequently.
+
+For most recent items, we should set the rankChange to 100?
+
+## Caching
+
+It's actually easier to just use MongoDB for the query cache. We can set the "genre" to be the combo of specific keys
+and can create a composite index with the time frame.
+We could then simply store the cached queries as lists in the document.
+
+## Weighting
+
+Read - 1
+Like - 10
+List - 10
+Library - 100
+Donation - 1000

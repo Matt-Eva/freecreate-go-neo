@@ -23,20 +23,21 @@ func CreateRoutes(ctx context.Context, neo, mongo string, redis *redis.Client) e
 	// APPLICATION ENDPOINTS
 	// =====================
 
-	// no name, no tags, time frame != mostRecent, query Redis cache
+	// no name, no tags, time frame != mostRecent, query cache (Redis? Mongo?)
 	router.HandleFunc("/api/search/cache", middleware.AddRedisDriver(handlers.SearchCacheHandler, redis, ctx)).Methods("GET")
 
-	// time frame == mostRecent - query neo current year, order by date, not rank
-	router.HandleFunc("/api/search/most-recent", middleware.AddNeoDriver(handlers.SearchMostRecentHandler, neo)).Methods("GET")
-
-	// name || tags && timeFrame == allTime - query neo allTime db, order by absolute rank
-	router.HandleFunc("/api/search/all-time", middleware.AddNeoDriver(handlers.SearchAllTimeHandler, neo)).Methods("GET")
-
-	// timeFrame == previous year - query neo specific year, order by rank && rel_rank
-	router.HandleFunc("/api/search/year", middleware.AddNeoDriver(handlers.SearchYearHandler, neo)).Methods("GET")
-
-	// timeFrame !== mostRecent || allTime, name || tags - query neo current year, order by rank && rel_rank
+	// timeFrame == mostRecent || name || tags
 	router.HandleFunc("/api/search/standard", middleware.AddNeoDriver(handlers.SearchStandardHandler, neo)).Methods("GET")
+
+	// time frame == mostRecent - query neo current year, order by date, not rank - DEPRECATED
+	// router.HandleFunc("/api/search/most-recent", middleware.AddNeoDriver(handlers.SearchMostRecentHandler, neo)).Methods("GET")
+
+	// name || tags && timeFrame == allTime - query neo allTime db, order by absolute rank - DEPRECATED
+	// router.HandleFunc("/api/search/all-time", middleware.AddNeoDriver(handlers.SearchAllTimeHandler, neo)).Methods("GET")
+
+	// timeFrame == previous year - query neo specific year, order by rank && rel_rank - DEPRECATED
+	// router.HandleFunc("/api/search/year", middleware.AddNeoDriver(handlers.SearchYearHandler, neo)).Methods("GET")
+
 
 	return http.ListenAndServe(":8080", router)
 }
