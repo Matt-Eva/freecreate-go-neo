@@ -31,6 +31,8 @@ If we use an Amazon Ec2 i4i.metal instance, we get almost a terabyte of memory a
 
 So, I think it's best to ditch this sharding strategy and just focus on leveraging the full potential of Neo4j.
 
+However, we should still have an all-time database for all-time queries. Otherwise we'll simply have too much data to comb through.
+
 ### Sharded Architecture (deprecated)
 
 - <a href="https://neo4j.com/docs/operations-manual/current/tutorial/tutorial-composite-database/#tutorial-composite-database-get-results">Composite Database Query Docs</a>
