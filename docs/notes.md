@@ -86,12 +86,26 @@ Just use AWS, dude. It's going to cost money regardless, and you don't have your
     - No, actually, we want the "year" of the novel to be the year that it is finally finished.
     - So, we'll copy the novel to the new year, and delete the old node.
     - We will need to connect the novel to all of its old tags in the new db.
+    - problem - we would need to copy all donation nodes and liked relationships to the new db as well. This could be millions.
   - we don't actually have to store any of the chapters in neo - we can store them all in Mongo
 - Series:
   - A series would be a series of novels, or something that exists within an overarching universe or world.
   - We could have a separate series db that is a single instance db
   - This could also be where we store collections
   - There could also be fictional universe nodes that a series or collection could belong to.
+
+## Donations
+
+- There is a problem with this current model - if a specific piece of content is relegated to a specific year, we won't be able to get the most recent donations for that piece of content
+- We might instead need to create a separate donations db where we can track donations given to creators / users, specific pieces of content, and who donated them.
+- Ok, we have a problem
+  - We want a creator to be able to quickly and easily see how many donations they have received for a specific piece of content
+  - We also want a user to be able to quickly and easily see who they have donated to, and how much.
+  - This means we want creator nodes, creation nodes, and user nodes, to all be connected to a single donation.
+  - However, we are sorting writing nodes by the date they were posted, and a donation could be given to a piece of writing in a year later than it was posted.
+  - But, we want to donations to be presented in the order in which they have been given - so we want them organized by latest year as well.
+  - If we store donations in their own independent database, and just federate creator, user, and creation nodes
+    based on id, we could easily see an individual donation as a line by line item.
 
 ## Querying
 
@@ -134,3 +148,11 @@ This is how the following queries will be run.
       - There is a high potential for caching this data, either in MongoDB or Redis.
         - This cache could be updated each time a user adds or removes something from their library.
           - This approach could result in stale data, but also only updates library caches when absolutely necessary.
+
+## Non-Sharded architecture
+
+All of these problems go away if we simply don't shard Neo4j.
+
+If we use an Amazon Ec2 i4i.metal instance, we get almost a terabyte of memory and potentially up to 30 TB of ssd storage.
+
+So, I think it's best to ditch this sharding strategy and just focus on leveraging the full potential of Neo4j.
