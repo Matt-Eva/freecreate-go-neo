@@ -13,9 +13,9 @@ func TestHandler(w http.ResponseWriter, r *http.Request, neo, mongo string, redi
 	fmt.Println(params)
 
 	type Message struct {
-		Neo   string `json:neo`
-		Mongo string `json:mongo`
-		Redis string `json:redis`
+		Neo   string `json:"neo"`
+		Mongo string `json:"mongo"`
+		Redis string `json:"redis"`
 	}
 
 	message := Message{
