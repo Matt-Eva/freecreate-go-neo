@@ -39,7 +39,6 @@ func buildWritingQuery(params url.Values) ([]string, error) {
 
 	if len(tags) == 0 && len(title) == 0 {
 		fmt.Println("hit cache")
-	} else {
 	}
 
 	return []string{}, nil
