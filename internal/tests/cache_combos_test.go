@@ -101,14 +101,14 @@ func TestGenerateGenreCombos(t *testing.T) {
 
 func TestGenreCombos(t *testing.T) {
 	comboCount := utils.CalculateGenreCombos()
-	if comboCount != 833 {
+	if comboCount != 987 {
 		t.Errorf("combo count does not match 696; instead == %d", comboCount)
 	}
 }
 
 func TestGenreAppearances(t *testing.T) {
 	appearanceCount := utils.CalculateGenreAppearances()
-	if appearanceCount != 137 {
+	if appearanceCount != 154 {
 		t.Errorf("appearance count does not match 120; instead == %d", appearanceCount)
 	}
 }

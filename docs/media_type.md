@@ -64,3 +64,18 @@
 - Wisdom
 
 ### Poetry
+
+---
+
+It might be a better idea to split up non fiction into a variety of sub categories,
+as the list of topics might not match up very well across types of non fiction.
+
+Some lists of non fiction could include:
+
+- Blog
+- Essay
+- How-To
+- Journalism
+- Memoir
+- Recipe
+- Review
