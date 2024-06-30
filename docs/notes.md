@@ -177,6 +177,13 @@ We also want to check when the item was posted - things that are posted more rec
 
 For most recent items, we should set the rankChange to 100?
 
+post < day: rankChange === 1000, timeFrame == 30 seconds // 1 donation
+day < posted < week : rankChange === 10000, timeFrame == 1 minute // 10 donations
+week < posted < month: rankChange === 100000, timeFrame == 5 minutes // 100 donations
+month < posted: rankChange === 100000, timeFrame == 10 minutes // 1000 donations
+
+Can apply `apoc.lock()` to lock node for writes. <a href="https://claude.ai/chat/278ba8ac-a132-4e9d-99b6-ea80b117e6f7">reference</a>
+
 ## Caching
 
 It's actually easier to just use MongoDB for the query cache. We can set the "genre" to be the combo of specific keys
