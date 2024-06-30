@@ -74,6 +74,25 @@ Just use AWS, dude. It's going to cost money regardless, and you don't have your
 - There will be a single ALL TIME database in which content that reaches above a certain absolute rank will be included
   - It will basically be the same as any of the sharded content-centric databases, except there is only one of it and it's for all time content
 
+### Novels, Series, and Collections
+
+- In each of these media types, many different pieces of writing will be connected together. These pieces of writing could be posted in different years, and sharded across different time periods.
+- Novels:
+  - A novel will have many chapters, which could be published across multiple years
+  - We want to search for novels by their update date, rather than just their writing date.
+  - Whenever a novel is updated in a new year, we add its node to that new year.
+    - Do we duplicate the data across all the years in which its present?
+    - That would be the best way to preserve query integrity
+    - No, actually, we want the "year" of the novel to be the year that it is finally finished.
+    - So, we'll copy the novel to the new year, and delete the old node.
+    - We will need to connect the novel to all of its old tags in the new db.
+  - we don't actually have to store any of the chapters in neo - we can store them all in Mongo
+- Series:
+  - A series would be a series of novels, or something that exists within an overarching universe or world.
+  - We could have a separate series db that is a single instance db
+  - This could also be where we store collections
+  - There could also be fictional universe nodes that a series or collection could belong to.
+
 ## Querying
 
 This is how the following queries will be run.
