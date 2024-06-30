@@ -16,7 +16,8 @@ func CreateRoutes(neo, mongo string, redis *redis.Client) error {
 	// =====================
 
 	router.HandleFunc("/api", middleware.AddDrivers(handlers.TestHandler, neo, mongo, redis)).Methods("GET")
-	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(handlers.TestCacheHandler, redis)).Methods("POST")
+	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(handlers.TestCachePostHandler, redis)).Methods("POST")
+	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(handlers.TestCacheGetHandler, redis)).Methods("GET")
 
 	// APPLICATION ENDPOINTS
 	// =====================
