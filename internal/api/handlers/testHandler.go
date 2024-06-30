@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -8,7 +9,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func TestHandler(w http.ResponseWriter, r *http.Request, neo, mongo string, redis *redis.Client) {
+func TestHandler(w http.ResponseWriter, r *http.Request, neo, mongo string, redis *redis.Client, ctx context.Context) {
 	params := r.URL.Query()
 	fmt.Println(params)
 

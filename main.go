@@ -11,8 +11,8 @@ import (
 func run(ctx context.Context) error {
 	neo := config.InitNeo(ctx)
 	mongo := config.InitMongo(ctx)
-	redis := config.InitRedis(ctx)
-	if err := routes.CreateRoutes(neo, mongo, redis); err != nil {
+	redis := config.InitRedis()
+	if err := routes.CreateRoutes(ctx, neo, mongo, redis); err != nil {
 		return err
 	}
 	return nil

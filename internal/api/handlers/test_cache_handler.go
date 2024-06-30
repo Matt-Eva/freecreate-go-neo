@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"freecreate/internal/utils"
@@ -9,7 +10,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func TestCachePostHandler(w http.ResponseWriter, r *http.Request, redis *redis.Client) {
+func TestCachePostHandler(w http.ResponseWriter, r *http.Request, redis *redis.Client, ctx context.Context) {
 	type PostData struct {
 		Name string `json:"name"`
 	}
@@ -21,7 +22,7 @@ func TestCachePostHandler(w http.ResponseWriter, r *http.Request, redis *redis.C
 	json.NewEncoder(w).Encode(&postData)
 }
 
-func TestCacheGetHandler(w http.ResponseWriter, r *http.Request, redis *redis.Client) {
+func TestCacheGetHandler(w http.ResponseWriter, r *http.Request, redis *redis.Client, ctx context.Context) {
 	// body := json.NewDecoder(r.Body)
 	fmt.Println(r.Body)
 }

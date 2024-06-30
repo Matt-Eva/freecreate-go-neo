@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"context"
 	"freecreate/internal/api/handlers"
 	"freecreate/internal/api/middleware"
 	"net/http"
@@ -9,21 +10,21 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func CreateRoutes(neo, mongo string, redis *redis.Client) error {
+func CreateRoutes(ctx context.Context, neo, mongo string, redis *redis.Client) error {
 	router := mux.NewRouter()
 
 	// TEST ENDPOINTS
 	// =====================
 
-	router.HandleFunc("/api", middleware.AddDrivers(handlers.TestHandler, neo, mongo, redis)).Methods("GET")
-	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(handlers.TestCachePostHandler, redis)).Methods("POST")
-	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(handlers.TestCacheGetHandler, redis)).Methods("GET")
+	router.HandleFunc("/api", middleware.AddDrivers(handlers.TestHandler, neo, mongo, redis, ctx)).Methods("GET")
+	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(handlers.TestCachePostHandler, redis, ctx)).Methods("POST")
+	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(handlers.TestCacheGetHandler, redis, ctx)).Methods("GET")
 
 	// APPLICATION ENDPOINTS
 	// =====================
 
 	// no name, no tags, time frame != mostRecent, query Redis cache
-	router.HandleFunc("/api/search/cache", middleware.AddRedisDriver(handlers.SearchCacheHandler, redis)).Methods("GET")
+	router.HandleFunc("/api/search/cache", middleware.AddRedisDriver(handlers.SearchCacheHandler, redis, ctx)).Methods("GET")
 
 	// time frame == mostRecent - query neo current year, order by date, not rank
 	router.HandleFunc("/api/search/most-recent", middleware.AddNeoDriver(handlers.SearchMostRecentHandler, neo)).Methods("GET")
