@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"freecreate/internal/utils"
 	"net/http"
@@ -17,7 +18,7 @@ func TestCachePostHandler(w http.ResponseWriter, r *http.Request, redis *redis.C
 	utils.DecodePostBody(w, r.Body, &postData)
 	
 
-	fmt.Println(postData.Name)
+	json.NewEncoder(w).Encode(&postData)
 }
 
 func TestCacheGetHandler(w http.ResponseWriter, r *http.Request, redis *redis.Client) {
