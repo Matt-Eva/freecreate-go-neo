@@ -73,7 +73,7 @@ func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error
 		tagQuery += query
 	}
 
-	getAuthor := `WITH w MATCH (w) <- [:CREATED] - (c:Creator) <- [:IS_CREATOR] - (u:User)`
+	getAuthor := utils.BuildGetAuthorQuery()
 
 	returnStatement := "RETURN w.name AS title, w.description AS description, c.name AS author, u.username AS username"
 
