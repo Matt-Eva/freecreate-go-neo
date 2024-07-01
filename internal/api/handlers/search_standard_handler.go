@@ -75,7 +75,7 @@ func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error
 
 	getAuthor := utils.BuildGetAuthorQuery()
 
-	returnStatement := "RETURN w.name AS title, w.description AS description, c.name AS author, u.username AS username"
+	returnStatement := utils.BuildNeoWritReturnQuery()
 
 	rankedOrder := "ORDER BY w.rank"
 	relRankedOrder := "ORDER BY w.relRank"
