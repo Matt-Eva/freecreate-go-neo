@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestBuildFicGenreLabels(t *testing.T) {
+func TestBuildWritLabelQuery(t *testing.T) {
 	type TestCase struct {
 		Case   []string
 		Err    bool
@@ -17,12 +17,12 @@ func TestBuildFicGenreLabels(t *testing.T) {
 		{
 			[]string{"Horror", "Romance"},
 			false,
-			":Horror:Romance",
+			"(w:Writing:Horror:Romance)",
 		},
 		{
 			[]string{"Romance", "Horror"},
 			false,
-			":Horror:Romance",
+			"(w:Writing:Horror:Romance)",
 		},
 		{
 			[]string{"Flubber", "ScienceFiction"},
@@ -32,12 +32,12 @@ func TestBuildFicGenreLabels(t *testing.T) {
 		{
 			[]string{"ScienceFiction"},
 			false,
-			":ScienceFiction",
+			"(w:Writing:ScienceFiction)",
 		},
 	}
 
 	for _, testCase := range cases {
-		labels, err := utils.BuildFicGenreLabel(testCase.Case)
+		labels, err := utils.BuildWritLabelQuery(testCase.Case)
 		caseLabels := ":" + strings.Join(testCase.Case, ":")
 		if testCase.Err && err == nil {
 			t.Errorf("test case labels '%s' are not valid, but no error was thrown", caseLabels)

@@ -40,14 +40,10 @@ func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error
 	var queryStruct QueryStruct
 	queryParams := make(map[string]any)
 
-	genreLabels := ""
-
-	for _, genre := range paramStruct.Genres{
-		genreLabel := fmt.Sprintf(":%s", genre)
-		genreLabels += genreLabel
+	queryLabels, err := utils.BuildWritLabelQuery(paramStruct.Genres)
+	if err != nil {
+		return queryStruct, err
 	}
-
-	queryLabels := fmt.Sprintf("MATCH (w:Writing%s)", genreLabels)
 
 	timeFrame, err := utils.CalculateTimeFrame(paramStruct.TimeFrame)
 	if err != nil {
@@ -56,13 +52,12 @@ func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error
 
 	timeFrameQuery := ""
 	if paramStruct.WritingType == "shortStory" || paramStruct.WritingType == "" {
-		timeFrameQuery = fmt.Sprintf("WHERE $start < w.createdAt < $end")
+		timeFrameQuery = "WHERE $start < w.createdAt < $end"
 	} else {
-		timeFrameQuery = fmt.Sprintf("WHERE $start < w.latestPublication < $end")
+		timeFrameQuery = "WHERE $start < w.latestPublication < $end"
 	}
 	queryParams["start"] = timeFrame.Start
 	queryParams["end"] = timeFrame.End
-	
 
 	nameQuery := ""
 	if paramStruct.Name != ""{
@@ -86,8 +81,8 @@ func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error
 	relRankedOrder := "ORDER BY w.relRank"
 	limitQuery := "LIMIT 100"
 
-	rankedQuery := fmt.Sprintf(queryLabels + timeFrameQuery + nameQuery + tagQuery + getAuthor + returnStatement + rankedOrder + limitQuery)
-	relRankedQuery := fmt.Sprintf(queryLabels + timeFrameQuery + nameQuery + tagQuery + getAuthor + returnStatement + relRankedOrder + limitQuery)
+	rankedQuery := fmt.Sprintf("MATCH" + queryLabels + timeFrameQuery + nameQuery + tagQuery + getAuthor + returnStatement + rankedOrder + limitQuery)
+	relRankedQuery := fmt.Sprintf("MATCH" + queryLabels + timeFrameQuery + nameQuery + tagQuery + getAuthor + returnStatement + relRankedOrder + limitQuery)
 
 	queryStruct.QueryParams = queryParams
 	queryStruct.RankQuery = rankedQuery
