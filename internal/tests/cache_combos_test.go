@@ -24,7 +24,7 @@ func TestAssembleCachePopulationCombos(t *testing.T) {
 	timeFrames := utils.GetTimeFrames()
 	timeMap := make(map[string]bool)
 
-	for key, _ := range timeFrames {
+	for key := range timeFrames {
 		timeMap[key] = false
 	}
 
@@ -63,7 +63,7 @@ func TestAssembleCachePopulationCombos(t *testing.T) {
 		}
 	}
 
-	for key, _ := range timeMap {
+	for key := range timeMap {
 		if !timeMap[key] {
 			t.Errorf("'%s' not present in comboMap", key)
 		}

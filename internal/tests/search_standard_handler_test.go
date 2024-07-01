@@ -21,7 +21,7 @@ func TestBuildStandardSearchQuery(t *testing.T){
 	}
 
 	testCases := []TestCase{
-		TestCase{
+		{
 			utils.ParamStruct{
 				WritingType: "shortStory",
 				Name: "",

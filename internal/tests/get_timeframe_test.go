@@ -9,14 +9,14 @@ func TestGetTimeFrames(t *testing.T) {
 	timeFrames := map[string]bool{"mostRecent": true, "pastDay": true, "pastWeek": true, "pastMonth": true, "pastYear": true, "allTime": true}
 	isPresent := make(map[string]bool)
 
-	for key, _ := range timeFrames {
+	for key := range timeFrames {
 		isPresent[key] = false
 	}
 
 	result := utils.GetTimeFrames()
 
 
-	for key, _ := range result {
+	for key := range result {
 		_, ok := timeFrames[key]
 		if !ok {
 			t.Errorf("time frame '%s' is not present in test case", key)

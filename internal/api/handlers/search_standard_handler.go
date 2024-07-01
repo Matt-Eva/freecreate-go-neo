@@ -92,9 +92,9 @@ func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error
 }
 
 func RunQuery(queryStruct QueryStruct){
-	if (queryStruct.RankQuery == queryStruct.RelRankQuery){
+	// if (queryStruct.RankQuery == queryStruct.RelRankQuery){
 
-	} else {
+	// } else {
 
-	}
+	// }
 }

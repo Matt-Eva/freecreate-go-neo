@@ -13,7 +13,8 @@ func SearchMostRecentHandler(w http.ResponseWriter, r *http.Request, neo string)
 	params := r.URL.Query()
 	validatedParams, err := utils.ValidateSearchParams(params)
 	if err != nil {
-		
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
 	}
 
 	BuildMostRecentQuery(validatedParams)
