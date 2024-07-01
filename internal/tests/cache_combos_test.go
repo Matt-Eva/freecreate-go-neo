@@ -24,8 +24,8 @@ func TestAssembleCachePopulationCombos(t *testing.T) {
 	timeFrames := utils.GetTimeFrames()
 	timeMap := make(map[string]bool)
 
-	for _, t := range timeFrames {
-		timeMap[t] = false
+	for key, _ := range timeFrames {
+		timeMap[key] = false
 	}
 
 	writingTypes := utils.GetWritingTypes()

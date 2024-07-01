@@ -28,7 +28,7 @@ func CalculateTimeFrame(timeFrame string) (TimeFrame, error) {
 
 	dateQueryStruct, ok := dateMap[timeFrame]
 	if !ok {
-		errorMsg := fmt.Sprintf("%s time frame cannot be used in calculate time frame - calculate_time_frame.go", timeFrame)
+		errorMsg := fmt.Sprintf(" Time frame '%s' cannot be used in calculate time frame - calculate_time_frame.go", timeFrame)
 		return TimeFrame{}, errors.New(errorMsg)
 	}
 

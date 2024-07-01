@@ -1,25 +1,15 @@
 package handlers
 
 import (
-	"errors"
 	"fmt"
 	"freecreate/internal/utils"
 	"net/http"
-	"net/url"
 )
-
-type ParamStruct struct {
-	TimeFrame string
-	WritingType string
-	Genres []string
-	Tags []string
-	Name string
-}
 
 type QueryStruct struct {
 	RankQuery string
 	RelRankQuery string
-	QueryParams string
+	QueryParams map[string]any
 }
 
 type Results struct {
@@ -30,13 +20,13 @@ type Results struct {
 func SearchStandardHandler(w http.ResponseWriter, r *http.Request, neo string) {
 	params := r.URL.Query()
 
-	paramStruct, paramErr := ValidateSearchParams(params)
+	paramStruct, paramErr := utils.ValidateSearchParams(params)
 	if paramErr != nil{
 		http.Error(w, paramErr.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
-	queryStruct, buildErr := BuildSearchQuery(paramStruct)
+	queryStruct, buildErr := BuildStandardSearchQuery(paramStruct)
 	if buildErr != nil {
 		http.Error(w, buildErr.Error(), http.StatusUnprocessableEntity)
 		return
@@ -46,90 +36,64 @@ func SearchStandardHandler(w http.ResponseWriter, r *http.Request, neo string) {
 
 }
 
-func ValidateSearchParams( params url.Values) (ParamStruct, error) {
-	timeFrames := utils.GetTimeFrames()
-	var paramStruct ParamStruct
-
-	if len(params["timeFrame"]) == 0{
-		return ParamStruct{}, errors.New("no time frame specified")
-	} else if !timeFrames[params["timeFrame"][0]]{
-		errorMsg := fmt.Sprintf("Time frame '%s' is not a valid time frame", params["timeFrame"][0])
-		return ParamStruct{}, errors.New(errorMsg)
-	} else {
-		paramStruct.TimeFrame = params["timeFrame"][0]
-	}
-
-	if len(params["writingType"]) == 0 {
-		paramStruct.WritingType = ""
-	} else {
-		writingType, err := utils.ValidateWritingType(params["writingType"][0])
-		if err != nil {
-			return paramStruct, err
-		}
-		paramStruct.WritingType = writingType
-	}
-
-	genres := params["genres"]
-	validatedGenres, err := utils.ValidateGenres(genres)
-	if err != nil{
-		return ParamStruct{}, err
-	}
-	paramStruct.Genres = validatedGenres
-
-	if len(params["name"]) == 0{
-		paramStruct.Name = ""
-	} else {
-		paramStruct.Name = params["name"][0]
-	}
-
-	paramStruct.Tags = params["tags"]
-
-	return paramStruct, nil
-}
-
-func BuildSearchQuery(ParamStruct ParamStruct) (QueryStruct, error) {
+func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error) {
 	var queryStruct QueryStruct
-	var err error
+	queryParams := make(map[string]any)
 
-	if ParamStruct.TimeFrame == "mostRecent"{
-		queryStruct, err = BuildMostRecentQuery(ParamStruct)
-	} else if ParamStruct.TimeFrame == "allTime"{
-		queryStruct, err = BuildAllTimeQuery(ParamStruct)
-	} else {
-		queryStruct, err = BuildStandardQuery(ParamStruct)
+	genreLabels := ""
+
+	for _, genre := range paramStruct.Genres{
+		genreLabel := fmt.Sprintf(":%s", genre)
+		genreLabels += genreLabel
 	}
 
-	return queryStruct, err
-}
+	queryLabels := fmt.Sprintf("MATCH (w:Writing%s)", genreLabels)
 
-func BuildMostRecentQuery(ParamStruct ParamStruct) (QueryStruct, error) {
-
-}
-
-func BuildAllTimeQuery(ParamStruct ParamStruct) (QueryStruct, error) {
-
-}
-
-func BuildStandardQuery(ParamStruct ParamStruct) (QueryStruct, error) {
-	var queryStruct QueryStruct
-
-	timeFrame, err := utils.CalculateTimeFrame(ParamStruct.TimeFrame)
+	timeFrame, err := utils.CalculateTimeFrame(paramStruct.TimeFrame)
 	if err != nil {
 		return queryStruct, err
 	}
 
-	// this doesn't account for novel and collection updates
-	timeFrameQuery := fmt.Sprintf("WHERE %d < w.created_at < %d")
-	
-	queryLabels := "w:Writing"
+	timeFrameQuery := ""
+	if paramStruct.WritingType == "shortStory" || paramStruct.WritingType == "" {
+		timeFrameQuery = fmt.Sprintf("WHERE $start < w.createdAt < $end")
+	} else {
+		timeFrameQuery = fmt.Sprintf("WHERE $start < w.latestPublication < $end")
+	}
+	queryParams["start"] = timeFrame.Start
+	queryParams["end"] = timeFrame.End
 	
 
-	for _, genre := range ParamStruct.Genres{
-		genreLabel := fmt.Sprintf(":%s", genre)
-		queryLabels += genreLabel
+	nameQuery := ""
+	if paramStruct.Name != ""{
+		nameQuery = " AND WHERE w.name = $name"
+		queryParams["name"] = paramStruct.Name
 	}
 
-	
+	tagQuery := ""
+	for i, tag := range paramStruct.Tags{
+		paramKey := fmt.Sprintf("tag%d", i)
+		queryParams[paramKey] = tag
+		query := fmt.Sprintf(" AND WHERE (w) - [:HAS_TAG] -> (t:Tag {tag: $%s})", paramKey)
+		tagQuery += query
+	}
+
+	getAuthor := `WITH w MATCH (w) <- [:CREATED] - (c:Creator) <- [:IS_CREATOR] - (u:User)`
+
+	returnStatement := "RETURN w.name AS title, w.description AS description, c.name AS author, u.username AS username"
+
+	rankedOrder := "ORDER BY w.rank"
+	relRankedOrder := "ORDER BY w.relRank"
+	limitQuery := "LIMIT 100"
+
+	rankedQuery := fmt.Sprintf(queryLabels + timeFrameQuery + nameQuery + tagQuery + getAuthor + returnStatement + rankedOrder + limitQuery)
+	relRankedQuery := fmt.Sprintf(queryLabels + timeFrameQuery + nameQuery + tagQuery + getAuthor + returnStatement + relRankedOrder + limitQuery)
+
+	queryStruct.QueryParams = queryParams
+	queryStruct.RankQuery = rankedQuery
+	queryStruct.RelRankQuery = relRankedQuery
+
+	return queryStruct, nil
 }
 
 func RunQuery(queryStruct QueryStruct){
