@@ -39,7 +39,7 @@ func ValidateSearchParams(params url.Values) (ParamStruct, error) {
 	}
 
 	genres := params["genres"]
-	validatedGenres, err := ValidateGenres(genres)
+	validatedGenres, err := ValidateGenreLabels(genres)
 	if err != nil {
 		return ParamStruct{}, err
 	}

@@ -11,7 +11,7 @@ func BuildWritLabelQuery(genres []string) (string, error) {
 		return "", nil
 	}
 
-	validated, err := validators.ValidateGenres(genres)
+	validated, err := validators.ValidateGenreLabels(genres)
 	if err != nil {
 		return "", err
 	}

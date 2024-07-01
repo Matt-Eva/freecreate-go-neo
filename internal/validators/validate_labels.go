@@ -6,7 +6,7 @@ import (
 	"freecreate/internal/utils"
 )
 
-func ValidateGenres(genreLabels []string) ([]string, error) {
+func ValidateGenreLabels(genreLabels []string) ([]string, error) {
 	genres := utils.GetGenres()
 	validatedLabels := make([]string, 0, 3)
 	validatedMap := make(map[string]bool)
