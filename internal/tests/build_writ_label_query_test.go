@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"freecreate/internal/utils"
+	"freecreate/internal/queries"
 	"strings"
 	"testing"
 )
@@ -37,7 +37,7 @@ func TestBuildWritLabelQuery(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		labels, err := utils.BuildWritLabelQuery(testCase.Case)
+		labels, err := queries.BuildWritLabelQuery(testCase.Case)
 		caseLabels := ":" + strings.Join(testCase.Case, ":")
 		if testCase.Err && err == nil {
 			t.Errorf("test case labels '%s' are not valid, but no error was thrown", caseLabels)

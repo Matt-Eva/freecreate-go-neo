@@ -1,4 +1,4 @@
-package databases
+package queries
 
 // func PopulateRedisQueryCache() {
 // 	queryComboMap := utils.AssembleCachePopulationCombos()

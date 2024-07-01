@@ -1,4 +1,4 @@
-package utils
+package queries
 
 func BuildGetAuthorQuery() string {
 	return "WITH w MATCH (w) <- [:CREATED] - (c:Creator) <- [:IS_CREATOR] - (u:User)"

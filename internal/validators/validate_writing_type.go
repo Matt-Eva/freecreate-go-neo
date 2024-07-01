@@ -1,12 +1,13 @@
-package utils
+package validators
 
 import (
 	"errors"
 	"fmt"
+	"freecreate/internal/utils"
 )
 
 func ValidateWritingType(writingType string) (string, error) {
-	types := GetWritingTypes()
+	types := utils.GetWritingTypes()
 	for _, t := range types {
 		if writingType == t {
 			return t, nil

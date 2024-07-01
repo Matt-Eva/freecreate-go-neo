@@ -15,7 +15,6 @@ func TestGetTimeFrames(t *testing.T) {
 
 	result := utils.GetTimeFrames()
 
-
 	for key := range result {
 		_, ok := timeFrames[key]
 		if !ok {

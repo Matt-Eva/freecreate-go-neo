@@ -1,12 +1,13 @@
-package utils
+package validators
 
 import (
 	"errors"
 	"fmt"
+	"freecreate/internal/utils"
 )
 
 func ValidateGenres(genreLabels []string) ([]string, error) {
-	genres := GetGenres()
+	genres := utils.GetGenres()
 	validatedLabels := make([]string, 0, 3)
 	validatedMap := make(map[string]bool)
 

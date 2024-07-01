@@ -1,7 +1,8 @@
-package utils
+package queries
 
 import (
 	"fmt"
+	"freecreate/internal/validators"
 	"slices"
 )
 
@@ -10,7 +11,7 @@ func BuildWritLabelQuery(genres []string) (string, error) {
 		return "", nil
 	}
 
-	validated, err := ValidateGenres(genres)
+	validated, err := validators.ValidateGenres(genres)
 	if err != nil {
 		return "", err
 	}
@@ -20,7 +21,7 @@ func BuildWritLabelQuery(genres []string) (string, error) {
 	// need to sort for exact match on mongo cache query
 	genreLabels := ""
 
-	for _, genre := range validated{
+	for _, genre := range validated {
 		genreLabel := fmt.Sprintf(":%s", genre)
 		genreLabels += genreLabel
 	}

@@ -16,11 +16,10 @@ func TestCachePostHandler(w http.ResponseWriter, r *http.Request, redis *redis.C
 
 	var postData PostData
 	err := json.NewDecoder(r.Body).Decode(&postData)
-	if err != nil{
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
-	
 
 	json.NewEncoder(w).Encode(&postData)
 }

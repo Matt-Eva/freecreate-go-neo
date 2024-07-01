@@ -2,26 +2,28 @@ package handlers
 
 import (
 	"fmt"
+	"freecreate/internal/queries"
 	"freecreate/internal/utils"
+	"freecreate/internal/validators"
 	"net/http"
 )
 
 type QueryStruct struct {
-	RankQuery string
+	RankQuery    string
 	RelRankQuery string
-	QueryParams map[string]any
+	QueryParams  map[string]any
 }
 
 type Results struct {
-	RankedResults []string `json:"rankedResults"`
+	RankedResults    []string `json:"rankedResults"`
 	RelRankedResults []string `json:"relRankedResults"`
 }
 
 func SearchStandardHandler(w http.ResponseWriter, r *http.Request, neo string) {
 	params := r.URL.Query()
 
-	paramStruct, paramErr := utils.ValidateSearchParams(params)
-	if paramErr != nil{
+	paramStruct, paramErr := validators.ValidateSearchParams(params)
+	if paramErr != nil {
 		http.Error(w, paramErr.Error(), http.StatusUnprocessableEntity)
 		return
 	}
@@ -36,11 +38,11 @@ func SearchStandardHandler(w http.ResponseWriter, r *http.Request, neo string) {
 
 }
 
-func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error) {
+func BuildStandardSearchQuery(paramStruct validators.ParamStruct) (QueryStruct, error) {
 	var queryStruct QueryStruct
 	queryParams := make(map[string]any)
 
-	queryLabels, err := utils.BuildWritLabelQuery(paramStruct.Genres)
+	queryLabels, err := queries.BuildWritLabelQuery(paramStruct.Genres)
 	if err != nil {
 		return queryStruct, err
 	}
@@ -60,22 +62,22 @@ func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error
 	queryParams["end"] = timeFrame.End
 
 	nameQuery := ""
-	if paramStruct.Name != ""{
+	if paramStruct.Name != "" {
 		nameQuery = " AND WHERE w.title = $title"
 		queryParams["title"] = paramStruct.Name
 	}
 
 	tagQuery := ""
-	for i, tag := range paramStruct.Tags{
+	for i, tag := range paramStruct.Tags {
 		paramKey := fmt.Sprintf("tag%d", i)
 		queryParams[paramKey] = tag
 		query := fmt.Sprintf(" AND WHERE (w) - [:HAS_TAG] -> (t:Tag {tag: $%s})", paramKey)
 		tagQuery += query
 	}
 
-	getAuthor := utils.BuildGetAuthorQuery()
+	getAuthor := queries.BuildGetAuthorQuery()
 
-	returnStatement := utils.BuildNeoWritReturnQuery()
+	returnStatement := queries.BuildNeoWritReturnQuery()
 
 	rankedOrder := "ORDER BY w.rank"
 	relRankedOrder := "ORDER BY w.relRank"
@@ -91,7 +93,7 @@ func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error
 	return queryStruct, nil
 }
 
-func RunQuery(queryStruct QueryStruct){
+func RunQuery(queryStruct QueryStruct) {
 	// if (queryStruct.RankQuery == queryStruct.RelRankQuery){
 
 	// } else {

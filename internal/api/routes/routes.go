@@ -38,6 +38,5 @@ func CreateRoutes(ctx context.Context, neo, mongo string, redis *redis.Client) e
 	// timeFrame == previous year - query neo specific year, order by rank && rel_rank - DEPRECATED
 	// router.HandleFunc("/api/search/year", middleware.AddNeoDriver(handlers.SearchYearHandler, neo)).Methods("GET")
 
-
 	return http.ListenAndServe(":8080", router)
 }

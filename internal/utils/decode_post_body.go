@@ -8,7 +8,7 @@ import (
 
 func DecodePostBody(w http.ResponseWriter, body io.ReadCloser, postData interface{}) error {
 	err := json.NewDecoder(body).Decode(postData)
-	if err != nil{
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return err
 	}
