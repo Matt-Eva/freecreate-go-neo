@@ -10,7 +10,7 @@ func AssembleCachePopulationCombos() map[string]map[string][][]string {
 	timeFrames := GetTimeFrames()
 	timeFrameMap := make(map[string][][]string)
 
-	for key, _ := range timeFrames {
+	for key := range timeFrames {
 		timeFrameMap[key] = genreCombos
 	}
 

@@ -29,8 +29,8 @@ func TestBuildStandardSearchQuery(t *testing.T){
 				Genres: []string{"ScienceFiction"},
 				Tags: []string{},
 			},
-			"MATCH(w:Writing:ScienceFiction) WHERE $start < w.createdAt < $endWITH w MATCH (w) <- [:CREATED] - (c:Creator) <- [:IS_CREATOR] - (u:User) RETURN w.name AS title, w.description AS description, c.name AS author, u.username AS username ORDER BY w.rank LIMIT 100",
-			"MATCH(w:Writing:ScienceFiction) WHERE $start < w.createdAt < $endWITH w MATCH (w) <- [:CREATED] - (c:Creator) <- [:IS_CREATOR] - (u:User) RETURN w.name AS title, w.description AS description, c.name AS author, u.username AS username ORDER BY w.relRank LIMIT 100",
+			"MATCH(w:Writing:ScienceFiction) WHERE $start < w.createdAt < $endWITH w MATCH (w) <- [:CREATED] - (c:Creator) <- [:IS_CREATOR] - (u:User) RETURN w.title AS title, w.description AS description, c.name AS author, u.username AS username ORDER BY w.rank LIMIT 100",
+			"MATCH(w:Writing:ScienceFiction) WHERE $start < w.createdAt < $endWITH w MATCH (w) <- [:CREATED] - (c:Creator) <- [:IS_CREATOR] - (u:User) RETURN w.title AS title, w.description AS description, c.name AS author, u.username AS username ORDER BY w.relRank LIMIT 100",
 			map[string]any{
 				"start": 0,
 				"end": 0,

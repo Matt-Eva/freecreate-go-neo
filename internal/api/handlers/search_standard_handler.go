@@ -61,8 +61,8 @@ func BuildStandardSearchQuery(paramStruct utils.ParamStruct) (QueryStruct, error
 
 	nameQuery := ""
 	if paramStruct.Name != ""{
-		nameQuery = " AND WHERE w.name = $name"
-		queryParams["name"] = paramStruct.Name
+		nameQuery = " AND WHERE w.title = $title"
+		queryParams["title"] = paramStruct.Name
 	}
 
 	tagQuery := ""
