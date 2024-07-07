@@ -35,6 +35,8 @@ func CreateRoutes(ctx context.Context, neo, mongo string, redis *redis.Client) e
 	// name || tags && timeFrame == allTime - query neo allTime db, order by absolute rank
 	router.HandleFunc("/api/search/all-time", middleware.AddNeoDriver(handlers.SearchAllTimeHandler, neo)).Methods("GET")
 
+	router.HandleFunc("/api/default-content", middleware.AddMongoDriver(handlers.HandleDefaultContent, mongo))
+
 	// timeFrame == previous year - query neo specific year, order by rank && rel_rank - DEPRECATED
 	// router.HandleFunc("/api/search/year", middleware.AddNeoDriver(handlers.SearchYearHandler, neo)).Methods("GET")
 
