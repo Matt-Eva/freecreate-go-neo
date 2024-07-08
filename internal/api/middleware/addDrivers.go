@@ -4,10 +4,11 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/redis/go-redis/v9"
 )
 
-func AddDrivers(handler func(w http.ResponseWriter, r *http.Request, neo, mongo string, redis *redis.Client, ctx context.Context), neo, mongo string, redis *redis.Client, ctx context.Context) http.HandlerFunc {
+func AddDrivers(handler func(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext, mongo string, redis *redis.Client, ctx context.Context), neo neo4j.DriverWithContext, mongo string, redis *redis.Client, ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, neo, mongo, redis, ctx)
 	}
@@ -19,7 +20,7 @@ func AddMongoDriver(handler func(w http.ResponseWriter, r *http.Request, mongo s
 	}
 }
 
-func AddNeoDriver(handler func(w http.ResponseWriter, r *http.Request, neo string), neo string) http.HandlerFunc {
+func AddNeoDriver(handler func(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext ), neo neo4j.DriverWithContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, neo)
 	}
@@ -31,13 +32,13 @@ func AddRedisDriver(handler func(w http.ResponseWriter, r *http.Request, redis *
 	}
 }
 
-func AddNeoAndMongo(handler func(w http.ResponseWriter, r *http.Request, neo, mongo string), neo, mongo string) http.HandlerFunc {
+func AddNeoAndMongo(handler func(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext, mongo string), neo neo4j.DriverWithContext, mongo string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, neo, mongo)
 	}
 }
 
-func AddNeoAndRedis(handler func(w http.ResponseWriter, r *http.Request, neo string, redis *redis.Client), neo string, redis *redis.Client) http.HandlerFunc {
+func AddNeoAndRedis(handler func(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext , redis *redis.Client), neo neo4j.DriverWithContext, redis *redis.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, neo, redis)
 	}

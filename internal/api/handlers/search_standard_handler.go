@@ -6,6 +6,8 @@ import (
 	"freecreate/internal/utils"
 	"freecreate/internal/validators"
 	"net/http"
+
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
 type QueryStruct struct {
@@ -19,7 +21,7 @@ type Results struct {
 	RelRankedResults []string `json:"relRankedResults"`
 }
 
-func SearchStandardHandler(w http.ResponseWriter, r *http.Request, neo string) {
+func SearchStandardHandler(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext) {
 	params := r.URL.Query()
 
 	paramStruct, paramErr := validators.ValidateSearchParams(params)

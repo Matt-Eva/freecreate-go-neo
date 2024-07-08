@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"net/http"
+
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-func SearchAllTimeHandler(w http.ResponseWriter, r *http.Request, neo string) {
+func SearchAllTimeHandler(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext) {
 
 }
 

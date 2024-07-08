@@ -16,10 +16,14 @@ func run(ctx context.Context) error {
 		return err
 	}
 	fmt.Println(os.Getenv("NEO_USER"))
-	neo := config.InitNeo(ctx)
+	neo, neoErr := config.InitNeo(ctx)
+	if neoErr != nil {
+		return neoErr
+	}
+
 	mongo := config.InitMongo(ctx)
 	redis := config.InitRedis()
-	if err := routes.CreateRoutes(ctx, neo, mongo, redis); err != nil {
+	if err := routes.CreateRoutes(ctx,  mongo, neo, redis); err != nil {
 		return err
 	}
 	return nil

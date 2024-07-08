@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/redis/go-redis/v9"
 )
 
-func TestHandler(w http.ResponseWriter, r *http.Request, neo, mongo string, redis *redis.Client, ctx context.Context) {
+func TestHandler(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext, mongo string, redis *redis.Client, ctx context.Context) {
 	params := r.URL.Query()
 	fmt.Println(params)
 
@@ -20,7 +21,7 @@ func TestHandler(w http.ResponseWriter, r *http.Request, neo, mongo string, redi
 	}
 
 	message := Message{
-		neo, mongo, "redis",
+		"neo", "mongo", "redis",
 	}
 
 	json.NewEncoder(w).Encode(message)

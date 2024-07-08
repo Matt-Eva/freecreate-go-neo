@@ -7,10 +7,11 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/redis/go-redis/v9"
 )
 
-func CreateRoutes(ctx context.Context, neo, mongo string, redis *redis.Client) error {
+func CreateRoutes(ctx context.Context,  mongo string, neo neo4j.DriverWithContext, redis *redis.Client) error {
 	router := mux.NewRouter()
 
 	// TEST ENDPOINTS
