@@ -34,7 +34,7 @@ type RelInUniverse struct {
 // Users
 type UserProperties struct {
 	Username string // unique user identifier
-	Name     string
+	DisplayName     string
 	Uid      string // ? is uuid a string or int?
 	Password string // to be hashed
 }
