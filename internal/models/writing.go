@@ -123,7 +123,7 @@ type PostedWriting struct {
 	CreatorId   string `json:"creatorId"`
 }
 
-func (p PostedWriting) generateWriting(year int) Writing {
+func (p PostedWriting) generateWriting(year int) (Writing, error) {
 	now := time.Now().UnixMilli()
 	newWriting := Writing{
 		Uid:          uuid.New().String(),
@@ -137,11 +137,16 @@ func (p PostedWriting) generateWriting(year int) Writing {
 		OriginalYear: year,
 	}
 
-	return newWriting
+	err := newWriting.validateNewWriting(year)
+	if err != nil {
+		return Writing{}, err
+	}
+
+	return newWriting, nil
 }
 
 type UpdateWritingInfo struct {
-	Uid         [16]byte
+	Uid         string
 	Title       string
 	Description string
 	Thumbnail   string
@@ -149,9 +154,11 @@ type UpdateWritingInfo struct {
 }
 
 type UpdateWritingLikes struct {
-
+	Uid string
+	Likes int64
 }
 
 type UpdateWritingLibraryCount struct {
-	
+	Uid string
+	Likes int64
 }
