@@ -23,7 +23,7 @@ func run(ctx context.Context) error {
 
 	mongo := config.InitMongo(ctx)
 	redis := config.InitRedis()
-	if err := routes.CreateRoutes(ctx,  mongo, neo, redis); err != nil {
+	if err := routes.CreateRoutes(ctx, mongo, neo, redis); err != nil {
 		return err
 	}
 	return nil

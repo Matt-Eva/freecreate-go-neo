@@ -8,7 +8,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main(){
+func main() {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println(err.Error())
@@ -17,7 +17,7 @@ func main(){
 	ctx := context.Background()
 
 	neo, err := config.InitNeo(ctx)
-	if err != nil{
+	if err != nil {
 		defer neo.Close(ctx)
 		fmt.Println(err.Error())
 		return

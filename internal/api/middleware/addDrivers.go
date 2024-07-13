@@ -20,7 +20,7 @@ func AddMongoDriver(handler func(w http.ResponseWriter, r *http.Request, mongo s
 	}
 }
 
-func AddNeoDriver(handler func(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext ), neo neo4j.DriverWithContext) http.HandlerFunc {
+func AddNeoDriver(handler func(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext), neo neo4j.DriverWithContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, neo)
 	}
@@ -38,7 +38,7 @@ func AddNeoAndMongo(handler func(w http.ResponseWriter, r *http.Request, neo neo
 	}
 }
 
-func AddNeoAndRedis(handler func(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext , redis *redis.Client), neo neo4j.DriverWithContext, redis *redis.Client) http.HandlerFunc {
+func AddNeoAndRedis(handler func(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext, redis *redis.Client), neo neo4j.DriverWithContext, redis *redis.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, neo, redis)
 	}

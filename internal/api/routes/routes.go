@@ -11,7 +11,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func CreateRoutes(ctx context.Context,  mongo string, neo neo4j.DriverWithContext, redis *redis.Client) error {
+func CreateRoutes(ctx context.Context, mongo string, neo neo4j.DriverWithContext, redis *redis.Client) error {
 	router := mux.NewRouter()
 
 	// TEST ENDPOINTS

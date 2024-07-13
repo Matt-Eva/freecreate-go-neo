@@ -33,10 +33,10 @@ type RelInUniverse struct {
 
 // Users
 type UserProperties struct {
-	Username string // unique user identifier
-	DisplayName     string
-	Uid      string // ? is uuid a string or int?
-	Password string // to be hashed
+	Username    string // unique user identifier
+	DisplayName string
+	Uid         string // ? is uuid a string or int?
+	Password    string // to be hashed
 }
 
 func ValidateUserProperties() {
