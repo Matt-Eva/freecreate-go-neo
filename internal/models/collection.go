@@ -1,6 +1,6 @@
 package models
 
-type Novel struct {
+type Collection struct {
 	Writing
 	Years []int
 }

@@ -147,3 +147,11 @@ type UpdateWritingInfo struct {
 	Thumbnail   string
 	WritingType string
 }
+
+type UpdateWritingLikes struct {
+
+}
+
+type UpdateWritingLibraryCount struct {
+	
+}
