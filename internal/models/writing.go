@@ -154,11 +154,11 @@ type UpdateWritingInfo struct {
 }
 
 type UpdateWritingLikes struct {
-	Uid string
+	Uid   string
 	Likes int64
 }
 
 type UpdateWritingLibraryCount struct {
-	Uid string
+	Uid   string
 	Likes int64
 }
