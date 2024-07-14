@@ -16,6 +16,7 @@ type Writing struct {
 	Thumbnail    string
 	WritingType  string
 	CreatorId    string
+	DraftId 	string
 	CreatedAt    int64
 	UpdatedAt    int64
 	LibraryCount int64
@@ -49,7 +50,11 @@ func (w Writing) validateNewWriting(year int) error {
 		return errors.New(e)
 	}
 	if w.CreatorId == "" {
-		e := "creator id cannot be emtpy"
+		e := "creator id cannot be empty"
+		return errors.New(e)
+	}
+	if w.DraftId == ""{
+		e := "draft id cannot be empty"
 		return errors.New(e)
 	}
 	if w.CreatedAt == 0 {

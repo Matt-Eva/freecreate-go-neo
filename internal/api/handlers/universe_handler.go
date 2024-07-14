@@ -14,7 +14,7 @@ func UpdateUniverse(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AddToUnivers(w http.ResponseWriter, r *http.Request) {
+func AddToUniverse(w http.ResponseWriter, r *http.Request) {
 
 }
 
