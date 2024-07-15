@@ -51,7 +51,7 @@ func (u User) validateUser()error{
 	return nil
 }
 
-func (u User) generateNewUserParams()map[string]any{
+func (u User) newUserParams()map[string]any{
 	userParams := utils.NeoParamsFromStruct(u)
 
 	return userParams
