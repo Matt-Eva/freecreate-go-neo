@@ -10,14 +10,29 @@ type ShortStory struct {
 }
 
 func (s ShortStory) validateNewShortStory(year int) error {
-	err := s.validateNewWriting(year)
-	if err != nil {
-		return err
-	}
-
 	if s.WritingType != "shortStory" {
 		errorMsg := fmt.Sprintf("Writing type '%s' is not valid for a short Story; must be of type shortStory", s.WritingType)
 		return errors.New(errorMsg)
 	}
 	return nil
+}
+
+func (s ShortStory) newShortStoryparams() map[string]any{
+	params := s.newWritingParams()
+	return params
+}
+
+type PostedShortStory struct {
+	PostedWriting
+}
+
+func (p PostedShortStory) generateShortStory(year int)(ShortStory, error){
+	writing, err := p.generateWriting(year)
+	if err != nil {
+		return ShortStory{}, err
+	}
+
+	shortStory := ShortStory{writing}
+
+	return shortStory, nil
 }
