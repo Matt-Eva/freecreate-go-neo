@@ -2,8 +2,7 @@ package models
 
 import (
 	"errors"
-	"reflect"
-	"strings"
+	"freecreate/internal/utils"
 	"time"
 
 	"github.com/google/uuid"
@@ -101,23 +100,15 @@ func (w Writing) validateNewWriting(year int) error {
 	return nil
 }
 
-func (w Writing) newWritingParams() (map[string]any, error) {
-	v := reflect.ValueOf(w)
-	t := v.Type()
-	writingParams := make(map[string]any)
-
-	for i := 0; i < t.NumField(); i++ {
-		structField := t.Field(i).Name
-		mapField := strings.ToLower(structField[:1]) + structField[1:]
-		writingParams[mapField] = v.Field(i).Interface()
-	}
+func (w Writing) newWritingParams() (map[string]any) {
+	writingParams := utils.NeoParamsFromStruct(w)
 
 	paramMap := map[string]any{
 		"writingParams": writingParams,
 		"creatorId":     w.CreatorId,
 	}
 
-	return paramMap, nil
+	return paramMap
 }
 
 type PostedWriting struct {
