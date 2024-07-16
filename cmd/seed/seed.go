@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"freecreate/internal/config"
+	"freecreate/internal/err"
 	"freecreate/internal/seeds"
 	"os"
 
@@ -11,18 +11,20 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(err.Error())
-		return
+	lErr := godotenv.Load()
+	if lErr != nil {
+		e := err.NewFromErr(lErr)
+		e.Log()
+		os.Exit(1)
 	}
 	ctx := context.Background()
 
-	neo, err := config.InitNeo(ctx)
-	if err != nil {
+	neo, iErr := config.InitNeo(ctx)
+	if iErr != nil {
 		defer neo.Close(ctx)
-		fmt.Println(err.Error())
-		return
+		e := err.NewFromErr(iErr)
+		e.Log()
+		os.Exit(1)
 	}
 	defer neo.Close(ctx)
 
