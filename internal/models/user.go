@@ -15,8 +15,8 @@ type User struct {
 	Password    string
 	ProfilePic  string
 	BirthYear   string
-	BirthMonth string
-	BirthDay string
+	BirthMonth  string
+	BirthDay    string
 }
 
 func (u User) validateUser() err.Error {
@@ -48,11 +48,11 @@ func (u User) validateUser() err.Error {
 		e := "birth year cannot be empty"
 		return err.New(e)
 	}
-	if u.BirthMonth == ""{
+	if u.BirthMonth == "" {
 		e := "birth month cannot be empty"
 		return err.New(e)
 	}
-	if u.BirthDay == ""{
+	if u.BirthDay == "" {
 		e := "birth day cannot be empty"
 		return err.New(e)
 	}
@@ -90,9 +90,9 @@ func (p PostedUser) GenerateUser() (User, err.Error) {
 		Email:       p.Email,
 		Password:    p.Password,
 		ProfilePic:  p.ProfilePic,
-		BirthYear:    p.BirthYear,
-		BirthMonth: p.BirthMonth,
-		BirthDay: p.BirthDay,
+		BirthYear:   p.BirthYear,
+		BirthMonth:  p.BirthMonth,
+		BirthDay:    p.BirthDay,
 	}
 
 	vErr := newUser.validateUser()

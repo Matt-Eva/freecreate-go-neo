@@ -12,6 +12,7 @@ import (
 )
 
 func SeedUsers(neo neo4j.DriverWithContext, ctx context.Context) err.Error {
+	fmt.Println("seeding users")
 	sErr := seedMasterUser(neo, ctx)
 	if sErr.E != nil {
 		return sErr
@@ -22,6 +23,7 @@ func SeedUsers(neo neo4j.DriverWithContext, ctx context.Context) err.Error {
 		return uErr
 	}
 
+	fmt.Println("users seeded")
 	return err.Error{}
 }
 
@@ -130,14 +132,14 @@ func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 func makeSeedUser() (map[string]any, err.Error) {
 	password := faker.Password()
 	p := models.PostedUser{
-		DisplayName: faker.Name(),
-		Username:    faker.Username(),
-		Email:       faker.Email(),
-		Password:    password,
+		DisplayName:          faker.Name(),
+		Username:             faker.Username(),
+		Email:                faker.Email(),
+		Password:             password,
 		PasswordConfirmation: password,
-		BirthYear:   faker.YearString(),
-		BirthMonth:  "1",
-		BirthDay:    "1",
+		BirthYear:            faker.YearString(),
+		BirthMonth:           "1",
+		BirthDay:             "1",
 	}
 
 	u, gErr := p.GenerateUser()

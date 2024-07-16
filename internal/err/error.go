@@ -10,7 +10,7 @@ import (
 
 type Error struct {
 	CallStrs []string
-	E       error
+	E        error
 }
 
 func New(msg string) Error {
@@ -32,18 +32,18 @@ func NewFromErr(e error) Error {
 
 func (e Error) Log() {
 	calls := ""
-	for _, call := range e.CallStrs{
+	for _, call := range e.CallStrs {
 		calls += call + "\n"
 	}
-	msg := fmt.Errorf("ERROR: %w\n" + calls, e.E)
+	msg := fmt.Errorf("ERROR: %w\n"+calls, e.E)
 	log.Println(msg)
 }
 
-func callers()[]string{
+func callers() []string {
 	pc := make([]uintptr, 50)
 	callers := runtime.Callers(2, pc)
-	callStrs := make([]string,0)
-	for i := 2; i <=callers; i++{
+	callStrs := make([]string, 0)
+	for i := 2; i <= callers; i++ {
 		_, file, line, _ := runtime.Caller(i)
 		callStr := file + ": " + "line " + strconv.Itoa(line)
 		callStrs = append(callStrs, callStr)
