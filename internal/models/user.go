@@ -1,7 +1,7 @@
 package models
 
 import (
-	"errors"
+	"freecreate/internal/err"
 	"freecreate/internal/utils"
 	"strconv"
 	"time"
@@ -19,36 +19,36 @@ type User struct {
 	Birthday    int64
 }
 
-func (u User) validateUser() error {
+func (u User) validateUser() err.Error {
 	if u.Uid == "" {
-		err := "user uid is empty"
-		return errors.New(err)
+		e := "user uid is empty"
+		return err.New(e)
 	}
 	if u.DisplayName == "" {
-		err := "user display name is empty"
-		return errors.New(err)
+		e := "user display name is empty"
+		return err.New(e)
 	}
 	if u.Username == "" {
-		err := "user username is empty"
-		return errors.New(err)
+		e := "user username is empty"
+		return err.New(e)
 	}
 	if u.Email == "" {
-		err := "user email is empty"
-		return errors.New(err)
+		e := "user email is empty"
+		return err.New(e)
 	}
 	if u.Password == "" {
-		err := "user password is empty"
-		return errors.New(err)
+		e := "user password is empty"
+		return err.New(e)
 	}
 	if u.ProfilePic != "" {
-		err := "profile pic must be empty - not currently accepting images"
-		return errors.New(err)
+		e := "profile pic must be empty - not currently accepting images"
+		return err.New(e)
 	}
 	if u.Birthday == 0 {
-		err := "birthday cannot be empty"
-		return errors.New(err)
+		e := "birthday cannot be empty"
+		return err.New(e)
 	}
-	return nil
+	return err.Error{}
 }
 
 func (u User) NewUserParams() map[string]any {
@@ -69,28 +69,28 @@ type PostedUser struct {
 	BirthDay             string `json:"birthDay"`
 }
 
-func (p PostedUser) GenerateUser() (User, error) {
+func (p PostedUser) GenerateUser() (User, err.Error) {
 	if p.Password != p.PasswordConfirmation {
-		err := "password and password confirmation do not match"
-		return User{}, errors.New(err)
+		e := "password and password confirmation do not match"
+		return User{}, err.New(e)
 	}
 
 	year, yErr := strconv.Atoi(p.BirthYear)
 	if yErr != nil {
-		err := "could not convert birth year to number"
-		return User{}, errors.New(err)
+		e := "could not convert birth year to number"
+		return User{}, err.New(e)
 	}
 
 	month, mErr := strconv.Atoi(p.BirthMonth)
 	if mErr != nil {
-		err := "could not convert birth month to number"
-		return User{}, errors.New(err)
+		e := "could not convert birth month to number"
+		return User{}, err.New(e)
 	}
 
 	day, dErr := strconv.Atoi(p.BirthDay)
 	if dErr != nil {
-		err := "could not convert birth day to number"
-		return User{}, errors.New(err)
+		e := "could not convert birth day to number"
+		return User{}, err.New(e)
 	}
 
 	date := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
@@ -107,9 +107,9 @@ func (p PostedUser) GenerateUser() (User, error) {
 	}
 
 	vErr := newUser.validateUser()
-	if vErr != nil {
+	if vErr.E != nil {
 		return newUser, vErr
 	}
 
-	return newUser, nil
+	return newUser, err.Error{}
 }

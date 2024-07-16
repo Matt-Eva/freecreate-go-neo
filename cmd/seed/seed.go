@@ -27,14 +27,14 @@ func main() {
 	defer neo.Close(ctx)
 
 	dErr := seeds.DeleteSeeds(ctx, neo)
-	if dErr != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", dErr)
+	if dErr.E != nil {
+		dErr.Log()
 		os.Exit(1)
 	}
 
 	uErr := seeds.SeedUsers(neo, ctx)
-	if uErr != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", uErr)
+	if uErr.E != nil {
+		uErr.Log()
 		os.Exit(1)
 	}
 
