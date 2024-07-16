@@ -51,10 +51,10 @@ func (u User) validateUser() error {
 	return nil
 }
 
-func (u User) newUserParams() map[string]any {
+func (u User) NewUserParams() map[string]any {
 	userParams := utils.NeoParamsFromStruct(u)
 
-	return userParams
+	return map[string]any{"userParams": userParams}
 }
 
 type PostedUser struct {
@@ -69,7 +69,7 @@ type PostedUser struct {
 	BirthDay             string `json:"birthDay"`
 }
 
-func (p PostedUser) generateUser() (User, error) {
+func (p PostedUser) GenerateUser() (User, error) {
 	if p.Password != p.PasswordConfirmation {
 		err := "password and password confirmation do not match"
 		return User{}, errors.New(err)

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"freecreate/internal/config"
+	"freecreate/internal/seeds"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -23,5 +25,11 @@ func main() {
 		return
 	}
 	defer neo.Close(ctx)
+
+	uErr := seeds.SeedUsers(neo, ctx)
+	if uErr !=nil {
+		fmt.Fprintf(os.Stderr, "%s\n", uErr)
+		os.Exit(1)
+	}
 
 }
