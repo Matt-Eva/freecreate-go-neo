@@ -92,7 +92,7 @@ func (w Writing) validateNewWriting(year int) error {
 		e := "server side error - Original year does not match current year or is empty"
 		return errors.New(e)
 	}
-	if w.Published != false {
+	if w.Published {
 		e := "writing cannot be set to published upon its creation"
 		return errors.New(e)
 	}

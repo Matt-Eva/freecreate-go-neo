@@ -3,7 +3,6 @@ package models
 import (
 	"errors"
 	"fmt"
-	"freecreate/internal/utils"
 )
 
 type Novelette struct {
@@ -28,12 +27,7 @@ func (n Novelette) validateNovelette(year int)error{
 }
 
 func (n Novelette) newNoveletteParams()map[string]any{
-	writingParams := utils.NeoParamsFromStruct(n)
-
-	params := map[string]any{
-		"writingParams": writingParams,
-		"creatorId": n.CreatorId,
-	}
+	params := n.newWritingParams()
 
 	return params
 }
