@@ -98,6 +98,7 @@ func seedUsers(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 			return sErr
 		}
 	}
+	fmt.Println("user nodes seeded")
 	return err.Error{}
 }
 
@@ -109,7 +110,7 @@ func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 	createQuery := `
 		CREATE (u:User $userParams)
 		SET u.seed = true
-		RETURN u.username AS username
+		RETURN u AS user
 	`
 	result, qErr := neo4j.ExecuteQuery(ctx, neo, createQuery, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if qErr != nil {
@@ -117,14 +118,11 @@ func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 		return e
 	}
 	if len(result.Records) < 1 {
-		return err.New("now record returned from database for seeded user")
+		return err.New("no record returned from database for seeded user")
 	}
-	username, ok := result.Records[0].Get("username")
-	if ok {
-		fmt.Println("seed user created: name:", username)
-	} else {
-		return err.New("seed user record does not have username property")
-	}
+
+	// user := result.Records[0].AsMap()
+	// fmt.Println("seed user created", user)
 
 	return err.Error{}
 }
