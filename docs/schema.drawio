@@ -177,6 +177,9 @@
                 <mxCell id="46" value="&lt;h1&gt;Creator Props (OG)&lt;/h1&gt;&lt;p&gt;Name: string&lt;/p&gt;&lt;p&gt;ProfilePic: string&lt;/p&gt;&lt;p&gt;About: string&lt;/p&gt;&lt;p&gt;uid: string&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="-50" y="-420" width="230" height="150" as="geometry"/>
                 </mxCell>
+                <mxCell id="67" value="&lt;h1&gt;Federated Writing&lt;/h1&gt;&lt;p&gt;Federated writing consists of the following types:&lt;/p&gt;&lt;p&gt;Novelette, novella, novel, collection, and universe&lt;/p&gt;&lt;p&gt;In addition to the standard writing attributes, federated types will have a year attribute that collects the years in which they appear.&lt;/p&gt;&lt;p&gt;Federated writing nodes will be exact replicas, so as to best aid search.&lt;/p&gt;&lt;p&gt;All data query data connected to federated nodes will also need to be copied i.e. tags.&lt;/p&gt;&lt;p&gt;Relationships outside of the creator / created relationship will exist only on the original node. So any new &quot;like&quot; relationships would be added to the original database, not subsequent years.&amp;nbsp;&lt;/p&gt;&lt;p&gt;Note: this could present a problem with reading lists, since a query could return a result without knowledge of whether or not it's on a user's reading list. So they could try to add it again.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="730" y="-499" width="240" height="450" as="geometry"/>
+                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>

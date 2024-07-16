@@ -15,7 +15,6 @@ type Writing struct {
 	Thumbnail    string
 	WritingType  string
 	CreatorId    string
-	DraftId 	string
 	CreatedAt    int64
 	UpdatedAt    int64
 	LibraryCount int64
@@ -25,6 +24,7 @@ type Writing struct {
 	Rank         int64
 	RelRank      int64
 	OriginalYear int
+	Published bool
 }
 
 func (w Writing) validateNewWriting(year int) error {
@@ -50,10 +50,6 @@ func (w Writing) validateNewWriting(year int) error {
 	}
 	if w.CreatorId == "" {
 		e := "creator id cannot be empty"
-		return errors.New(e)
-	}
-	if w.DraftId == ""{
-		e := "draft id cannot be empty"
 		return errors.New(e)
 	}
 	if w.CreatedAt == 0 {
@@ -94,6 +90,10 @@ func (w Writing) validateNewWriting(year int) error {
 	}
 	if w.OriginalYear != year || w.OriginalYear == 0 {
 		e := "server side error - Original year does not match current year or is empty"
+		return errors.New(e)
+	}
+	if w.Published != false {
+		e := "writing cannot be set to published upon its creation"
 		return errors.New(e)
 	}
 

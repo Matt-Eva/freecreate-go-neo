@@ -17,8 +17,14 @@ func (s ShortStory) validateNewShortStory(year int) error {
 	return nil
 }
 
-func (s ShortStory) newShortStoryparams() map[string]any{
-	params := s.newWritingParams()
+func (s ShortStory) newShortStoryParams() map[string]any{
+	writParams := s.newWritingParams()
+
+	params := map[string]any{
+		"writingParams": writParams,
+		"creatorId": s.CreatorId,
+	}
+
 	return params
 }
 
