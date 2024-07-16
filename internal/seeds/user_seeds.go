@@ -136,6 +136,7 @@ func makeSeedUser() (map[string]any, err.Error) {
 		Username:    faker.Username(),
 		Email:       faker.Email(),
 		Password:    password,
+		PasswordConfirmation: password,
 		BirthYear:   faker.YearString(),
 		BirthMonth:  faker.MonthName(),
 		BirthDay:    faker.DayOfMonth(),
