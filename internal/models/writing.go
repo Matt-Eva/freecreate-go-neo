@@ -1,7 +1,7 @@
 package models
 
 import (
-	"errors"
+	"freecreate/internal/err"
 	"freecreate/internal/utils"
 	"time"
 
@@ -27,77 +27,77 @@ type Writing struct {
 	Published    bool
 }
 
-func (w Writing) validateNewWriting(year int) error {
+func (w Writing) validateNewWriting(year int) err.Error {
 	if w.Uid == "" {
 		e := "uid cannot be empty"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.Title == "" {
 		e := "title cannot be empty"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.Description == "" {
 		e := "description cannot be empty"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.Thumbnail != "" {
 		e := "thumbnail must be empty - not accepting thumbnail images at present"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.WritingType == "" {
 		e := "writing type cannot be empty"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.CreatorId == "" {
 		e := "creator id cannot be empty"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.CreatedAt == 0 {
 		e := "server side error - no value inserted for created at"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.UpdatedAt == 0 {
 		e := "server side error - no value inserted for updated at"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.UpdatedAt != w.CreatedAt {
 		e := "server side error - created at and updated at must match"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.LibraryCount != 0 {
 		e := "library count cannot be greater than 0 for new writing"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.Likes != 0 {
 		e := "like count cannot be greater than 0 for new writing"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.Donations != 0 {
 		e := "donation count cannot be greater than 0 for new writing"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.Views != 0 {
 		e := "view count cannot be greater than 0 for new writing"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.Rank != 0 {
 		e := "rank count cannot be greater than 0 for new writing"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.RelRank != 0 {
 		e := "relrank count cannot be greater than 0 for new writing"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.OriginalYear != year || w.OriginalYear == 0 {
 		e := "server side error - Original year does not match current year or is empty"
-		return errors.New(e)
+		return err.New(e)
 	}
 	if w.Published {
 		e := "writing cannot be set to published upon its creation"
-		return errors.New(e)
+		return err.New(e)
 	}
 
-	return nil
+	return err.Error{}
 }
 
 func (w Writing) newWritingParams() map[string]any {
@@ -119,7 +119,7 @@ type PostedWriting struct {
 	CreatorId   string `json:"creatorId"`
 }
 
-func (p PostedWriting) generateWriting(year int) (Writing, error) {
+func (p PostedWriting) generateWriting(year int) (Writing, err.Error) {
 	now := time.Now().UnixMilli()
 	newWriting := Writing{
 		Uid:          uuid.New().String(),
@@ -133,12 +133,12 @@ func (p PostedWriting) generateWriting(year int) (Writing, error) {
 		OriginalYear: year,
 	}
 
-	err := newWriting.validateNewWriting(year)
-	if err != nil {
-		return Writing{}, err
+	vErr := newWriting.validateNewWriting(year)
+	if vErr.E != nil {
+		return Writing{}, vErr
 	}
 
-	return newWriting, nil
+	return newWriting, err.Error{}
 }
 
 type UpdateWritingInfo struct {

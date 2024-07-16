@@ -1,20 +1,20 @@
 package models
 
 import (
-	"errors"
 	"fmt"
+	"freecreate/internal/err"
 )
 
 type ShortStory struct {
 	Writing
 }
 
-func (s ShortStory) validateNewShortStory() error {
+func (s ShortStory) validateNewShortStory() err.Error {
 	if s.WritingType != "shortStory" {
 		errorMsg := fmt.Sprintf("Writing type '%s' is not valid for a short Story; must be of type shortStory", s.WritingType)
-		return errors.New(errorMsg)
+		return err.New(errorMsg)
 	}
-	return nil
+	return err.Error{}
 }
 
 func (s ShortStory) newShortStoryParams() map[string]any {
@@ -27,18 +27,18 @@ type PostedShortStory struct {
 	PostedWriting
 }
 
-func (p PostedShortStory) generateShortStory(year int) (ShortStory, error) {
-	writing, err := p.generateWriting(year)
-	if err != nil {
-		return ShortStory{}, err
+func (p PostedShortStory) generateShortStory(year int) (ShortStory, err.Error) {
+	writing, gErr := p.generateWriting(year)
+	if gErr.E != nil {
+		return ShortStory{}, gErr
 	}
 
 	shortStory := ShortStory{writing}
 
 	vErr := shortStory.validateNewShortStory()
-	if vErr != nil {
+	if vErr.E != nil {
 		return ShortStory{}, vErr
 	}
 
-	return shortStory, nil
+	return shortStory, err.Error{}
 }

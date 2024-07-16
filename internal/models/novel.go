@@ -1,8 +1,8 @@
 package models
 
 import (
-	"errors"
 	"fmt"
+	"freecreate/internal/err"
 )
 
 type Novel struct {
@@ -10,20 +10,21 @@ type Novel struct {
 	Years []int
 }
 
-func (n Novel) validateNovel(year int) error {
+func (n Novel) validateNovel(year int) err.Error {
 	if len(n.Years) <= 0 || len(n.Years) > 1 {
-		err := "new novel must only have original year within years property upon creation"
-		return errors.New(err)
+		e := "new novel must only have original year within years property upon creation"
+		return err.New(e)
 	}
 	if n.Years[0] != year {
-		err := "year added to novel years upon creation does not match original novel year"
-		return errors.New(err)
+		e := "year added to novel years upon creation does not match original novel year"
+		return err.New(e)
 	}
 	if n.WritingType != "novel" {
-		err := fmt.Sprintf("writing type '%s' does not match novel", n.WritingType)
-		return errors.New(err)
+		e := fmt.Sprintf("writing type '%s' does not match novel", n.WritingType)
+		return err.New(e)
 	}
-	return nil
+
+	return err.Error{}
 }
 
 func (n Novel) newNovelParams() map[string]any {
@@ -36,10 +37,10 @@ type PostedNovel struct {
 	PostedWriting
 }
 
-func (p PostedNovel) generateNovel(year int) (Novel, error) {
-	writing, err := p.generateWriting(year)
-	if err != nil {
-		return Novel{}, err
+func (p PostedNovel) generateNovel(year int) (Novel, err.Error) {
+	writing, gErr := p.generateWriting(year)
+	if gErr.E != nil {
+		return Novel{}, gErr
 	}
 
 	years := []int{year}
@@ -49,9 +50,9 @@ func (p PostedNovel) generateNovel(year int) (Novel, error) {
 	}
 
 	nErr := novel.validateNovel(year)
-	if nErr != nil {
+	if nErr.E != nil {
 		return Novel{}, nErr
 	}
 
-	return novel, nil
+	return novel, err.Error{}
 }

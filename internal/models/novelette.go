@@ -1,8 +1,8 @@
 package models
 
 import (
-	"errors"
 	"fmt"
+	"freecreate/internal/err"
 )
 
 type Novelette struct {
@@ -10,20 +10,20 @@ type Novelette struct {
 	Years []int
 }
 
-func (n Novelette) validateNovelette(year int) error {
+func (n Novelette) validateNovelette(year int) err.Error {
 	if len(n.Years) <= 0 || len(n.Years) > 1 {
-		err := "new novelette must only have original year within years property upon creation"
-		return errors.New(err)
+		e := "new novelette must only have original year within years property upon creation"
+		return err.New(e)
 	}
 	if n.Years[0] != year {
-		err := "year added to novelette years upon creation does not match original novelette year"
-		return errors.New(err)
+		e := "year added to novelette years upon creation does not match original novelette year"
+		return err.New(e)
 	}
 	if n.WritingType != "novelette" {
-		err := fmt.Sprintf("writing type '%s' does not match novelette", n.WritingType)
-		return errors.New(err)
+		e := fmt.Sprintf("writing type '%s' does not match novelette", n.WritingType)
+		return err.New(e)
 	}
-	return nil
+	return err.Error{}
 }
 
 func (n Novelette) newNoveletteParams() map[string]any {
@@ -36,10 +36,10 @@ type PostedNovelette struct {
 	PostedWriting
 }
 
-func (p PostedNovelette) generateNovelette(year int) (Novelette, error) {
-	writing, err := p.generateWriting(year)
-	if err != nil {
-		return Novelette{}, err
+func (p PostedNovelette) generateNovelette(year int) (Novelette, err.Error) {
+	writing, gErr := p.generateWriting(year)
+	if gErr.E != nil {
+		return Novelette{}, gErr
 	}
 
 	years := []int{year}
@@ -49,9 +49,9 @@ func (p PostedNovelette) generateNovelette(year int) (Novelette, error) {
 	}
 
 	nErr := novelette.validateNovelette(year)
-	if nErr != nil {
+	if nErr.E != nil {
 		return Novelette{}, nErr
 	}
 
-	return novelette, nil
+	return novelette, err.Error{}
 }

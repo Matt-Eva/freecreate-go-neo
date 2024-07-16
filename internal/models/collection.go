@@ -1,8 +1,8 @@
 package models
 
 import (
-	"errors"
 	"fmt"
+	"freecreate/internal/err"
 )
 
 type Collection struct {
@@ -10,20 +10,20 @@ type Collection struct {
 	Years []int
 }
 
-func (n Collection) validateCollection(year int) error {
+func (n Collection) validateCollection(year int) err.Error {
 	if len(n.Years) <= 0 || len(n.Years) > 1 {
-		err := "new collection must only have original year within years property upon creation"
-		return errors.New(err)
+		e := "new collection must only have original year within years property upon creation"
+		return err.New(e)
 	}
 	if n.Years[0] != year {
-		err := "year added to collection years upon creation does not match original collection year"
-		return errors.New(err)
+		e := "year added to collection years upon creation does not match original collection year"
+		return err.New(e)
 	}
 	if n.WritingType != "collection" {
-		err := fmt.Sprintf("writing type '%s' does not match collection", n.WritingType)
-		return errors.New(err)
+		e := fmt.Sprintf("writing type '%s' does not match collection", n.WritingType)
+		return err.New(e)
 	}
-	return nil
+	return err.Error{}
 }
 
 func (n Collection) newCollectionParams() map[string]any {
@@ -35,10 +35,10 @@ type PostedCollection struct {
 	PostedWriting
 }
 
-func (p PostedCollection) generateCollection(year int) (Collection, error) {
-	writing, err := p.generateWriting(year)
-	if err != nil {
-		return Collection{}, err
+func (p PostedCollection) generateCollection(year int) (Collection, err.Error) {
+	writing, gErr := p.generateWriting(year)
+	if gErr.E != nil {
+		return Collection{}, gErr
 	}
 
 	years := []int{year}
@@ -48,9 +48,9 @@ func (p PostedCollection) generateCollection(year int) (Collection, error) {
 	}
 
 	nErr := collection.validateCollection(year)
-	if nErr != nil {
+	if nErr.E != nil {
 		return Collection{}, nErr
 	}
 
-	return collection, nil
+	return collection, err.Error{}
 }
