@@ -9,7 +9,7 @@ import (
 )
 
 type Error struct {
-	Callstrs []string
+	CallStrs []string
 	E       error
 }
 
@@ -32,7 +32,7 @@ func NewFromErr(e error) Error {
 
 func (e Error) Log() {
 	calls := ""
-	for _, call := range e.Callstrs{
+	for _, call := range e.CallStrs{
 		calls += call + "\n"
 	}
 	msg := fmt.Errorf("ERROR: %w\n" + calls, e.E)
