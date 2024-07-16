@@ -23,6 +23,15 @@ func New(msg string)Error{
 	}
 }
 
+func NewFromErr(e error)Error{
+	_, file, line, _ := runtime.Caller(1)
+	callStr := file + ": " + "line " + strconv.Itoa(line)
+	return Error{
+		callStr,
+		e,
+	}
+}
+
 func (e Error) Log(){
 	msg := fmt.Errorf(e.Callstr + " %w", e.E)
 	log.Println(msg)
