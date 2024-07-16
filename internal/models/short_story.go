@@ -17,7 +17,7 @@ func (s ShortStory) validateNewShortStory(year int) error {
 	return nil
 }
 
-func (s ShortStory) newShortStoryParams() map[string]any{
+func (s ShortStory) newShortStoryParams() map[string]any {
 	params := s.newWritingParams()
 
 	return params
@@ -27,7 +27,7 @@ type PostedShortStory struct {
 	PostedWriting
 }
 
-func (p PostedShortStory) generateShortStory(year int)(ShortStory, error){
+func (p PostedShortStory) generateShortStory(year int) (ShortStory, error) {
 	writing, err := p.generateWriting(year)
 	if err != nil {
 		return ShortStory{}, err

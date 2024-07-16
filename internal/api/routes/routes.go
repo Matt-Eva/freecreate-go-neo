@@ -40,7 +40,6 @@ func CreateRoutes(ctx context.Context, mongo string, neo neo4j.DriverWithContext
 	// timeFrame == previous year - query neo specific year, order by rank && rel_rank
 	// router.HandleFunc("/api/search/year", middleware.AddNeoDriver(handlers.SearchYearHandler, neo)).Methods("GET")
 
-
 	router.HandleFunc("/api/default-content", middleware.AddMongoDriver(handlers.DefaultContentHandler, mongo)).Methods("GET")
 
 	// AUTH ROUTES
@@ -126,6 +125,5 @@ func CreateRoutes(ctx context.Context, mongo string, neo neo4j.DriverWithContext
 	router.HandleFunc("/api/donation/received", handlers.GetReceivedDonations).Methods("GET")
 	router.HandleFunc("/api/donation", handlers.CreateDonation).Methods("POST")
 
-	
 	return http.ListenAndServe(":8080", router)
 }

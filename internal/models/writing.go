@@ -24,7 +24,7 @@ type Writing struct {
 	Rank         int64
 	RelRank      int64
 	OriginalYear int
-	Published bool
+	Published    bool
 }
 
 func (w Writing) validateNewWriting(year int) error {
@@ -100,7 +100,7 @@ func (w Writing) validateNewWriting(year int) error {
 	return nil
 }
 
-func (w Writing) newWritingParams() (map[string]any) {
+func (w Writing) newWritingParams() map[string]any {
 	writingParams := utils.NeoParamsFromStruct(w)
 
 	paramMap := map[string]any{

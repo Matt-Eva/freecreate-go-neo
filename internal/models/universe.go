@@ -10,8 +10,8 @@ type Universe struct {
 	Years []int
 }
 
-func (n Universe) validateUniverse(year int)error{
-	if len(n.Years) <= 0 || len(n.Years) > 1{
+func (n Universe) validateUniverse(year int) error {
+	if len(n.Years) <= 0 || len(n.Years) > 1 {
 		err := "new universe must only have original year within years property upon creation"
 		return errors.New(err)
 	}
@@ -19,16 +19,15 @@ func (n Universe) validateUniverse(year int)error{
 		err := "year added to universe years upon creation does not match original universe year"
 		return errors.New(err)
 	}
-	if n.WritingType != "universe"{
+	if n.WritingType != "universe" {
 		err := fmt.Sprintf("writing type '%s' does not match universe", n.WritingType)
 		return errors.New(err)
 	}
 	return nil
 }
 
-func (n Universe) newUniverseParams()map[string]any{
+func (n Universe) newUniverseParams() map[string]any {
 	params := n.newWritingParams()
-
 
 	return params
 }
@@ -37,7 +36,7 @@ type PostedUniverse struct {
 	PostedWriting
 }
 
-func (p PostedUniverse) generateuniverse(year int)(Universe, error){
+func (p PostedUniverse) generateuniverse(year int) (Universe, error) {
 	writing, err := p.generateWriting(year)
 	if err != nil {
 		return Universe{}, err
@@ -46,7 +45,7 @@ func (p PostedUniverse) generateuniverse(year int)(Universe, error){
 	years := []int{year}
 	universe := Universe{
 		Writing: writing,
-		Years: years,
+		Years:   years,
 	}
 
 	nErr := universe.validateUniverse(year)

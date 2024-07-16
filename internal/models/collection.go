@@ -10,8 +10,8 @@ type Collection struct {
 	Years []int
 }
 
-func (n Collection) validateCollection(year int)error{
-	if len(n.Years) <= 0 || len(n.Years) > 1{
+func (n Collection) validateCollection(year int) error {
+	if len(n.Years) <= 0 || len(n.Years) > 1 {
 		err := "new collection must only have original year within years property upon creation"
 		return errors.New(err)
 	}
@@ -19,14 +19,14 @@ func (n Collection) validateCollection(year int)error{
 		err := "year added to collection years upon creation does not match original collection year"
 		return errors.New(err)
 	}
-	if n.WritingType != "collection"{
+	if n.WritingType != "collection" {
 		err := fmt.Sprintf("writing type '%s' does not match collection", n.WritingType)
 		return errors.New(err)
 	}
 	return nil
 }
 
-func (n Collection) newCollectionParams()map[string]any{
+func (n Collection) newCollectionParams() map[string]any {
 	params := n.newWritingParams()
 	return params
 }
@@ -35,7 +35,7 @@ type PostedCollection struct {
 	PostedWriting
 }
 
-func (p PostedCollection) generateCollection(year int)(Collection, error){
+func (p PostedCollection) generateCollection(year int) (Collection, error) {
 	writing, err := p.generateWriting(year)
 	if err != nil {
 		return Collection{}, err
@@ -44,7 +44,7 @@ func (p PostedCollection) generateCollection(year int)(Collection, error){
 	years := []int{year}
 	collection := Collection{
 		Writing: writing,
-		Years: years,
+		Years:   years,
 	}
 
 	nErr := collection.validateCollection(year)

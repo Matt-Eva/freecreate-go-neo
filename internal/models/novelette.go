@@ -10,8 +10,8 @@ type Novelette struct {
 	Years []int
 }
 
-func (n Novelette) validateNovelette(year int)error{
-	if len(n.Years) <= 0 || len(n.Years) > 1{
+func (n Novelette) validateNovelette(year int) error {
+	if len(n.Years) <= 0 || len(n.Years) > 1 {
 		err := "new novelette must only have original year within years property upon creation"
 		return errors.New(err)
 	}
@@ -19,14 +19,14 @@ func (n Novelette) validateNovelette(year int)error{
 		err := "year added to novelette years upon creation does not match original novelette year"
 		return errors.New(err)
 	}
-	if n.WritingType != "novelette"{
+	if n.WritingType != "novelette" {
 		err := fmt.Sprintf("writing type '%s' does not match novelette", n.WritingType)
 		return errors.New(err)
 	}
 	return nil
 }
 
-func (n Novelette) newNoveletteParams()map[string]any{
+func (n Novelette) newNoveletteParams() map[string]any {
 	params := n.newWritingParams()
 
 	return params
@@ -36,7 +36,7 @@ type PostedNovelette struct {
 	PostedWriting
 }
 
-func (p PostedNovelette) generateNovelette(year int)(Novelette, error){
+func (p PostedNovelette) generateNovelette(year int) (Novelette, error) {
 	writing, err := p.generateWriting(year)
 	if err != nil {
 		return Novelette{}, err
@@ -45,7 +45,7 @@ func (p PostedNovelette) generateNovelette(year int)(Novelette, error){
 	years := []int{year}
 	novelette := Novelette{
 		Writing: writing,
-		Years: years,
+		Years:   years,
 	}
 
 	nErr := novelette.validateNovelette(year)

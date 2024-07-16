@@ -10,37 +10,37 @@ import (
 )
 
 type User struct {
-	Uid string
+	Uid         string
 	DisplayName string
-	Username string
-	Email string
-	Password string
-	ProfilePic string
-	Birthday int64
+	Username    string
+	Email       string
+	Password    string
+	ProfilePic  string
+	Birthday    int64
 }
 
-func (u User) validateUser()error{
-	if u.Uid == ""{
+func (u User) validateUser() error {
+	if u.Uid == "" {
 		err := "user uid is empty"
 		return errors.New(err)
 	}
-	if u.DisplayName == ""{
+	if u.DisplayName == "" {
 		err := "user display name is empty"
 		return errors.New(err)
 	}
-	if u.Username == ""{
+	if u.Username == "" {
 		err := "user username is empty"
 		return errors.New(err)
 	}
-	if u.Email == ""{
+	if u.Email == "" {
 		err := "user email is empty"
 		return errors.New(err)
 	}
-	if u.Password == ""{
+	if u.Password == "" {
 		err := "user password is empty"
 		return errors.New(err)
 	}
-	if u.ProfilePic != ""{
+	if u.ProfilePic != "" {
 		err := "profile pic must be empty - not currently accepting images"
 		return errors.New(err)
 	}
@@ -51,25 +51,25 @@ func (u User) validateUser()error{
 	return nil
 }
 
-func (u User) newUserParams()map[string]any{
+func (u User) newUserParams() map[string]any {
 	userParams := utils.NeoParamsFromStruct(u)
 
 	return userParams
 }
 
 type PostedUser struct {
-	DisplayName string `json:"displayName"`
-	Username string `json:"username"`
-	Email string `json:"email"`
-	Password string `json:"password"`
+	DisplayName          string `json:"displayName"`
+	Username             string `json:"username"`
+	Email                string `json:"email"`
+	Password             string `json:"password"`
 	PasswordConfirmation string `json:"passwordConfirmation"`
-	ProfilePic string `json:"profilePic"`
-	BirthYear string `json:"birthYear"`
-	BirthMonth string `json:"birthMonth"`
-	BirthDay string `json:"birthDay"`
+	ProfilePic           string `json:"profilePic"`
+	BirthYear            string `json:"birthYear"`
+	BirthMonth           string `json:"birthMonth"`
+	BirthDay             string `json:"birthDay"`
 }
 
-func (p PostedUser) generateUser()(User, error){
+func (p PostedUser) generateUser() (User, error) {
 	if p.Password != p.PasswordConfirmation {
 		err := "password and password confirmation do not match"
 		return User{}, errors.New(err)
@@ -97,13 +97,13 @@ func (p PostedUser) generateUser()(User, error){
 	birthday := date.UnixMilli()
 
 	newUser := User{
-		Uid: uuid.New().String(),
+		Uid:         uuid.New().String(),
 		DisplayName: p.DisplayName,
-		Username: p.Username,
-		Email: p.Email,
-		Password: p.Password,
-		ProfilePic: p.ProfilePic,
-		Birthday: birthday,
+		Username:    p.Username,
+		Email:       p.Email,
+		Password:    p.Password,
+		ProfilePic:  p.ProfilePic,
+		Birthday:    birthday,
 	}
 
 	vErr := newUser.validateUser()
