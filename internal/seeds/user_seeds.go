@@ -26,6 +26,7 @@ func SeedUsers(neo neo4j.DriverWithContext, ctx context.Context) error {
 
 func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context, params map[string]any)(error){
 	existenceQuery := "MATCH (u:User {masterUser: true}) RETURN u.masterUser as masterUser"
+	
 	result, eErr := neo4j.ExecuteQuery(ctx, neo, existenceQuery, nil, neo4j.EagerResultTransformer,neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if eErr != nil {
 		return eErr
@@ -49,7 +50,6 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context, params map
 	}
 
 	username, _ := result.Records[0].Get("username")
-
 	fmt.Println("master user created. username:", username)
 
 	return nil
