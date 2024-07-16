@@ -12,30 +12,37 @@ import (
 )
 
 func SeedUsers(neo neo4j.DriverWithContext, ctx context.Context) error {
-	m, mErr := createMasterUser()
-	if mErr != nil {
-		return mErr
-	}
-	sErr := seedMasterUser(neo, ctx, m)
+	sErr := seedMasterUser(neo, ctx)
 	if sErr != nil {
 		return sErr
 	}
-	
+
 	return nil
 }
 
-func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context, params map[string]any)(error){
-	existenceQuery := "MATCH (u:User {masterUser: true}) RETURN u.masterUser as masterUser"
-	
-	result, eErr := neo4j.ExecuteQuery(ctx, neo, existenceQuery, nil, neo4j.EagerResultTransformer,neo4j.ExecuteQueryWithDatabase("neo4j"))
+func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) error {
+
+	existenceQuery := "MATCH (u:User {masterUser: true}) RETURN u.username AS username"
+
+	result, eErr := neo4j.ExecuteQuery(ctx, neo, existenceQuery, nil, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if eErr != nil {
 		return eErr
 	}
 	if len(result.Records) > 0 {
-		fmt.Println("master user already exists")
+		username, ok := result.Records[0].Get("username")
+		if ok {
+			fmt.Println("master user already exists; name: ", username)
+		} else {
+			return errors.New("master user record does not have username field")
+		}
 		return nil
 	}
-	
+
+	params, mErr := createMasterUser()
+	if mErr != nil {
+		return mErr
+	}
+
 	createQuery := `
 		CREATE (u:User $userParams)
 		SET u.masterUser = true
@@ -46,7 +53,7 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context, params map
 		return cErr
 	}
 	if len(result.Records) < 1 {
-		return errors.New("master user record not return upon seeding")
+		return errors.New("master user record not returned upon seeding")
 	}
 
 	username, _ := result.Records[0].Get("username")
@@ -55,20 +62,20 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context, params map
 	return nil
 }
 
-func createMasterUser()(map[string]any, error){
+func createMasterUser() (map[string]any, error) {
 	p := models.PostedUser{
-		DisplayName: "Matt",
-		Username: "Matt",
-		Email: faker.Email(),
-		Password: os.Getenv("SEED_USER_PASSWORD"),
+		DisplayName:          "Matt",
+		Username:             "Matt",
+		Email:                faker.Email(),
+		Password:             os.Getenv("SEED_USER_PASSWORD"),
 		PasswordConfirmation: os.Getenv("SEED_USER_PASSWORD"),
-		BirthYear: "2000",
-		BirthMonth: "1",
-		BirthDay: "1",
+		BirthYear:            "2000",
+		BirthMonth:           "1",
+		BirthDay:             "1",
 	}
 
 	masterUser, err := p.GenerateUser()
-	if err != nil{
+	if err != nil {
 		return map[string]any{}, err
 	}
 
@@ -77,25 +84,63 @@ func createMasterUser()(map[string]any, error){
 	return params, err
 }
 
-func makeSeedUser()(map[string]any, error){
+func seedUsers(ctx context.Context, neo neo4j.DriverWithContext) error {
+	for i:= 0; i < 100; i++{
+		err := seedUser(ctx, neo)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func seedUser(ctx context.Context, neo neo4j.DriverWithContext) error {
+	params, sErr := makeSeedUser()
+	if sErr != nil {
+		return sErr
+	}
+	createQuery := `
+	CREATE (u:User $userParams)
+	SET u.seed = true
+	RETURN u.username AS username
+	`
+	result, qErr := neo4j.ExecuteQuery(ctx, neo, createQuery, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+	if qErr != nil {
+		return qErr
+	}
+	if len(result.Records) < 1{
+		return errors.New("now record returned from database for seeded user")
+	}
+	username, ok := result.Records[0].Get("username")
+	if ok {
+		fmt.Println("seed user created: name:", username)
+	} else {
+		return errors.New("seed user record does not have username property")
+	}
+
+	return nil
+}
+
+func makeSeedUser() (map[string]any, error) {
 	password := faker.Password()
 	p := models.PostedUser{
 		DisplayName: faker.Name(),
-		Username: faker.Username(),
-		Email: faker.Email(),
-		Password: password,
-		BirthYear: faker.YearString(),
-		BirthMonth: faker.MonthName(),
-		BirthDay: faker.DayOfMonth(),
+		Username:    faker.Username(),
+		Email:       faker.Email(),
+		Password:    password,
+		BirthYear:   faker.YearString(),
+		BirthMonth:  faker.MonthName(),
+		BirthDay:    faker.DayOfMonth(),
 	}
-	
+
 	u, err := p.GenerateUser()
-	if err != nil{
+	if err != nil {
 		return map[string]any{}, err
 	}
 
 	params := u.NewUserParams()
-	params["seed"] = true
 
 	return params, nil
 }
+
+

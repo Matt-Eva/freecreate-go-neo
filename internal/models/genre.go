@@ -1,6 +1,6 @@
 package models
 
 type Genre struct {
-	Uid string
+	Uid   string
 	Genre string
 }

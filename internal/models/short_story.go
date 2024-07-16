@@ -36,7 +36,7 @@ func (p PostedShortStory) generateShortStory(year int) (ShortStory, error) {
 	shortStory := ShortStory{writing}
 
 	vErr := shortStory.validateNewShortStory()
-	if vErr != nil{
+	if vErr != nil {
 		return ShortStory{}, vErr
 	}
 

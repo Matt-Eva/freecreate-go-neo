@@ -7,25 +7,25 @@ import (
 )
 
 type Bookshelf struct {
-	Uid string
-	Name string
+	Uid    string
+	Name   string
 	UserId string
 }
 
-func (b Bookshelf) validateNewBookshelf() error{
-	if b.Uid == ""{
+func (b Bookshelf) validateNewBookshelf() error {
+	if b.Uid == "" {
 		e := "bookshelf uid cannot be nil"
 		return errors.New(e)
 	}
-	if b.Name == ""{
+	if b.Name == "" {
 		e := "bookshelf name cannot be nil"
 		return errors.New(e)
 	}
-	if b.UserId == ""{
+	if b.UserId == "" {
 		e := "bookshelf UserId cannot be nil"
 		return errors.New(e)
 	}
-	
+
 	return nil
 }
 
@@ -33,10 +33,10 @@ type PostedBookshelf struct {
 	Name string `json:"name"`
 }
 
-func (p PostedBookshelf) generateBookshelf(userId string)(Bookshelf, error){
+func (p PostedBookshelf) generateBookshelf(userId string) (Bookshelf, error) {
 	bookshelf := Bookshelf{
-		Uid: uuid.New().String(),
-		Name: p.Name,
+		Uid:    uuid.New().String(),
+		Name:   p.Name,
 		UserId: userId,
 	}
 
@@ -44,6 +44,6 @@ func (p PostedBookshelf) generateBookshelf(userId string)(Bookshelf, error){
 	if vErr != nil {
 		return Bookshelf{}, vErr
 	}
-	
+
 	return bookshelf, nil
 }
