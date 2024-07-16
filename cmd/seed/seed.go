@@ -40,4 +40,10 @@ func main() {
 		os.Exit(1)
 	}
 
+	cErr := seeds.SeedCreators(ctx, neo)
+	if cErr.E != nil {
+		cErr.Log()
+		os.Exit(1)
+	}
+
 }

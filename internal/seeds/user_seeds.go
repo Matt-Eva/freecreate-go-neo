@@ -17,6 +17,11 @@ func SeedUsers(neo neo4j.DriverWithContext, ctx context.Context) err.Error {
 		return sErr
 	}
 
+	uErr := seedUsers(ctx, neo)
+	if uErr.E != nil {
+		return uErr
+	}
+
 	return err.Error{}
 }
 
@@ -36,7 +41,7 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) err.Error 
 		} else {
 			return err.New("master user record does not have username field")
 		}
-		return err.Error{	}
+		return err.Error{}
 	}
 
 	params, mErr := createMasterUser()
@@ -87,7 +92,7 @@ func createMasterUser() (map[string]any, err.Error) {
 }
 
 func seedUsers(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
-	for i:= 0; i < 100; i++{
+	for i := 0; i < 100; i++ {
 		sErr := seedUser(ctx, neo)
 		if sErr.E != nil {
 			return sErr
@@ -102,16 +107,16 @@ func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 		return sErr
 	}
 	createQuery := `
-	CREATE (u:User $userParams)
-	SET u.seed = true
-	RETURN u.username AS username
+		CREATE (u:User $userParams)
+		SET u.seed = true
+		RETURN u.username AS username
 	`
 	result, qErr := neo4j.ExecuteQuery(ctx, neo, createQuery, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if qErr != nil {
 		e := err.NewFromErr(qErr)
 		return e
 	}
-	if len(result.Records) < 1{
+	if len(result.Records) < 1 {
 		return err.New("now record returned from database for seeded user")
 	}
 	username, ok := result.Records[0].Get("username")
@@ -145,5 +150,3 @@ func makeSeedUser() (map[string]any, err.Error) {
 
 	return params, err.Error{}
 }
-
-

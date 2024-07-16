@@ -3,13 +3,14 @@ package seeds
 import (
 	"context"
 	"fmt"
+	"freecreate/internal/err"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-func SeedCreators(ctx context.Context, neo neo4j.DriverWithContext) error{
-	result, uErr := getUsers(ctx, neo)
-	if uErr != nil {
+func SeedCreators(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
+	result, uErr := getSeedUsers(ctx, neo)
+	if uErr.E != nil {
 		return uErr
 	}
 
@@ -18,20 +19,34 @@ func SeedCreators(ctx context.Context, neo neo4j.DriverWithContext) error{
 		fmt.Println(uid)
 	}
 
-	return nil
+	return err.Error{}
 }
 
-func getUsers(ctx context.Context, neo neo4j.DriverWithContext)([]map[string]string, error){
-	users := []map[string]string{}
+func getSeedUsers(ctx context.Context, neo neo4j.DriverWithContext) ([]map[string]any, err.Error) {
+	users := []map[string]any{}
 
-	// query := `
-	// 	MATCH (u:User)
-	// 	RETURN u.uid AS uidd
-	// `
+	query := `
+		MATCH (u:User)
+		WHERE u.seed = true
+		RETURN u.uid AS uidd
+	`
 
-	// result, nErr :
+	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, nil, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+	if nErr != nil {
+		e := err.NewFromErr(nErr)
+		return []map[string]any{}, e
+	}
+	if len(result.Records) < 1 {
+		e := err.New("no seed users in database")
+		return []map[string]any{}, e
+	}
 
-	return users, nil
+	for _, record := range result.Records {
+		rMap := record.AsMap()
+		users = append(users, rMap)
+	}
+
+	return users, err.Error{}
 }
 
 func seedCreator(ctx context.Context, neo neo4j.DriverWithContext) {

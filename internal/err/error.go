@@ -10,10 +10,10 @@ import (
 
 type Error struct {
 	Callstr string
-	E error
+	E       error
 }
 
-func New(msg string)Error{
+func New(msg string) Error {
 	_, file, line, _ := runtime.Caller(1)
 	callStr := file + ": " + "line " + strconv.Itoa(line)
 	err := errors.New(msg)
@@ -23,7 +23,7 @@ func New(msg string)Error{
 	}
 }
 
-func NewFromErr(e error)Error{
+func NewFromErr(e error) Error {
 	_, file, line, _ := runtime.Caller(1)
 	callStr := file + ": " + "line " + strconv.Itoa(line)
 	return Error{
@@ -32,7 +32,7 @@ func NewFromErr(e error)Error{
 	}
 }
 
-func (e Error) Log(){
-	msg := fmt.Errorf(e.Callstr + " %w", e.E)
+func (e Error) Log() {
+	msg := fmt.Errorf(e.Callstr+" %w", e.E)
 	log.Println(msg)
 }
