@@ -31,6 +31,7 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context, params map
 		return eErr
 	}
 	if len(result.Records) > 0 {
+		fmt.Println("master user already exists")
 		return nil
 	}
 	
@@ -49,7 +50,7 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context, params map
 
 	username, _ := result.Records[0].Get("username")
 
-	fmt.Println("master user username", username)
+	fmt.Println("master user created. username:", username)
 
 	return nil
 }
