@@ -138,8 +138,8 @@ func makeSeedUser() (map[string]any, err.Error) {
 		Password:    password,
 		PasswordConfirmation: password,
 		BirthYear:   faker.YearString(),
-		BirthMonth:  faker.MonthName(),
-		BirthDay:    faker.DayOfMonth(),
+		BirthMonth:  "1",
+		BirthDay:    "1",
 	}
 
 	u, gErr := p.GenerateUser()

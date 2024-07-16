@@ -28,7 +28,7 @@ func getSeedUsers(ctx context.Context, neo neo4j.DriverWithContext) ([]map[strin
 	query := `
 		MATCH (u:User)
 		WHERE u.seed = true
-		RETURN u.uid AS uidd
+		RETURN u.uid AS uid
 	`
 
 	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, nil, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))

@@ -3,8 +3,6 @@ package models
 import (
 	"freecreate/internal/err"
 	"freecreate/internal/utils"
-	"strconv"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -16,7 +14,9 @@ type User struct {
 	Email       string
 	Password    string
 	ProfilePic  string
-	Birthday    int64
+	BirthYear   string
+	BirthMonth string
+	BirthDay string
 }
 
 func (u User) validateUser() err.Error {
@@ -44,8 +44,16 @@ func (u User) validateUser() err.Error {
 		e := "profile pic must be empty - not currently accepting images"
 		return err.New(e)
 	}
-	if u.Birthday == 0 {
-		e := "birthday cannot be empty"
+	if u.BirthYear == "" {
+		e := "birth year cannot be empty"
+		return err.New(e)
+	}
+	if u.BirthMonth == ""{
+		e := "birth month cannot be empty"
+		return err.New(e)
+	}
+	if u.BirthDay == ""{
+		e := "birth day cannot be empty"
 		return err.New(e)
 	}
 	return err.Error{}
@@ -75,27 +83,6 @@ func (p PostedUser) GenerateUser() (User, err.Error) {
 		return User{}, err.New(e)
 	}
 
-	year, yErr := strconv.Atoi(p.BirthYear)
-	if yErr != nil {
-		e := "could not convert birth year to number"
-		return User{}, err.New(e)
-	}
-
-	month, mErr := strconv.Atoi(p.BirthMonth)
-	if mErr != nil {
-		e := "could not convert birth month to number"
-		return User{}, err.New(e)
-	}
-
-	day, dErr := strconv.Atoi(p.BirthDay)
-	if dErr != nil {
-		e := "could not convert birth day to number"
-		return User{}, err.New(e)
-	}
-
-	date := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
-	birthday := date.UnixMilli()
-
 	newUser := User{
 		Uid:         uuid.New().String(),
 		DisplayName: p.DisplayName,
@@ -103,7 +90,9 @@ func (p PostedUser) GenerateUser() (User, err.Error) {
 		Email:       p.Email,
 		Password:    p.Password,
 		ProfilePic:  p.ProfilePic,
-		Birthday:    birthday,
+		BirthYear:    p.BirthYear,
+		BirthMonth: p.BirthMonth,
+		BirthDay: p.BirthDay,
 	}
 
 	vErr := newUser.validateUser()
