@@ -9,7 +9,7 @@ type ShortStory struct {
 	Writing
 }
 
-func (s ShortStory) validateNewShortStory(year int) error {
+func (s ShortStory) validateNewShortStory() error {
 	if s.WritingType != "shortStory" {
 		errorMsg := fmt.Sprintf("Writing type '%s' is not valid for a short Story; must be of type shortStory", s.WritingType)
 		return errors.New(errorMsg)
@@ -34,6 +34,11 @@ func (p PostedShortStory) generateShortStory(year int) (ShortStory, error) {
 	}
 
 	shortStory := ShortStory{writing}
+
+	vErr := shortStory.validateNewShortStory()
+	if vErr != nil{
+		return ShortStory{}, vErr
+	}
 
 	return shortStory, nil
 }
