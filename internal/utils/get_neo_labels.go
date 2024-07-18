@@ -5,5 +5,15 @@ func GetGenres() []string {
 }
 
 func GetNodeLabels() map[string]string {
-	return map[string]string{}
+	return map[string]string{
+		"Writing": "Writing",
+		"User": "User",
+		"Creator": "Creator",
+	}
+}
+
+func GetRelationshipLabels() map[string]string {
+	return map[string]string{
+		"IS_CREATOR": "IS_CREATOR",
+	}
 }
