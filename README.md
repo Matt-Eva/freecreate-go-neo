@@ -46,4 +46,7 @@ While Auth is not yet implemented, FreeCreate will use server-side sessions via 
   - Collection can be sharded on Author name and content id, allowing quick query access and seamless scaling.
 
 - Redis query cache
+
   - Frequently accessed data will be stored in Redis cache, accelerating response times and freeing Noe4j from running complex queries as frequently.
+
+- While donations are not yet enabled, future payment processing will be handled by Stripe.
