@@ -7,6 +7,7 @@ import (
 	"freecreate/internal/models"
 	"freecreate/internal/utils"
 	"os"
+	"strconv"
 
 	"github.com/go-faker/faker/v4"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -100,23 +101,22 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) err.Error 
 }
 
 func createMasterUser() (models.User, err.Error) {
-	p := models.PostedUser{
+	u := models.User{
 		DisplayName:          "Matt",
 		Username:             "Matt",
 		Email:                faker.Email(),
 		Password:             os.Getenv("SEED_USER_PASSWORD"),
-		PasswordConfirmation: os.Getenv("SEED_USER_PASSWORD"),
-		BirthYear:            "2000",
-		BirthMonth:           "1",
-		BirthDay:             "1",
+		BirthYear:            2000,
+		BirthMonth:           1,
+		BirthDay:             1,
 	}
 
-	masterUser, gErr := p.GenerateUser()
-	if gErr.E != nil {
-		return models.User{}, gErr
+	vErr := u.ValidateUser()
+	if vErr.E != nil {
+		return models.User{}, vErr
 	}
 
-	return masterUser, err.Error{}
+	return u, err.Error{}
 }
 
 func seedUsers(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
@@ -131,7 +131,7 @@ func seedUsers(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 }
 
 func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
-	params, sErr := makeSeedUser()
+	user, sErr := makeSeedUser()
 	if sErr.E != nil {
 		return sErr
 	}
@@ -140,7 +140,8 @@ func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 		SET u.seed = true
 		RETURN u AS user
 	`
-	result, qErr := neo4j.ExecuteQuery(ctx, neo, createQuery, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+	userParams := utils.NeoParamsFromStruct(user)
+	result, qErr := neo4j.ExecuteQuery(ctx, neo, createQuery, userParams, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if qErr != nil {
 		e := err.NewFromErr(qErr)
 		return e
@@ -152,25 +153,27 @@ func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 	return err.Error{}
 }
 
-func makeSeedUser() (map[string]any, err.Error) {
+func makeSeedUser() (models.User, err.Error) {
 	password := faker.Password()
-	p := models.PostedUser{
+	birthYear, cErr := strconv.Atoi(faker.YearString())
+	if cErr != nil {
+		e := err.NewFromErr(cErr)
+		return models.User{}, e
+	}
+	u := models.User{
 		DisplayName:          faker.Name(),
 		Username:             faker.Username(),
 		Email:                faker.Email(),
 		Password:             password,
-		PasswordConfirmation: password,
-		BirthYear:            faker.YearString(),
-		BirthMonth:           "1",
-		BirthDay:             "1",
+		BirthYear:            birthYear,
+		BirthMonth:           1,
+		BirthDay:             1,
 	}
 
-	u, gErr := p.GenerateUser()
-	if gErr.E != nil {
-		return map[string]any{}, gErr
+	vErr := u.ValidateUser()
+	if vErr.E != nil {
+		return u, vErr
 	}
 
-	params := u.NewUserParams()
-
-	return params, err.Error{}
+	return u, err.Error{}
 }

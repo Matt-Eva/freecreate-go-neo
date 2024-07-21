@@ -3,8 +3,6 @@ package models
 import (
 	"freecreate/internal/err"
 	"freecreate/internal/utils"
-
-	"github.com/google/uuid"
 )
 
 type User struct {
@@ -14,12 +12,12 @@ type User struct {
 	Email       string
 	Password    string
 	ProfilePic  string
-	BirthYear   string
-	BirthMonth  string
-	BirthDay    string
+	BirthYear   int
+	BirthMonth  int
+	BirthDay    int
 }
 
-func (u User) validateUser() err.Error {
+func (u User) ValidateUser() err.Error {
 	if u.Uid == "" {
 		e := "user uid is empty"
 		return err.New(e)
@@ -44,16 +42,16 @@ func (u User) validateUser() err.Error {
 		e := "profile pic must be empty - not currently accepting images"
 		return err.New(e)
 	}
-	if u.BirthYear == "" {
-		e := "birth year cannot be empty"
+	if u.BirthYear == 0 || u.BirthYear < 1900 {
+		e := "birth year error"
 		return err.New(e)
 	}
-	if u.BirthMonth == "" {
-		e := "birth month cannot be empty"
+	if u.BirthMonth == 0 || u.BirthMonth > 12 || u.BirthMonth < 0 {
+		e := "birth month error"
 		return err.New(e)
 	}
-	if u.BirthDay == "" {
-		e := "birth day cannot be empty"
+	if u.BirthDay == 0 || u.BirthDay > 31 || u.BirthMonth < 0{
+		e := "birth day error"
 		return err.New(e)
 	}
 	return err.Error{}
@@ -77,28 +75,28 @@ type PostedUser struct {
 	BirthDay             string `json:"birthDay"`
 }
 
-func (p PostedUser) GenerateUser() (User, err.Error) {
-	if p.Password != p.PasswordConfirmation {
-		e := "password and password confirmation do not match"
-		return User{}, err.New(e)
-	}
+// func (p PostedUser) GenerateUser() (User, err.Error) {
+// 	if p.Password != p.PasswordConfirmation {
+// 		e := "password and password confirmation do not match"
+// 		return User{}, err.New(e)
+// 	}
 
-	newUser := User{
-		Uid:         uuid.New().String(),
-		DisplayName: p.DisplayName,
-		Username:    p.Username,
-		Email:       p.Email,
-		Password:    p.Password,
-		ProfilePic:  p.ProfilePic,
-		BirthYear:   p.BirthYear,
-		BirthMonth:  p.BirthMonth,
-		BirthDay:    p.BirthDay,
-	}
+// 	newUser := User{
+// 		Uid:         uuid.New().String(),
+// 		DisplayName: p.DisplayName,
+// 		Username:    p.Username,
+// 		Email:       p.Email,
+// 		Password:    p.Password,
+// 		ProfilePic:  p.ProfilePic,
+// 		BirthYear:   p.BirthYear,
+// 		BirthMonth:  p.BirthMonth,
+// 		BirthDay:    p.BirthDay,
+// 	}
 
-	vErr := newUser.validateUser()
-	if vErr.E != nil {
-		return newUser, vErr
-	}
+// 	vErr := newUser.validateUser()
+// 	if vErr.E != nil {
+// 		return newUser, vErr
+// 	}
 
-	return newUser, err.Error{}
-}
+// 	return newUser, err.Error{}
+// }
