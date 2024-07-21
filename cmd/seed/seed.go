@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"freecreate/internal/config"
 	"freecreate/internal/err"
-	"freecreate/internal/seeds"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -18,7 +18,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	arg := os.Args[0]
+	arg := os.Args[1]
+	fmt.Println(arg)
 
 	ctx := context.Background()
 
@@ -38,22 +39,16 @@ func main() {
 	}
 	defer config.MongoDisconnect(mongo, ctx)
 
-	dErr := seeds.DeleteSeeds(ctx, neo)
-	if dErr.E != nil {
-		dErr.Log()
-		os.Exit(1)
-	}
+	// uErr := seeds.SeedUsers(neo, ctx)
+	// if uErr.E != nil {
+	// 	uErr.Log()
+	// 	os.Exit(1)
+	// }
 
-	uErr := seeds.SeedUsers(neo, ctx)
-	if uErr.E != nil {
-		uErr.Log()
-		os.Exit(1)
-	}
-
-	cErr := seeds.SeedCreators(ctx, neo)
-	if cErr.E != nil {
-		cErr.Log()
-		os.Exit(1)
-	}
+	// cErr := seeds.SeedCreators(ctx, neo)
+	// if cErr.E != nil {
+	// 	cErr.Log()
+	// 	os.Exit(1)
+	// }
 
 }

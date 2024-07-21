@@ -1,3 +1,5 @@
 #!/bin/bash
 
-go run cmd/seed/seed.go
+go build cmd/seed/seed.go
+
+./seed "$@"

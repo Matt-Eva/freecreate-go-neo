@@ -12,6 +12,13 @@ import (
 )
 
 func SeedUsers(neo neo4j.DriverWithContext, ctx context.Context) err.Error {
+	fmt.Println("deleting users")
+	dErr := DeleteUserSeeds(ctx, neo)
+	if dErr.E != nil {
+		return dErr
+	}
+	fmt.Println("users deleted")
+
 	fmt.Println("seeding users")
 	sErr := seedMasterUser(neo, ctx)
 	if sErr.E != nil {
@@ -25,6 +32,25 @@ func SeedUsers(neo neo4j.DriverWithContext, ctx context.Context) err.Error {
 
 	fmt.Println("users seeded")
 	return err.Error{}
+}
+
+func DeleteUserSeeds(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
+	deleteQuery := `
+		MATCH(u:User)
+		WHERE u.seed = true
+		DETACH DELETE n
+	`
+
+	_, eErr := neo4j.ExecuteQuery(ctx, neo, deleteQuery, nil, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+	if eErr != nil {
+		e := err.NewFromErr(eErr)
+		return e
+	}
+
+	fmt.Println("seed nodes deleted")
+
+	return err.Error{}
+
 }
 
 func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) err.Error {
