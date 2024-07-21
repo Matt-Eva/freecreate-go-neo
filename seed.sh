@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cd cmd ; cd seed ; go run seed.go
+go run cmd/seed/seed.go
