@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-faker/faker/v4"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func SeedCreators(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
@@ -108,4 +109,9 @@ func makeSeedCreator(userId string) (map[string]any, err.Error) {
 	params := c.NewCreatorParams()
 
 	return params, err.Error{}
+}
+
+func DeleteCreatorSeeds(neo neo4j.DriverWithContext, mongo *mongo.Client) err.Error{
+
+	return err.Error{}
 }

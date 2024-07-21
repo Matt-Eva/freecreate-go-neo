@@ -35,7 +35,7 @@ func SeedUsers(neo neo4j.DriverWithContext, ctx context.Context) err.Error {
 
 func DeleteUserSeeds(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 	deleteQuery := `
-		MATCH(u)
+		MATCH(u:User)
 		WHERE u.seed = true
 		DETACH DELETE u
 	`

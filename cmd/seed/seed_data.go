@@ -41,7 +41,15 @@ func main() {
 	var args []string
 	all := len(os.Args) < 2
 	if !all {
-		// args = os.Args[1:]
+		args = os.Args[1:]
+	}
+
+	if all {
+		dErr := seeds.DeleteSeeds(ctx, neo)
+		if dErr.E != nil{
+			dErr.Log()
+			os.Exit(1)
+		}
 	}
 
 	calls := map[string]bool{
