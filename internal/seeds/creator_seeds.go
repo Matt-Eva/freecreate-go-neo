@@ -87,7 +87,7 @@ func seedCreator(ctx context.Context, neo neo4j.DriverWithContext, userId string
 	if len(result.Records) < 1 {
 		return err.New("no record returned from seed creator")
 	}
-	fmt.Println(result.Records[0].AsMap())
+	// fmt.Println(result.Records[0].AsMap())
 
 	return err.Error{}
 }
