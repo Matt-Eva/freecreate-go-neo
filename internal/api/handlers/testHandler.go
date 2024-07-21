@@ -8,9 +8,10 @@ import (
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/redis/go-redis/v9"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func TestHandler(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext, mongo string, redis *redis.Client, ctx context.Context) {
+func TestHandler(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext, mongo *mongo.Client, redis *redis.Client, ctx context.Context) {
 	params := r.URL.Query()
 	fmt.Println(params)
 

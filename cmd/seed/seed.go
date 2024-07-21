@@ -4,7 +4,6 @@ import (
 	"context"
 	"freecreate/internal/config"
 	"freecreate/internal/err"
-	"freecreate/internal/seeds"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -20,30 +19,29 @@ func main() {
 	ctx := context.Background()
 
 	neo, iErr := config.InitNeo(ctx)
-	if iErr != nil {
+	if iErr.E != nil {
 		defer neo.Close(ctx)
-		e := err.NewFromErr(iErr)
-		e.Log()
+		iErr.Log()
 		os.Exit(1)
 	}
 	defer neo.Close(ctx)
 
-	dErr := seeds.DeleteSeeds(ctx, neo)
-	if dErr.E != nil {
-		dErr.Log()
-		os.Exit(1)
-	}
+	// dErr := seeds.DeleteSeeds(ctx, neo)
+	// if dErr.E != nil {
+	// 	dErr.Log()
+	// 	os.Exit(1)
+	// }
 
-	uErr := seeds.SeedUsers(neo, ctx)
-	if uErr.E != nil {
-		uErr.Log()
-		os.Exit(1)
-	}
+	// uErr := seeds.SeedUsers(neo, ctx)
+	// if uErr.E != nil {
+	// 	uErr.Log()
+	// 	os.Exit(1)
+	// }
 
-	cErr := seeds.SeedCreators(ctx, neo)
-	if cErr.E != nil {
-		cErr.Log()
-		os.Exit(1)
-	}
+	// cErr := seeds.SeedCreators(ctx, neo)
+	// if cErr.E != nil {
+	// 	cErr.Log()
+	// 	os.Exit(1)
+	// }
 
 }

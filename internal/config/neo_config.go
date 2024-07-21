@@ -2,29 +2,29 @@ package config
 
 import (
 	"context"
-	"fmt"
+	"freecreate/internal/err"
 	"os"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-func InitNeo(ctx context.Context) (neo4j.DriverWithContext, error) {
+func InitNeo(ctx context.Context) (neo4j.DriverWithContext, err.Error) {
 	uri := os.Getenv("NEO_URI")
 	pwd := os.Getenv("NEO_PASSWORD")
 	user := os.Getenv("NEO_USER")
 
-	driver, err := neo4j.NewDriverWithContext(uri, neo4j.BasicAuth(user, pwd, ""))
-	if err != nil {
+	driver, nErr := neo4j.NewDriverWithContext(uri, neo4j.BasicAuth(user, pwd, ""))
+	if nErr != nil {
 		defer driver.Close(ctx)
-		fmt.Println(err)
-		return nil, err
+		e := err.NewFromErr(nErr)
+		return nil, e
 	}
 
-	err = driver.VerifyConnectivity(ctx)
-	if err != nil {
+	cErr := driver.VerifyConnectivity(ctx)
+	if cErr != nil {
 		defer driver.Close(ctx)
-		fmt.Println(err)
-		return nil, err
+		e := err.NewFromErr(cErr)
+		return nil, e
 	}
-	return driver, nil
+	return driver, err.Error{}
 }

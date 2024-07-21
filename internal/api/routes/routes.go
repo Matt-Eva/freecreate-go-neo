@@ -4,14 +4,16 @@ import (
 	"context"
 	"freecreate/internal/api/handlers"
 	"freecreate/internal/api/middleware"
+	"freecreate/internal/err"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/redis/go-redis/v9"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CreateRoutes(ctx context.Context, mongo string, neo neo4j.DriverWithContext, redis *redis.Client) error {
+func CreateRoutes(ctx context.Context, mongo *mongo.Client, neo neo4j.DriverWithContext, redis *redis.Client) err.Error {
 	router := mux.NewRouter()
 
 	// TEST ENDPOINTS
@@ -125,5 +127,11 @@ func CreateRoutes(ctx context.Context, mongo string, neo neo4j.DriverWithContext
 	router.HandleFunc("/api/donation/received", handlers.GetReceivedDonations).Methods("GET")
 	router.HandleFunc("/api/donation", handlers.CreateDonation).Methods("POST")
 
-	return http.ListenAndServe(":8080", router)
+	hErr := http.ListenAndServe(":8080", router)
+	if hErr != nil {
+		e := err.NewFromErr(hErr)
+		return e
+	}
+
+	return err.Error{}
 }

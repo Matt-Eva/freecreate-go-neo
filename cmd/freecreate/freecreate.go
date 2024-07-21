@@ -5,34 +5,39 @@ import (
 	"fmt"
 	"freecreate/internal/api/routes"
 	"freecreate/internal/config"
+	"freecreate/internal/err"
 	"os"
 
 	"github.com/joho/godotenv"
 )
 
-func run(ctx context.Context) error {
-	err := godotenv.Load()
-	if err != nil {
-		return err
+func run(ctx context.Context) err.Error {
+	lErr := godotenv.Load()
+	if lErr != nil {
+		e := err.NewFromErr(lErr)
+		return e
 	}
 	fmt.Println(os.Getenv("NEO_USER"))
 	neo, neoErr := config.InitNeo(ctx)
-	if neoErr != nil {
+	if neoErr.E != nil {
 		return neoErr
 	}
 
-	mongo := config.InitMongo(ctx)
-	redis := config.InitRedis()
-	if err := routes.CreateRoutes(ctx, mongo, neo, redis); err != nil {
-		return err
+	mongo, mErr := config.InitMongo(ctx)
+	if mErr.E != nil {
+		return mErr
 	}
-	return nil
+	redis := config.InitRedis()
+	if rErr := routes.CreateRoutes(ctx, mongo, neo, redis); rErr.E != nil {
+		return rErr
+	}
+	return err.Error{}
 }
 
 func main() {
 	ctx := context.Background()
-	if err := run(ctx); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err)
+	if err := run(ctx); err.E != nil {
+		err.Log()
 		os.Exit(1)
 	}
 }

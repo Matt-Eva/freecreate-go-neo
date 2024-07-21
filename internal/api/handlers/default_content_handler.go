@@ -1,7 +1,11 @@
 package handlers
 
-import "net/http"
+import (
+	"net/http"
 
-func DefaultContentHandler(w http.ResponseWriter, r *http.Request, mongo string) {
+	"go.mongodb.org/mongo-driver/mongo"
+)
+
+func DefaultContentHandler(w http.ResponseWriter, r *http.Request, mongo *mongo.Client) {
 
 }
