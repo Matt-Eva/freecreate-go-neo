@@ -46,14 +46,14 @@ func main() {
 
 	if all {
 		dErr := seeds.DeleteSeeds(ctx, neo)
-		if dErr.E != nil{
+		if dErr.E != nil {
 			dErr.Log()
 			os.Exit(1)
 		}
 	}
 
 	calls := map[string]bool{
-		"users": false,
+		"users":    false,
 		"creators": false,
 	}
 
@@ -70,7 +70,7 @@ func main() {
 		}
 	}
 
-	if calls["users"] || all{
+	if calls["users"] || all {
 		uErr := seeds.SeedUsers(neo, ctx)
 		if uErr.E != nil {
 			uErr.Log()
@@ -78,7 +78,7 @@ func main() {
 		}
 	}
 
-	if calls["creators"] || all{
+	if calls["creators"] || all {
 		cErr := seeds.SeedCreators(ctx, neo)
 		if cErr.E != nil {
 			cErr.Log()

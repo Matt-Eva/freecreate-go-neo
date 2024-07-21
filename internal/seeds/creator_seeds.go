@@ -111,7 +111,7 @@ func makeSeedCreator(userId string) (map[string]any, err.Error) {
 	return params, err.Error{}
 }
 
-func DeleteCreatorSeeds(neo neo4j.DriverWithContext, mongo *mongo.Client) err.Error{
+func DeleteCreatorSeeds(neo neo4j.DriverWithContext, mongo *mongo.Client) err.Error {
 
 	return err.Error{}
 }

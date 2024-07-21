@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func SeedDraft(mongo *mongo.Client) err.Error{
+func SeedDraft(mongo *mongo.Client) err.Error {
 
 	return err.Error{}
 }
