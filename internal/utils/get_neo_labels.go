@@ -7,7 +7,7 @@ func GetGenres() []string {
 func GetNodeLabels() map[string]string {
 	return map[string]string{
 		"Writing": "Writing",
-		"User": "User",
+		"User":    "User",
 		"Creator": "Creator",
 	}
 }

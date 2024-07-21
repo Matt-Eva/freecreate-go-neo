@@ -35,5 +35,5 @@ func InitMongo(ctx context.Context) (*mongo.Client, err.Error) {
 func MongoDisconnect(mon *mongo.Client, ctx context.Context) {
 	if mErr := mon.Disconnect(ctx); mErr != nil {
 		panic(mErr)
-	  }
+	}
 }

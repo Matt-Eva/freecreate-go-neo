@@ -1,5 +1,5 @@
 package seeds
 
-func SeedShortStories(){
-	
+func SeedShortStories() {
+
 }

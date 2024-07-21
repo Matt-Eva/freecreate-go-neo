@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 	"freecreate/internal/err"
 	"os"
 
@@ -9,6 +10,7 @@ import (
 )
 
 func InitNeo(ctx context.Context) (neo4j.DriverWithContext, err.Error) {
+	fmt.Println("connecting neo")
 	uri := os.Getenv("NEO_URI")
 	pwd := os.Getenv("NEO_PASSWORD")
 	user := os.Getenv("NEO_USER")
@@ -26,5 +28,7 @@ func InitNeo(ctx context.Context) (neo4j.DriverWithContext, err.Error) {
 		e := err.NewFromErr(cErr)
 		return nil, e
 	}
+
+	fmt.Println("neo connected")
 	return driver, err.Error{}
 }

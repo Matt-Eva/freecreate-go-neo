@@ -68,7 +68,7 @@ func getSeedUsers(ctx context.Context, neo neo4j.DriverWithContext) ([]string, e
 
 func seedCreator(ctx context.Context, neo neo4j.DriverWithContext, userId string) err.Error {
 	params, gErr := makeSeedCreator(userId)
-	if gErr.E !=nil {
+	if gErr.E != nil {
 		return gErr
 	}
 
@@ -96,7 +96,7 @@ func makeSeedCreator(userId string) (map[string]any, err.Error) {
 	p := models.PostedCreator{
 		Name:       faker.Name(),
 		ProfilePic: "",
-		CreatorId: faker.Username(),
+		CreatorId:  faker.Username(),
 		About:      faker.Paragraph(),
 	}
 
@@ -106,6 +106,6 @@ func makeSeedCreator(userId string) (map[string]any, err.Error) {
 	}
 
 	params := c.NewCreatorParams()
-	
+
 	return params, err.Error{}
 }

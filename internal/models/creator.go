@@ -36,7 +36,7 @@ func (c Creator) validateCreator() err.Error {
 	return err.Error{}
 }
 
-func (c Creator) NewCreatorParams() map[string]any{
+func (c Creator) NewCreatorParams() map[string]any {
 	params := utils.NeoParamsFromStruct(c)
 	return map[string]any{"creatorParams": params, "userId": params["userId"]}
 }
