@@ -2,7 +2,6 @@ package models
 
 import (
 	"freecreate/internal/err"
-	"freecreate/internal/utils"
 )
 
 type User struct {
@@ -56,47 +55,3 @@ func (u User) ValidateUser() err.Error {
 	}
 	return err.Error{}
 }
-
-func (u User) NewUserParams() map[string]any {
-	userParams := utils.NeoParamsFromStruct(u)
-
-	return map[string]any{"userParams": userParams}
-}
-
-type PostedUser struct {
-	DisplayName          string `json:"displayName"`
-	Username             string `json:"username"`
-	Email                string `json:"email"`
-	Password             string `json:"password"`
-	PasswordConfirmation string `json:"passwordConfirmation"`
-	ProfilePic           string `json:"profilePic"`
-	BirthYear            string `json:"birthYear"`
-	BirthMonth           string `json:"birthMonth"`
-	BirthDay             string `json:"birthDay"`
-}
-
-// func (p PostedUser) GenerateUser() (User, err.Error) {
-// 	if p.Password != p.PasswordConfirmation {
-// 		e := "password and password confirmation do not match"
-// 		return User{}, err.New(e)
-// 	}
-
-// 	newUser := User{
-// 		Uid:         uuid.New().String(),
-// 		DisplayName: p.DisplayName,
-// 		Username:    p.Username,
-// 		Email:       p.Email,
-// 		Password:    p.Password,
-// 		ProfilePic:  p.ProfilePic,
-// 		BirthYear:   p.BirthYear,
-// 		BirthMonth:  p.BirthMonth,
-// 		BirthDay:    p.BirthDay,
-// 	}
-
-// 	vErr := newUser.validateUser()
-// 	if vErr.E != nil {
-// 		return newUser, vErr
-// 	}
-
-// 	return newUser, err.Error{}
-// }
