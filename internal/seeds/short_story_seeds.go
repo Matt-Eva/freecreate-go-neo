@@ -1,0 +1,5 @@
+package seeds
+
+func SeedShortStories(){
+	
+}
