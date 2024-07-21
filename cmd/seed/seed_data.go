@@ -86,4 +86,12 @@ func main() {
 		}
 	}
 
+	if calls["short_story"] || all {
+		sErr := seeds.SeedShortStories(ctx, neo, mongo)
+		if sErr.E != nil {
+			sErr.Log()
+			os.Exit(1)
+		}
+	}
+
 }

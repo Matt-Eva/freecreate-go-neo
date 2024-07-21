@@ -105,7 +105,6 @@ func (w Writing) newWritingParams() map[string]any {
 
 	paramMap := map[string]any{
 		"writingParams": writingParams,
-		"creatorId":     w.CreatorId,
 	}
 
 	return paramMap

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
+	"freecreate/internal/utils"
 	"os"
 
 	"github.com/go-faker/faker/v4"
@@ -70,7 +71,7 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) err.Error 
 		return err.Error{}
 	}
 
-	params, mErr := createMasterUser()
+	masterUser, mErr := createMasterUser()
 	if mErr.E != nil {
 		return mErr
 	}
@@ -80,7 +81,10 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) err.Error 
 		SET u.masterUser = true
 		RETURN u.username AS username
 	`
-	result, cErr := neo4j.ExecuteQuery(ctx, neo, createQuery, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+	userParams := map[string]any{
+		"userParams": utils.NeoParamsFromStruct(masterUser),
+	}
+	result, cErr := neo4j.ExecuteQuery(ctx, neo, createQuery, userParams, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if cErr != nil {
 		e := err.NewFromErr(cErr)
 		return e
@@ -95,7 +99,7 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) err.Error 
 	return err.Error{}
 }
 
-func createMasterUser() (map[string]any, err.Error) {
+func createMasterUser() (models.User, err.Error) {
 	p := models.PostedUser{
 		DisplayName:          "Matt",
 		Username:             "Matt",
@@ -109,12 +113,10 @@ func createMasterUser() (map[string]any, err.Error) {
 
 	masterUser, gErr := p.GenerateUser()
 	if gErr.E != nil {
-		return map[string]any{}, gErr
+		return models.User{}, gErr
 	}
 
-	params := masterUser.NewUserParams()
-
-	return params, err.Error{}
+	return masterUser, err.Error{}
 }
 
 func seedUsers(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
@@ -146,9 +148,6 @@ func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 	if len(result.Records) < 1 {
 		return err.New("no record returned from database for seeded user")
 	}
-
-	// user := result.Records[0].AsMap()
-	// fmt.Println("seed user created", user)
 
 	return err.Error{}
 }
