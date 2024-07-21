@@ -26,6 +26,14 @@ func main() {
 	}
 	defer neo.Close(ctx)
 
+	mongo, mErr := config.InitMongo(ctx)
+	if mErr.E != nil {
+		defer config.MongoDisconnect(mongo, ctx)	
+		  mErr.Log()
+		  os.Exit(1)
+	}
+	defer config.MongoDisconnect(mongo, ctx)
+
 	// dErr := seeds.DeleteSeeds(ctx, neo)
 	// if dErr.E != nil {
 	// 	dErr.Log()

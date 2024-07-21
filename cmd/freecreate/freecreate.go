@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"freecreate/internal/api/routes"
 	"freecreate/internal/config"
 	"freecreate/internal/err"
@@ -17,20 +16,24 @@ func run(ctx context.Context) err.Error {
 		e := err.NewFromErr(lErr)
 		return e
 	}
-	fmt.Println(os.Getenv("NEO_USER"))
+
 	neo, neoErr := config.InitNeo(ctx)
 	if neoErr.E != nil {
+		defer neo.Close(ctx)
 		return neoErr
 	}
 
 	mongo, mErr := config.InitMongo(ctx)
 	if mErr.E != nil {
+		defer config.MongoDisconnect(mongo, ctx)
 		return mErr
 	}
+
 	redis := config.InitRedis()
 	if rErr := routes.CreateRoutes(ctx, mongo, neo, redis); rErr.E != nil {
 		return rErr
 	}
+
 	return err.Error{}
 }
 
