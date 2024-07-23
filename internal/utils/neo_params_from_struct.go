@@ -11,9 +11,20 @@ func NeoParamsFromStruct(s interface{}) map[string]any {
 	params := make(map[string]any)
 
 	for i := 0; i < t.NumField(); i++ {
-		structField := t.Field(i).Name
-		mapField := strings.ToLower(structField[:1]) + structField[1:]
-		params[mapField] = v.Field(i).Interface()
+		if v.Field(i).Kind() == reflect.Struct {
+			embeddedStruct := v.Field(i)
+
+			for j := 0; j< t.Field(i).Type.NumField(); j ++{
+				embeddedFieldName := t.Field(i).Type.Field(j).Name
+				embeddedValue := embeddedStruct.Field(j).Interface()
+				mapField := strings.ToLower(embeddedFieldName[:1] + embeddedFieldName[1:])
+				params[mapField] = embeddedValue
+			}
+		} else {
+			structField := t.Field(i).Name
+			mapField := strings.ToLower(structField[:1]) + structField[1:]
+			params[mapField] = v.Field(i).Interface()
+		}
 	}
 
 	return params

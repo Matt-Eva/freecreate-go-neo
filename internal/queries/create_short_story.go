@@ -3,6 +3,7 @@ package queries
 import (
 	"fmt"
 	"freecreate/internal/err"
+	"freecreate/internal/models"
 	"freecreate/internal/utils"
 )
 	
@@ -35,4 +36,13 @@ func CreateShortStoryQuery() (string, err.Error){
 	`,creatorLabel, writingLabel, createdLabel)
 
 	return query, err.Error{}
+}
+
+func CreateShortStoryParams(shortStory models.ShortStory) (map[string]any){
+	params := map[string]any{
+		"creatorId": shortStory.CreatorId,
+		"shortStoryParams": utils.NeoParamsFromStruct(shortStory),
+	}
+
+	return params
 }

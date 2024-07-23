@@ -2,8 +2,10 @@ package seeds
 
 import (
 	"context"
+	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
+	"freecreate/internal/queries"
 	"time"
 
 	"github.com/go-faker/faker/v4"
@@ -18,11 +20,14 @@ func SeedShortStories(ctx context.Context, neo neo4j.DriverWithContext, mongo *m
 	}
 
 	for _, creatorId := range creators{
-		shortStory, sErr := makeShortStory(creatorId)
+		shortStory, mErr := makeShortStory(creatorId)
+		if mErr.E != nil {
+			return mErr
+		}
+		sErr := seedShortStory(ctx, neo, shortStory)
 		if sErr.E != nil {
 			return sErr
 		}
-		seedShortStory(ctx, neo, shortStory)
 	}
 	return err.Error{}
 }
@@ -84,13 +89,27 @@ func makeShortStory(creatorId string)(models.ShortStory, err.Error){
 }
 
 func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory) err.Error{
-	// creatorId := shortStory.CreatorId
-	// writingParams := utils.NeoParamsFromStruct(shortStory)
-	// params := map[string]any {
-	// 	"creatorId": creatorId,
-	// 	"writingParams": writingParams,
-	// }
+	params := queries.CreateShortStoryParams(shortStory)
 
+	query, qErr := queries.CreateShortStoryQuery()
+	if qErr.E != nil {
+		return qErr
+	}
+
+	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
+	if nErr != nil {
+		e := err.NewFromErr(nErr)
+		return e
+	}
+	
+	if (len(result.Records) < 1){
+		e := err.New("no record return from create seed short story")
+		return e
+	}
+
+	recordMap := result.Records[0].AsMap()
+
+	fmt.Println(recordMap)
 	
 	return err.Error{}
 }

@@ -29,3 +29,27 @@ func TestCreateShortStoryQuery(t *testing.T){
 		t.Fatalf("generated query '%s' does not match valid query '%s'", strippedGenerated, strippedValid)
 	}
 }
+
+// func TestCreateShortStoryParams(t *testing.T){
+// 	validParams := map[string]any{
+// 		"creatorId": "1",
+// 		"writingParams": map[string]any{	
+// 			"title": "test",
+// 			"description": "test",
+// 			"creatorId": "1",
+// 		},
+// 	}
+// 	p := models.PostedWriting{
+// 		Title: "test",
+// 		Description: "test",
+// 		WritingType: "shortStory",
+// 		Thumbnail: "",
+// 		CreatorId: "1",
+// 	}
+// 	year := 2024
+// 	shortStory, vErr := models.MakeShortStory(p, year)
+// 	if vErr.E != nil {
+// 		vErr.Log()
+// 		t.Errorf("above error occured")
+// 	}
+// }

@@ -101,17 +101,18 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) err.Error 
 }
 
 func createMasterUser() (models.User, err.Error) {
-	u := models.User{
+	p := models.PostedUser{
 		DisplayName:          "Matt",
 		Username:             "Matt",
 		Email:                faker.Email(),
 		Password:             os.Getenv("SEED_USER_PASSWORD"),
+		PasswordConfirmation: os.Getenv("SEED_USER_PASSWORD"),
 		BirthYear:            2000,
 		BirthMonth:           1,
 		BirthDay:             1,
 	}
 
-	vErr := u.ValidateUser()
+	u, vErr := models.MakeNewUser(p)
 	if vErr.E != nil {
 		return models.User{}, vErr
 	}
@@ -140,7 +141,9 @@ func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 		SET u.seed = true
 		RETURN u AS user
 	`
-	userParams := utils.NeoParamsFromStruct(user)
+	userParams := map[string]any{
+		"userParams": utils.NeoParamsFromStruct(user),
+	}
 	result, qErr := neo4j.ExecuteQuery(ctx, neo, createQuery, userParams, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if qErr != nil {
 		e := err.NewFromErr(qErr)
@@ -160,17 +163,18 @@ func makeSeedUser() (models.User, err.Error) {
 		e := err.NewFromErr(cErr)
 		return models.User{}, e
 	}
-	u := models.User{
+	p := models.PostedUser{
 		DisplayName:          faker.Name(),
 		Username:             faker.Username(),
 		Email:                faker.Email(),
 		Password:             password,
+		PasswordConfirmation: password,
 		BirthYear:            birthYear,
 		BirthMonth:           1,
 		BirthDay:             1,
 	}
 
-	vErr := u.ValidateUser()
+	u, vErr := models.MakeNewUser(p)
 	if vErr.E != nil {
 		return u, vErr
 	}
