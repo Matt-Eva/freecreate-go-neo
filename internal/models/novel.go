@@ -27,18 +27,9 @@ func (n Novel) validateNovel(year int) err.Error {
 	return err.Error{}
 }
 
-func (n Novel) newNovelParams() map[string]any {
-	params := n.newWritingParams()
 
-	return params
-}
-
-type PostedNovel struct {
-	PostedWriting
-}
-
-func (p PostedNovel) generateNovel(year int) (Novel, err.Error) {
-	writing, gErr := p.generateWriting(year)
+func MakeNovel(p PostedWriting, year int) (Novel, err.Error) {
+	writing, gErr := MakeWriting(p, year)
 	if gErr.E != nil {
 		return Novel{}, gErr
 	}

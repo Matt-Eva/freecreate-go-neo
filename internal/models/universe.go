@@ -26,18 +26,8 @@ func (n Universe) validateUniverse(year int) err.Error {
 	return err.Error{}
 }
 
-func (n Universe) newUniverseParams() map[string]any {
-	params := n.newWritingParams()
-
-	return params
-}
-
-type PostedUniverse struct {
-	PostedWriting
-}
-
-func (p PostedUniverse) generateuniverse(year int) (Universe, err.Error) {
-	writing, gErr := p.generateWriting(year)
+func MakeUniverse(p PostedWriting, year int) (Universe, err.Error) {
+	writing, gErr := MakeWriting(p, year)
 	if gErr.E != nil {
 		return Universe{}, gErr
 	}

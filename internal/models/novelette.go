@@ -26,18 +26,9 @@ func (n Novelette) validateNovelette(year int) err.Error {
 	return err.Error{}
 }
 
-func (n Novelette) newNoveletteParams() map[string]any {
-	params := n.newWritingParams()
 
-	return params
-}
-
-type PostedNovelette struct {
-	PostedWriting
-}
-
-func (p PostedNovelette) generateNovelette(year int) (Novelette, err.Error) {
-	writing, gErr := p.generateWriting(year)
+func MakeNovelette(p PostedWriting, year int) (Novelette, err.Error) {
+	writing, gErr := MakeWriting(p, year)
 	if gErr.E != nil {
 		return Novelette{}, gErr
 	}

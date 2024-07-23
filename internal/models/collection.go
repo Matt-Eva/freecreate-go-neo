@@ -26,17 +26,9 @@ func (n Collection) validateCollection(year int) err.Error {
 	return err.Error{}
 }
 
-func (n Collection) newCollectionParams() map[string]any {
-	params := n.newWritingParams()
-	return params
-}
 
-type PostedCollection struct {
-	PostedWriting
-}
-
-func (p PostedCollection) generateCollection(year int) (Collection, err.Error) {
-	writing, gErr := p.generateWriting(year)
+func MakeCollection( p PostedWriting, year int) (Collection, err.Error) {
+	writing, gErr := MakeWriting(p, year)
 	if gErr.E != nil {
 		return Collection{}, gErr
 	}

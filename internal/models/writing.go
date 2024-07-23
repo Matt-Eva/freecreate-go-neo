@@ -7,6 +7,9 @@ import (
 	"github.com/google/uuid"
 )
 
+var titleLength = 200
+var descriptionLength = 1000
+
 type Writing struct {
 	Uid          string
 	Title        string
@@ -35,8 +38,12 @@ func (w Writing) validateNewWriting(year int) err.Error {
 		e := "title cannot be empty"
 		return err.New(e)
 	}
-	if w.Description == "" {
-		e := "description cannot be empty"
+	if len(w.Title) > titleLength {
+		e := "title exceeds character limit"
+		return err.New(e)
+	}
+	if len(w.Description) > descriptionLength {
+		e := "description exceeds character limit"
 		return err.New(e)
 	}
 	if w.Thumbnail != "" {
@@ -120,6 +127,7 @@ func MakeWriting(p PostedWriting, year int)(Writing, err.Error){
 		UpdatedAt:    now,
 		OriginalYear: year,
 	}
+	
 	vErr := newWriting.validateNewWriting(year)
 	if vErr.E != nil {
 		return Writing{}, vErr
