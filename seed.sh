@@ -1,5 +1,5 @@
 #!/bin/bash
 
-go build cmd/seed/seed_data.go
+go build cmd/seed/db_seeds.go
 
-./seed_data "$@"
+./db_seeds "$@"
