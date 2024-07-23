@@ -2,7 +2,6 @@ package models
 
 import (
 	"freecreate/internal/err"
-	"freecreate/internal/utils"
 	"time"
 
 	"github.com/google/uuid"
@@ -100,16 +99,6 @@ func (w Writing) validateNewWriting(year int) err.Error {
 	return err.Error{}
 }
 
-func (w Writing) newWritingParams() map[string]any {
-	writingParams := utils.NeoParamsFromStruct(w)
-
-	paramMap := map[string]any{
-		"writingParams": writingParams,
-	}
-
-	return paramMap
-}
-
 type PostedWriting struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -118,7 +107,7 @@ type PostedWriting struct {
 	CreatorId   string `json:"creatorId"`
 }
 
-func (p PostedWriting) generateWriting(year int) (Writing, err.Error) {
+func MakeWriting(p PostedWriting, year int)(Writing, err.Error){
 	now := time.Now().UnixMilli()
 	newWriting := Writing{
 		Uid:          uuid.New().String(),
@@ -131,29 +120,10 @@ func (p PostedWriting) generateWriting(year int) (Writing, err.Error) {
 		UpdatedAt:    now,
 		OriginalYear: year,
 	}
-
 	vErr := newWriting.validateNewWriting(year)
 	if vErr.E != nil {
 		return Writing{}, vErr
 	}
 
 	return newWriting, err.Error{}
-}
-
-type UpdateWritingInfo struct {
-	Uid         string
-	Title       string
-	Description string
-	Thumbnail   string
-	WritingType string
-}
-
-type UpdateWritingLikes struct {
-	Uid   string
-	Likes int64
-}
-
-type UpdateWritingLibraryCount struct {
-	Uid   string
-	Likes int64
 }

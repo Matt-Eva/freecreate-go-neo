@@ -17,28 +17,13 @@ func (s ShortStory) validateNewShortStory() err.Error {
 	return err.Error{}
 }
 
-func (s ShortStory) NewShortStoryParams() map[string]any {
-	params := s.newWritingParams()
 
-	return params
-}
 
-type PostedShortStory struct {
-	PostedWriting
-}
-
-func (p PostedShortStory) GenerateShortStory(year int) (ShortStory, err.Error) {
-	writing, gErr := p.generateWriting(year)
-	if gErr.E != nil {
-		return ShortStory{}, gErr
-	}
+func MakeShortStory(year int) (ShortStory, err.Error) {
 
 	shortStory := ShortStory{writing}
 
-	vErr := shortStory.validateNewShortStory()
-	if vErr.E != nil {
-		return ShortStory{}, vErr
-	}
+	
 
 	return shortStory, err.Error{}
 }
