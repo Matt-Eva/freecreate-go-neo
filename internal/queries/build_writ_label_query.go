@@ -28,5 +28,4 @@ func BuildWritLabelQuery(genres []string) (string, error) {
 
 	labels := "(w:Writing" + genreLabels + ")"
 	return labels, nil
-
 }

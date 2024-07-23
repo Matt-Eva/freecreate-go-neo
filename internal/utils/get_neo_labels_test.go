@@ -4,7 +4,6 @@ import "testing"
 
 func TestGetRelationshipLabel(t *testing.T) {
 	validRels := []string{"IS_CREATOR"}
-	genRels := GetRelationshipLabels()
 	relMap := make(map[string]bool)
 
 	for _, rel := range validRels {
@@ -12,7 +11,7 @@ func TestGetRelationshipLabel(t *testing.T) {
 	}
 
 	for _, rel := range validRels {
-		match, ok := genRels[rel]
+		match, ok := relLabelMap[rel]
 		if !ok {
 			t.Errorf("generated relationship labels does not contain the '%s' relationship", rel)
 		}
