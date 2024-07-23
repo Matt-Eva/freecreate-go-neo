@@ -28,7 +28,8 @@ func CreateShortStoryQuery() (string, err.Error){
 		MATCH (c:%s {uid: $creatorId})
 		CREATE (w:%s $shortStoryParams) <-[r:%s] - (c)
 		RETURN c.name AS author, 
-		c.profilePic AS authorImg,  
+		c.profilePic AS authorImg,
+		c.creatorId AS authorId,  
 		w.title AS title, 
 		w.description AS description,
 		w.thumbnail AS thumbnail,
