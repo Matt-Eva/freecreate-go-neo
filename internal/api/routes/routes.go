@@ -4,6 +4,7 @@ import (
 	"context"
 	"freecreate/internal/api/handlers"
 	"freecreate/internal/api/middleware"
+	"freecreate/internal/api/test_handlers"
 	"freecreate/internal/err"
 	"net/http"
 
@@ -19,9 +20,9 @@ func CreateRoutes(ctx context.Context, mongo *mongo.Client, neo neo4j.DriverWith
 	// TEST ENDPOINTS
 	// =====================
 
-	router.HandleFunc("/api", middleware.AddDrivers(handlers.TestHandler, neo, mongo, redis, ctx)).Methods("GET")
-	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(handlers.TestCachePostHandler, redis, ctx)).Methods("POST")
-	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(handlers.TestCacheGetHandler, redis, ctx)).Methods("GET")
+	router.HandleFunc("/api", middleware.AddDrivers(test_handlers.TestHandler, neo, mongo, redis, ctx)).Methods("GET")
+	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(test_handlers.TestCachePostHandler, redis, ctx)).Methods("POST")
+	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(test_handlers.TestCacheGetHandler, redis, ctx)).Methods("GET")
 
 	// APPLICATION ENDPOINTS
 	// =====================
