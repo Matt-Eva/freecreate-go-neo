@@ -19,7 +19,7 @@ func SeedShortStories(ctx context.Context, neo neo4j.DriverWithContext, mongo *m
 		return cErr
 	}
 
-	for _, creatorId := range creators{
+	for _, creatorId := range creators {
 		shortStory, mErr := makeShortStory(creatorId)
 		if mErr.E != nil {
 			return mErr
@@ -32,7 +32,7 @@ func SeedShortStories(ctx context.Context, neo neo4j.DriverWithContext, mongo *m
 	return err.Error{}
 }
 
-func getCreators(ctx context.Context, neo neo4j.DriverWithContext)([]string, err.Error){
+func getCreators(ctx context.Context, neo neo4j.DriverWithContext) ([]string, err.Error) {
 	creators := make([]string, 0)
 
 	query := `
@@ -52,17 +52,17 @@ func getCreators(ctx context.Context, neo neo4j.DriverWithContext)([]string, err
 		return []string{}, e
 	}
 
-	for _, record := range result.Records{
+	for _, record := range result.Records {
 		uid, ok := record.Get("uid")
 		if !ok {
 			e := err.New("creator seed record does not have uid attribute")
-			return []string{},e
+			return []string{}, e
 		}
 
 		creatorId, ok := uid.(string)
 		if !ok {
 			e := err.New("creator seed field uid could not be converted to string")
-			return []string{},e
+			return []string{}, e
 		}
 		creators = append(creators, creatorId)
 	}
@@ -70,14 +70,14 @@ func getCreators(ctx context.Context, neo neo4j.DriverWithContext)([]string, err
 	return creators, err.Error{}
 }
 
-func makeShortStory(creatorId string)(models.ShortStory, err.Error){
+func makeShortStory(creatorId string) (models.ShortStory, err.Error) {
 	year := time.Now().Year()
 	p := models.PostedWriting{
-		Title: faker.Sentence(),
+		Title:       faker.Sentence(),
 		Description: faker.Paragraph(),
 		WritingType: "shortStory",
-		Thumbnail: "",
-		CreatorId: creatorId,
+		Thumbnail:   "",
+		CreatorId:   creatorId,
 	}
 
 	s, mErr := models.MakeShortStory(p, year)
@@ -88,7 +88,7 @@ func makeShortStory(creatorId string)(models.ShortStory, err.Error){
 	return s, err.Error{}
 }
 
-func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory) err.Error{
+func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory) err.Error {
 	params := queries.CreateShortStoryParams(shortStory)
 
 	query, qErr := queries.CreateShortStoryQuery()
@@ -101,8 +101,8 @@ func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory
 		e := err.NewFromErr(nErr)
 		return e
 	}
-	
-	if (len(result.Records) < 1){
+
+	if len(result.Records) < 1 {
 		e := err.New("no record return from create seed short story")
 		return e
 	}
@@ -110,6 +110,6 @@ func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory
 	recordMap := result.Records[0].AsMap()
 
 	fmt.Println(recordMap)
-	
+
 	return err.Error{}
 }

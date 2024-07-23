@@ -5,13 +5,13 @@ import (
 	"time"
 )
 
-func TestMakeWriting(t *testing.T){
+func TestMakeWriting(t *testing.T) {
 	p := PostedWriting{
-		Title: "hello",
+		Title:       "hello",
 		Description: "World",
 		WritingType: "test",
-		Thumbnail: "",
-		CreatorId: "1",
+		Thumbnail:   "",
+		CreatorId:   "1",
 	}
 	year := time.Now().Year()
 	w, wErr := MakeWriting(p, year)
@@ -19,42 +19,42 @@ func TestMakeWriting(t *testing.T){
 		wErr.Log()
 		t.Fatalf("above error occured")
 	}
-	if w.Title != p.Title{
+	if w.Title != p.Title {
 		t.Errorf("titles do not match")
 	}
 	if w.Description != p.Description {
 		t.Errorf("descriptions do not match")
 	}
-	if w.Thumbnail != p.Thumbnail{
+	if w.Thumbnail != p.Thumbnail {
 		t.Errorf("thumbnails do not match")
 	}
-	if w.CreatorId != p.CreatorId{
+	if w.CreatorId != p.CreatorId {
 		t.Errorf("creator ids do not match")
 	}
-	if w.OriginalYear != year{
+	if w.OriginalYear != year {
 		t.Errorf("years do not match")
 	}
-	if w.WritingType != p.WritingType{
+	if w.WritingType != p.WritingType {
 		t.Errorf("writing types do not match")
 	}
 }
 
-func TestValidateWriting(t *testing.T){
+func TestValidateWriting(t *testing.T) {
 	now := time.Now().UnixMilli()
 	year := time.Now().Year()
 	validWriting := Writing{
-		Uid: "1",
-		Title: "hello",
-		Description: "world",
-		Thumbnail: "",
-		WritingType: "test",
-		CreatorId: "1",
-		CreatedAt: now,
-		UpdatedAt: now,
-	 OriginalYear: year,
+		Uid:          "1",
+		Title:        "hello",
+		Description:  "world",
+		Thumbnail:    "",
+		WritingType:  "test",
+		CreatorId:    "1",
+		CreatedAt:    now,
+		UpdatedAt:    now,
+		OriginalYear: year,
 	}
 	vErr := validWriting.validateNewWriting(year)
-	if vErr.E !=nil {
+	if vErr.E != nil {
 		t.Fatalf("valid writing base case is marked as invalid")
 	}
 
@@ -80,7 +80,7 @@ func TestValidateWriting(t *testing.T){
 	}
 
 	longDescription := validWriting
-	longDescription.Description= "worldworldworldworldworldworldworldvvworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldvvworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldvvworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldvvworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworld"
+	longDescription.Description = "worldworldworldworldworldworldworldvvworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldvvworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldvvworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldvvworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworldworld"
 	dErr := longDescription.validateNewWriting(year)
 	if dErr.E == nil {
 		t.Errorf("validation not catching long description")

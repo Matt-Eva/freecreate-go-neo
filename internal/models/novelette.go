@@ -26,7 +26,6 @@ func (n Novelette) validateNovelette(year int) err.Error {
 	return err.Error{}
 }
 
-
 func MakeNovelette(p PostedWriting, year int) (Novelette, err.Error) {
 	writing, gErr := MakeWriting(p, year)
 	if gErr.E != nil {

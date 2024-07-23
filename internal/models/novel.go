@@ -27,7 +27,6 @@ func (n Novel) validateNovel(year int) err.Error {
 	return err.Error{}
 }
 
-
 func MakeNovel(p PostedWriting, year int) (Novel, err.Error) {
 	writing, gErr := MakeWriting(p, year)
 	if gErr.E != nil {

@@ -65,4 +65,3 @@ func (p PostedCreator) GenerateCreator(userId string) (Creator, err.Error) {
 
 	return creator, err.Error{}
 }
-

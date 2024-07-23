@@ -14,7 +14,7 @@ func NeoParamsFromStruct(s interface{}) map[string]any {
 		if v.Field(i).Kind() == reflect.Struct {
 			embeddedStruct := v.Field(i)
 
-			for j := 0; j< t.Field(i).Type.NumField(); j ++{
+			for j := 0; j < t.Field(i).Type.NumField(); j++ {
 				embeddedFieldName := t.Field(i).Type.Field(j).Name
 				embeddedValue := embeddedStruct.Field(j).Interface()
 				mapField := strings.ToLower(embeddedFieldName[:1] + embeddedFieldName[1:])

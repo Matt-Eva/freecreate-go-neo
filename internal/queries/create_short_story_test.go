@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestCreateShortStoryQuery(t *testing.T){
+func TestCreateShortStoryQuery(t *testing.T) {
 	validQuery := `
 		MATCH (c:Creator {uid: $creatorId})
 		CREATE (w:Writing $shortStoryParams) <- [r:CREATED] - (c)
@@ -22,11 +22,11 @@ func TestCreateShortStoryQuery(t *testing.T){
 		e.Log()
 		t.Fatalf("error")
 	}
-	
+
 	strippedValid := strings.ReplaceAll(validQuery, " ", "")
 	strippedGenerated := strings.ReplaceAll(generatedQuery, " ", "")
-	
-	if strippedValid != strippedGenerated{
+
+	if strippedValid != strippedGenerated {
 		t.Fatalf("generated query '%s' does not match valid query '%s'", strippedGenerated, strippedValid)
 	}
 }
@@ -34,7 +34,7 @@ func TestCreateShortStoryQuery(t *testing.T){
 // func TestCreateShortStoryParams(t *testing.T){
 // 	validParams := map[string]any{
 // 		"creatorId": "1",
-// 		"writingParams": map[string]any{	
+// 		"writingParams": map[string]any{
 // 			"title": "test",
 // 			"description": "test",
 // 			"creatorId": "1",

@@ -17,8 +17,8 @@ type User struct {
 	BirthYear   int
 	BirthMonth  int
 	BirthDay    int
-	CreatedAt int64
-	UpdatedAt int64
+	CreatedAt   int64
+	UpdatedAt   int64
 }
 
 func (u User) validateUser() err.Error {
@@ -54,7 +54,7 @@ func (u User) validateUser() err.Error {
 		e := "birth month error"
 		return err.New(e)
 	}
-	if u.BirthDay == 0 || u.BirthDay > 31 || u.BirthMonth < 0{
+	if u.BirthDay == 0 || u.BirthDay > 31 || u.BirthMonth < 0 {
 		e := "birth day error"
 		return err.New(e)
 	}
@@ -68,42 +68,42 @@ func (u User) validateUser() err.Error {
 }
 
 type PostedUser struct {
-	DisplayName string `json:"displayName"`
-	Username	string `json:"username"`
-	Email string `json:"email"`
-	BirthDay int `json:"birthday"`
-	BirthYear int `json:"birthYear"`
-	BirthMonth int `json:"birthMonth"`
-	ProfilePic string `json:"profilePic"`
-	Password string `json:"password"`
+	DisplayName          string `json:"displayName"`
+	Username             string `json:"username"`
+	Email                string `json:"email"`
+	BirthDay             int    `json:"birthday"`
+	BirthYear            int    `json:"birthYear"`
+	BirthMonth           int    `json:"birthMonth"`
+	ProfilePic           string `json:"profilePic"`
+	Password             string `json:"password"`
 	PasswordConfirmation string `json:"passwordConfirmation"`
 }
 
-func MakeNewUser(p PostedUser)(User, err.Error){
-	if p.Password != p.PasswordConfirmation{
+func MakeNewUser(p PostedUser) (User, err.Error) {
+	if p.Password != p.PasswordConfirmation {
 		e := err.New("password and password confirmation do not match")
 		return User{}, e
 	}
 	uid := uuid.New().String()
 	now := time.Now().UnixMilli()
-	u := User {
+	u := User{
 		DisplayName: p.DisplayName,
-		Password: p.Password,
-		Username: p.Username,
-		BirthYear: p.BirthYear,
-		BirthMonth: p.BirthMonth,
-		BirthDay: p.BirthDay,
-		Uid: uid,
-		Email: p.Email,
-		ProfilePic: p.ProfilePic,
-		CreatedAt: now,
-		UpdatedAt: now,
+		Password:    p.Password,
+		Username:    p.Username,
+		BirthYear:   p.BirthYear,
+		BirthMonth:  p.BirthMonth,
+		BirthDay:    p.BirthDay,
+		Uid:         uid,
+		Email:       p.Email,
+		ProfilePic:  p.ProfilePic,
+		CreatedAt:   now,
+		UpdatedAt:   now,
 	}
 
 	vErr := u.validateUser()
 	if vErr.E != nil {
 		return User{}, vErr
-	} 
+	}
 
 	return u, err.Error{}
 }

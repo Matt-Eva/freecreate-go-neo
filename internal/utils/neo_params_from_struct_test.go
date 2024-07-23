@@ -5,18 +5,18 @@ import (
 	"testing"
 )
 
-func TestNeoParamsFromStruct(t *testing.T){
+func TestNeoParamsFromStruct(t *testing.T) {
 	type Embedded struct {
 		Inner string
 	}
 	type Outer struct {
 		Embedded Embedded
-		Outer string
+		Outer    string
 	}
 	testStruct := Outer{
-			Embedded{
-				"hello",
-			},
+		Embedded{
+			"hello",
+		},
 		"world",
 	}
 	fmt.Println(testStruct.Embedded.Inner)
@@ -25,7 +25,7 @@ func TestNeoParamsFromStruct(t *testing.T){
 		"outer": "world",
 	}
 	generatedMap := NeoParamsFromStruct(testStruct)
-	for key, val := range generatedMap{
+	for key, val := range generatedMap {
 		testVal, ok := testMap[key]
 		if !ok {
 			t.Errorf("key '%s' from generated map does not exist it test map", key)

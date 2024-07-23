@@ -14,7 +14,7 @@ func (s ShortStory) validateShortStory() err.Error {
 		errorMsg := fmt.Sprintf("Writing type '%s' is not valid for a short Story; must be of type shortStory", s.WritingType)
 		return err.New(errorMsg)
 	}
-	
+
 	return err.Error{}
 }
 

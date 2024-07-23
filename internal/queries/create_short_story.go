@@ -6,22 +6,21 @@ import (
 	"freecreate/internal/models"
 	"freecreate/internal/utils"
 )
-	
 
-func CreateShortStoryQuery() (string, err.Error){
+func CreateShortStoryQuery() (string, err.Error) {
 	creatorLabel, cErr := utils.GetNodeLabel("Creator")
 	if cErr.E != nil {
-		return "",cErr
+		return "", cErr
 	}
 
 	writingLabel, wErr := utils.GetNodeLabel("Writing")
 	if wErr.E != nil {
-		return "",wErr
+		return "", wErr
 	}
 
 	createdLabel, lErr := utils.GetRelationshipLabel("CREATED")
 	if lErr.E != nil {
-		return "",lErr
+		return "", lErr
 	}
 
 	query := fmt.Sprintf(`
@@ -34,14 +33,14 @@ func CreateShortStoryQuery() (string, err.Error){
 		w.description AS description,
 		w.thumbnail AS thumbnail,
 		type(r) AS relationship
-	`,creatorLabel, writingLabel, createdLabel)
+	`, creatorLabel, writingLabel, createdLabel)
 
 	return query, err.Error{}
 }
 
-func CreateShortStoryParams(shortStory models.ShortStory) (map[string]any){
+func CreateShortStoryParams(shortStory models.ShortStory) map[string]any {
 	params := map[string]any{
-		"creatorId": shortStory.CreatorId,
+		"creatorId":        shortStory.CreatorId,
 		"shortStoryParams": utils.NeoParamsFromStruct(shortStory),
 	}
 

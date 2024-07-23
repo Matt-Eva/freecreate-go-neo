@@ -26,8 +26,7 @@ func (n Collection) validateCollection(year int) err.Error {
 	return err.Error{}
 }
 
-
-func MakeCollection( p PostedWriting, year int) (Collection, err.Error) {
+func MakeCollection(p PostedWriting, year int) (Collection, err.Error) {
 	writing, gErr := MakeWriting(p, year)
 	if gErr.E != nil {
 		return Collection{}, gErr

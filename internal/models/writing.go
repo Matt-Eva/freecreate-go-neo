@@ -114,7 +114,7 @@ type PostedWriting struct {
 	CreatorId   string `json:"creatorId"`
 }
 
-func MakeWriting(p PostedWriting, year int)(Writing, err.Error){
+func MakeWriting(p PostedWriting, year int) (Writing, err.Error) {
 	now := time.Now().UnixMilli()
 	newWriting := Writing{
 		Uid:          uuid.New().String(),
@@ -127,7 +127,7 @@ func MakeWriting(p PostedWriting, year int)(Writing, err.Error){
 		UpdatedAt:    now,
 		OriginalYear: year,
 	}
-	
+
 	vErr := newWriting.validateNewWriting(year)
 	if vErr.E != nil {
 		return Writing{}, vErr
