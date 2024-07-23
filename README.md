@@ -50,3 +50,7 @@ While Auth is not yet implemented, FreeCreate will use server-side sessions via 
   - Frequently accessed data will be stored in Redis cache, accelerating response times and freeing Noe4j from running complex queries as frequently.
 
 - While donations are not yet enabled, future payment processing will be handled by Stripe.
+
+## Code Guide
+
+Read FreeCreate's [code guide](/docs/code_guide.md) to become more familiar with how the codebase is designed and implemented. Topics include Errors, Testing, and architecture / separation of concerns.
