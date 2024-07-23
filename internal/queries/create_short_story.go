@@ -25,7 +25,7 @@ func CreateShortStoryQuery() (string, err.Error){
 
 	query := fmt.Sprintf(`
 		MATCH (c:%s {uid: $creatorId})
-		CREATE (w:%s $writingParams) <-[r:%s] - (c)
+		CREATE (w:%s $shortStoryParams) <-[r:%s] - (c)
 		RETURN c.name AS author, 
 		c.profilePic AS authorImg,  
 		w.title AS title, 

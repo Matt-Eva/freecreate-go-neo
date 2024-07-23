@@ -2,10 +2,8 @@ package seeds
 
 import (
 	"context"
-	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
-	"freecreate/internal/utils"
 	"time"
 
 	"github.com/go-faker/faker/v4"
@@ -86,12 +84,12 @@ func makeShortStory(creatorId string)(models.ShortStory, err.Error){
 }
 
 func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory) err.Error{
-	creatorId := shortStory.CreatorId
-	writingParams := utils.NeoParamsFromStruct(shortStory)
-	params := map[string]any {
-		"creatorId": creatorId,
-		"writingParams": writingParams,
-	}
+	// creatorId := shortStory.CreatorId
+	// writingParams := utils.NeoParamsFromStruct(shortStory)
+	// params := map[string]any {
+	// 	"creatorId": creatorId,
+	// 	"writingParams": writingParams,
+	// }
 
 	
 	return err.Error{}
