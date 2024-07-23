@@ -94,7 +94,7 @@ func (w Writing) validateNewWriting(year int) err.Error {
 		e := "relrank count cannot be greater than 0 for new writing"
 		return err.New(e)
 	}
-	if w.OriginalYear != year || w.OriginalYear == 0 {
+	if w.OriginalYear != year {
 		e := "server side error - Original year does not match current year or is empty"
 		return err.New(e)
 	}
