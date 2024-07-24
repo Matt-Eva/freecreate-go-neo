@@ -15,6 +15,7 @@ func TestCreateShortStoryQuery(t *testing.T) {
 		w.title AS title,
 		w.description AS description,
 		w.thumbnail AS thumbnail,
+		w.uid AS neoId,
 		type(r) AS relationship
 	`
 	generatedQuery, e := CreateShortStoryQuery()
