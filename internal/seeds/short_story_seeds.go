@@ -13,14 +13,24 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+
+
+type CreatorData struct {
+	CreatorUid string
+	CreatorId string
+	UserUid string
+}
+
+
+
 func SeedShortStories(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client) err.Error {
 	creators, cErr := getCreators(ctx, neo)
 	if cErr.E != nil {
 		return cErr
 	}
 
-	for _, creatorId := range creators {
-		shortStory, mErr := makeShortStory(creatorId)
+	for _, creatorData := range creators {
+		shortStory, mErr := makeShortStory(creatorData.CreatorId)
 		if mErr.E != nil {
 			return mErr
 		}
@@ -32,43 +42,75 @@ func SeedShortStories(ctx context.Context, neo neo4j.DriverWithContext, mongo *m
 	return err.Error{}
 }
 
-func getCreators(ctx context.Context, neo neo4j.DriverWithContext) ([]string, err.Error) {
-	creators := make([]string, 0)
+
+
+func getCreators(ctx context.Context, neo neo4j.DriverWithContext) ([]CreatorData, err.Error) {
+	
+	creators := make([]CreatorData, 0)
 
 	query := `
-		MATCH (c:Creator)
+		MATCH (c:Creator) <- [:IS_CREATOR] - (u:User)
 		WHERE c.seed = true
-		RETURN c.uid AS uid
+		RETURN c.uid AS creatorUid, c.creatorId AS creatorId, u.uid AS userUid
 	`
 
 	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, nil, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if nErr != nil {
 		e := err.NewFromErr(nErr)
-		return []string{}, e
+		return creators, e
 	}
 
 	if len(result.Records) == 0 {
 		e := err.New("no records returned for get seed creators")
-		return []string{}, e
+		return creators, e
 	}
 
 	for _, record := range result.Records {
-		uid, ok := record.Get("uid")
-		if !ok {
-			e := err.New("creator seed record does not have uid attribute")
-			return []string{}, e
-		}
+		creatorData := CreatorData{}
 
-		creatorId, ok := uid.(string)
+		cUid, ok := record.Get("creatorUid")
 		if !ok {
-			e := err.New("creator seed field uid could not be converted to string")
-			return []string{}, e
+			e := err.New("creator seed record does not have creatorUid attribute")
+			return creators, e
 		}
-		creators = append(creators, creatorId)
+		creatorUid, ok := cUid.(string)
+		if !ok {
+			e := err.New("creator seed field creatorUid could not be converted to string")
+			return creators, e
+		}
+		creatorData.CreatorUid = creatorUid
+
+		cId, ok := record.Get("creatorId")
+		if !ok {
+			e := err.New("creator seed record does not have creatorId attribute")
+			return creators, e
+		}
+		creatorId, ok := cId.(string)
+		if !ok {
+			e := err.New("creator seed field creatorId could not be converted to string")
+			return creators, e
+		}
+		creatorData.CreatorId = creatorId
+
+		uUid, ok := record.Get("userUid")
+		if !ok {
+			e := err.New("creator seed record does not have userUid attribute")
+			return creators, e
+		}
+		userUid, ok := uUid.(string)
+		if !ok {
+			e := err.New("creator seed field userUid could not be converted to string")
+			return creators, e
+		}
+		creatorData.UserUid = userUid
+
+		creators = append(creators, creatorData)
 	}
 
 	return creators, err.Error{}
 }
+
+
 
 func makeShortStory(creatorId string) (models.ShortStory, err.Error) {
 	year := time.Now().Year()
@@ -85,8 +127,12 @@ func makeShortStory(creatorId string) (models.ShortStory, err.Error) {
 		return models.ShortStory{}, mErr
 	}
 
+	s.Published = true
+
 	return s, err.Error{}
 }
+
+
 
 func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory) err.Error {
 	params := queries.CreateShortStoryParams(shortStory)
