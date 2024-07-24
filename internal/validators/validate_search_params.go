@@ -1,8 +1,8 @@
 package validators
 
 import (
-	"errors"
 	"fmt"
+	"freecreate/internal/err"
 	"freecreate/internal/utils"
 	"net/url"
 )
@@ -15,15 +15,15 @@ type ParamStruct struct {
 	Name        string
 }
 
-func ValidateSearchParams(params url.Values) (ParamStruct, error) {
+func ValidateSearchParams(params url.Values) (ParamStruct, err.Error) {
 	timeFrames := utils.GetTimeFrames()
 	var paramStruct ParamStruct
 
 	if len(params["timeFrame"]) == 0 {
-		return ParamStruct{}, errors.New("no time frame specified")
+		return ParamStruct{}, err.New("no time frame specified")
 	} else if !timeFrames[params["timeFrame"][0]] {
 		errorMsg := fmt.Sprintf("Time frame '%s' is not a valid time frame", params["timeFrame"][0])
-		return ParamStruct{}, errors.New(errorMsg)
+		return ParamStruct{}, err.New(errorMsg)
 	} else {
 		paramStruct.TimeFrame = params["timeFrame"][0]
 	}
@@ -31,17 +31,17 @@ func ValidateSearchParams(params url.Values) (ParamStruct, error) {
 	if len(params["writingType"]) == 0 || params["writingType"][0] == "any" {
 		paramStruct.WritingType = ""
 	} else {
-		writingType, err := ValidateWritingType(params["writingType"][0])
-		if err != nil {
-			return paramStruct, err
+		writingType, wErr := ValidateWritingType(params["writingType"][0])
+		if wErr.E != nil {
+			return paramStruct, wErr
 		}
 		paramStruct.WritingType = writingType
 	}
 
 	genres := params["genres"]
-	validatedGenres, err := ValidateGenreLabels(genres)
-	if err != nil {
-		return ParamStruct{}, err
+	validatedGenres, vErr := ValidateGenreLabels(genres)
+	if vErr.E != nil {
+		return ParamStruct{}, vErr
 	}
 	paramStruct.Genres = validatedGenres
 
@@ -53,5 +53,5 @@ func ValidateSearchParams(params url.Values) (ParamStruct, error) {
 
 	paramStruct.Tags = params["tags"]
 
-	return paramStruct, nil
+	return paramStruct, err.Error{}
 }

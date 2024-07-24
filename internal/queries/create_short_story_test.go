@@ -8,7 +8,7 @@ import (
 func TestCreateShortStoryQuery(t *testing.T) {
 	validQuery := `
 		MATCH (c:Creator {uid: $creatorId})
-		CREATE (w:Writing $shortStoryParams) <- [r:CREATED] - (c)
+		CREATE (w:Writing:Fantasy $shortStoryParams) <- [r:CREATED] - (c)
 		RETURN c.name AS author,
 		c.profilePic AS authorImg,
 		c.creatorId AS authorId,
@@ -18,7 +18,7 @@ func TestCreateShortStoryQuery(t *testing.T) {
 		w.uid AS neoId,
 		type(r) AS relationship
 	`
-	generatedQuery, e := CreateShortStoryQuery()
+	generatedQuery, e := CreateShortStoryQuery([]string{"Fantasy"})
 	if e.E != nil {
 		e.Log()
 		t.Fatalf("error")

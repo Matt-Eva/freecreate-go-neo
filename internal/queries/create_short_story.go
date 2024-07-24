@@ -7,7 +7,7 @@ import (
 	"freecreate/internal/utils"
 )
 
-func CreateShortStoryQuery() (string, err.Error) {
+func CreateShortStoryQuery(genres []string) (string, err.Error) {
 	creatorLabel, cErr := utils.GetNodeLabel("Creator")
 	if cErr.E != nil {
 		return "", cErr
@@ -18,6 +18,11 @@ func CreateShortStoryQuery() (string, err.Error) {
 		return "", wErr
 	}
 
+	genreLabels, gErr := BuildGenreLabels(genres)
+	if gErr.E != nil {
+		return "", gErr
+	}
+
 	createdLabel, lErr := utils.GetRelationshipLabel("CREATED")
 	if lErr.E != nil {
 		return "", lErr
@@ -25,7 +30,7 @@ func CreateShortStoryQuery() (string, err.Error) {
 
 	query := fmt.Sprintf(`
 		MATCH (c:%s {uid: $creatorId})
-		CREATE (w:%s $shortStoryParams) <-[r:%s] - (c)
+		CREATE (w:%s%s $shortStoryParams) <-[r:%s] - (c)
 		RETURN c.name AS author, 
 		c.profilePic AS authorImg,
 		c.creatorId AS authorId,  
@@ -34,7 +39,7 @@ func CreateShortStoryQuery() (string, err.Error) {
 		w.thumbnail AS thumbnail,
 		w.uid AS neoId,
 		type(r) AS relationship
-	`, creatorLabel, writingLabel, createdLabel)
+	`, creatorLabel, writingLabel, genreLabels, createdLabel)
 
 	return query, err.Error{}
 }

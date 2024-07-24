@@ -12,9 +12,9 @@ type RecentQueryStruct struct {
 
 func SearchMostRecentHandler(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext) {
 	params := r.URL.Query()
-	validatedParams, err := validators.ValidateSearchParams(params)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+	validatedParams, vErr := validators.ValidateSearchParams(params)
+	if vErr.E != nil {
+		http.Error(w, vErr.E.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 

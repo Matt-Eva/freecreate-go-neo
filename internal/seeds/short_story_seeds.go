@@ -6,6 +6,8 @@ import (
 	"freecreate/internal/err"
 	"freecreate/internal/models"
 	"freecreate/internal/queries"
+	"freecreate/internal/utils"
+	"math/rand"
 	"time"
 
 	"github.com/go-faker/faker/v4"
@@ -91,7 +93,13 @@ func makeShortStory(creatorId string) (models.ShortStory, err.Error) {
 func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory) err.Error {
 	params := queries.CreateShortStoryParams(shortStory)
 
-	query, qErr := queries.CreateShortStoryQuery()
+	genres := utils.GetGenres()
+	selectedGenres := make([]string, 0, 3)
+	for i:= 0; i < 3; i++ {
+		genre := genres[rand.Intn(len(genres))]
+		selectedGenres = append(selectedGenres, genre)
+	}
+	query, qErr := queries.CreateShortStoryQuery(selectedGenres)
 	if qErr.E != nil {
 		return qErr
 	}
@@ -101,14 +109,12 @@ func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory
 		e := err.NewFromErr(nErr)
 		return e
 	}
-
 	if len(result.Records) < 1 {
 		e := err.New("no record return from create seed short story")
 		return e
 	}
 
 	recordMap := result.Records[0].AsMap()
-
 	fmt.Println(recordMap)
 
 	return err.Error{}
