@@ -14,8 +14,6 @@ func TestCachePostHandler(w http.ResponseWriter, r *http.Request, redis *redis.C
 		Name string `json:"name"`
 		Nested interface{} `json:"nested"`
 	}
-	fmt.Println("change")
-	fmt.Println("hello!")
 
 	var postData PostData
 	err := json.NewDecoder(r.Body).Decode(&postData)
