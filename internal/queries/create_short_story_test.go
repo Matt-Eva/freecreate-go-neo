@@ -12,10 +12,7 @@ func TestCreateShortStoryQuery(t *testing.T) {
 		RETURN c.name AS author,
 		c.profilePic AS authorImg,
 		c.creatorId AS authorId,
-		w.title AS title,
-		w.description AS description,
-		w.thumbnail AS thumbnail,
-		w.uid AS neoId,
+		w AS shortStory,
 		type(r) AS relationship
 	`
 	generatedQuery, e := CreateShortStoryQuery([]string{"Fantasy"})

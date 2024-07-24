@@ -1,10 +1,15 @@
 package queries
 
 import (
+	"context"
 	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
+
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
+
+func CreateShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory){}
 
 func CreateShortStoryQuery(genres []string) (string, err.Error) {
 	creatorLabel, cErr := GetNodeLabel("Creator")
@@ -33,10 +38,7 @@ func CreateShortStoryQuery(genres []string) (string, err.Error) {
 		RETURN c.name AS author, 
 		c.profilePic AS authorImg,
 		c.creatorId AS authorId,  
-		w.title AS title, 
-		w.description AS description,
-		w.thumbnail AS thumbnail,
-		w.uid AS neoId,
+		w AS shortStory,
 		type(r) AS relationship
 	`, creatorLabel, writingLabel, genreLabels, createdLabel)
 
