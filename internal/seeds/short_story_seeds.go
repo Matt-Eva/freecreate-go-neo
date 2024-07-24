@@ -2,7 +2,6 @@ package seeds
 
 import (
 	"context"
-	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
 	"freecreate/internal/queries"
@@ -114,8 +113,8 @@ func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory
 		return e
 	}
 
-	recordMap := result.Records[0].AsMap()
-	fmt.Println(recordMap)
+	// recordMap := result.Records[0].AsMap()
+	// fmt.Println(recordMap)
 
 	return err.Error{}
 }
