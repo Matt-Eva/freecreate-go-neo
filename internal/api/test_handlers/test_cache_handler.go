@@ -11,7 +11,7 @@ import (
 
 func TestCachePostHandler(w http.ResponseWriter, r *http.Request, redis *redis.Client, ctx context.Context) {
 	type PostData struct {
-		Name string `json:"name"`
+		Name   string      `json:"name"`
 		Nested interface{} `json:"nested"`
 	}
 

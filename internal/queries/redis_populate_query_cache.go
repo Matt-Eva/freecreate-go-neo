@@ -175,4 +175,3 @@ package queries
 // func genMaxCombo() int {
 // 	return 3
 // }
-

@@ -13,15 +13,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-
-
 type CreatorData struct {
 	CreatorUid string
-	CreatorId string
-	UserUid string
+	CreatorId  string
+	UserUid    string
 }
-
-
 
 func SeedShortStories(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client) err.Error {
 	creators, cErr := getCreators(ctx, neo)
@@ -42,10 +38,8 @@ func SeedShortStories(ctx context.Context, neo neo4j.DriverWithContext, mongo *m
 	return err.Error{}
 }
 
-
-
 func getCreators(ctx context.Context, neo neo4j.DriverWithContext) ([]CreatorData, err.Error) {
-	
+
 	creators := make([]CreatorData, 0)
 
 	query := `
@@ -110,8 +104,6 @@ func getCreators(ctx context.Context, neo neo4j.DriverWithContext) ([]CreatorDat
 	return creators, err.Error{}
 }
 
-
-
 func makeShortStory(creatorId string) (models.ShortStory, err.Error) {
 	year := time.Now().Year()
 	p := models.PostedWriting{
@@ -132,14 +124,12 @@ func makeShortStory(creatorId string) (models.ShortStory, err.Error) {
 	return s, err.Error{}
 }
 
-
-
 func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory) err.Error {
 	params := queries.CreateShortStoryParams(shortStory)
 
 	genres := queries.GetGenres()
 	selectedGenres := make([]string, 0, 3)
-	for i:= 0; i < 3; i++ {
+	for i := 0; i < 3; i++ {
 		genre := genres[rand.Intn(len(genres))]
 		selectedGenres = append(selectedGenres, genre)
 	}
