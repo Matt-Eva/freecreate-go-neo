@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"freecreate/internal/utils"
 
 	"github.com/google/uuid"
 )
@@ -22,11 +21,6 @@ func (t Tag) validateTag() error {
 		return errors.New(err)
 	}
 	return nil
-}
-
-func (t Tag) newTagParams() map[string]any {
-	params := utils.NeoParamsFromStruct(t)
-	return params
 }
 
 type PostedTag struct {

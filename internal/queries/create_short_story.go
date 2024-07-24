@@ -47,7 +47,7 @@ func CreateShortStoryQuery(genres []string) (string, err.Error) {
 func CreateShortStoryParams(shortStory models.ShortStory) map[string]any {
 	params := map[string]any{
 		"creatorId":        shortStory.CreatorId,
-		"shortStoryParams": utils.NeoParamsFromStruct(shortStory),
+		"shortStoryParams": NeoParamsFromStruct(shortStory),
 	}
 
 	return params

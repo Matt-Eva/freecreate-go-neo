@@ -2,7 +2,6 @@ package models
 
 import (
 	"freecreate/internal/err"
-	"freecreate/internal/utils"
 
 	"github.com/google/uuid"
 )
@@ -34,11 +33,6 @@ func (c Creator) validateCreator() err.Error {
 	}
 
 	return err.Error{}
-}
-
-func (c Creator) NewCreatorParams() map[string]any {
-	params := utils.NeoParamsFromStruct(c)
-	return map[string]any{"creatorParams": params, "userId": params["userId"]}
 }
 
 type PostedCreator struct {

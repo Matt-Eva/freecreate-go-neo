@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
+	"freecreate/internal/queries"
 
 	"github.com/go-faker/faker/v4"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -68,10 +69,12 @@ func getSeedUsers(ctx context.Context, neo neo4j.DriverWithContext) ([]string, e
 }
 
 func seedCreator(ctx context.Context, neo neo4j.DriverWithContext, userId string) err.Error {
-	params, gErr := makeSeedCreator(userId)
+	creator, gErr := makeSeedCreator(userId)
 	if gErr.E != nil {
 		return gErr
 	}
+
+	params := queries.NeoParamsFromStruct(creator)
 
 	query := `
 		MATCH (u:User {uid: $userId})	
@@ -93,7 +96,7 @@ func seedCreator(ctx context.Context, neo neo4j.DriverWithContext, userId string
 	return err.Error{}
 }
 
-func makeSeedCreator(userId string) (map[string]any, err.Error) {
+func makeSeedCreator(userId string) (models.Creator, err.Error) {
 	p := models.PostedCreator{
 		Name:       faker.Name(),
 		ProfilePic: "",
@@ -103,12 +106,10 @@ func makeSeedCreator(userId string) (map[string]any, err.Error) {
 
 	c, gErr := p.GenerateCreator(userId)
 	if gErr.E != nil {
-		return map[string]any{}, gErr
+		return models.Creator{}, gErr
 	}
 
-	params := c.NewCreatorParams()
-
-	return params, err.Error{}
+	return c, err.Error{}
 }
 
 func DeleteCreatorSeeds(neo neo4j.DriverWithContext, mongo *mongo.Client) err.Error {

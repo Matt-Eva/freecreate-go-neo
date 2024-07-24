@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
-	"freecreate/internal/utils"
+	"freecreate/internal/queries"
 	"os"
 	"strconv"
 
@@ -83,7 +83,7 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) err.Error 
 		RETURN u.username AS username
 	`
 	userParams := map[string]any{
-		"userParams": utils.NeoParamsFromStruct(masterUser),
+		"userParams": queries.NeoParamsFromStruct(masterUser),
 	}
 	result, cErr := neo4j.ExecuteQuery(ctx, neo, createQuery, userParams, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if cErr != nil {
@@ -142,7 +142,7 @@ func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 		RETURN u AS user
 	`
 	userParams := map[string]any{
-		"userParams": utils.NeoParamsFromStruct(user),
+		"userParams": queries.NeoParamsFromStruct(user),
 	}
 	result, qErr := neo4j.ExecuteQuery(ctx, neo, createQuery, userParams, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase("neo4j"))
 	if qErr != nil {
