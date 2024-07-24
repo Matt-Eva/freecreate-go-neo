@@ -12,10 +12,23 @@ func TestCreateShortStoryQuery(t *testing.T) {
 		RETURN c.name AS author,
 		c.profilePic AS authorImg,
 		c.creatorId AS authorId,
-		w AS shortStory,
+		w.title AS title,
+		w.description AS description,
+		w.uid AS uid,
+		w.thumbnail AS thumbnail,
+		w.writingType AS writingType,
+		w.createdAt AS createdAt,
+		w.updatedAt AS updatedAt,
+		w.libraryCount AS libraryCount,
+		w.likes AS likes,
+		w.views AS views,
+		w.donations AS donations,
+		w.rank AS rank,
+		w.relRank AS relRank,
+		w.originalYear AS originalYear,
 		type(r) AS relationship
 	`
-	generatedQuery, e := CreateShortStoryQuery([]string{"Fantasy"})
+	generatedQuery, e := CreateShortStoryQuery([]string{"Fantasy"}, []string{""})
 	if e.E != nil {
 		e.Log()
 		t.Fatalf("error")

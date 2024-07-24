@@ -133,7 +133,7 @@ func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory
 		genre := genres[rand.Intn(len(genres))]
 		selectedGenres = append(selectedGenres, genre)
 	}
-	query, qErr := queries.CreateShortStoryQuery(selectedGenres)
+	query, qErr := queries.CreateShortStoryQuery(selectedGenres, []string{""})
 	if qErr.E != nil {
 		return qErr
 	}
