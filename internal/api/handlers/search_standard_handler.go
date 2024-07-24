@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"freecreate/internal/validators"
 	"net/http"
+	"net/url"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
@@ -21,13 +21,7 @@ type Results struct {
 func SearchStandardHandler(w http.ResponseWriter, r *http.Request, neo neo4j.DriverWithContext) {
 	params := r.URL.Query()
 
-	paramStruct, paramErr := validators.ValidateSearchParams(params)
-	if paramErr.E != nil {
-		http.Error(w, paramErr.E.Error(), http.StatusUnprocessableEntity)
-		return
-	}
-
-	queryStruct, buildErr := BuildStandardSearchQuery(paramStruct)
+	queryStruct, buildErr := BuildStandardSearchQuery(params)
 	if buildErr != nil {
 		http.Error(w, buildErr.Error(), http.StatusUnprocessableEntity)
 		return
@@ -37,7 +31,7 @@ func SearchStandardHandler(w http.ResponseWriter, r *http.Request, neo neo4j.Dri
 
 }
 
-func BuildStandardSearchQuery(paramStruct validators.ParamStruct) (QueryStruct, error) {
+func BuildStandardSearchQuery(params url.Values) (QueryStruct, error) {
 	var queryStruct QueryStruct
 	// queryParams := make(map[string]any)
 
