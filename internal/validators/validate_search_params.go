@@ -3,6 +3,7 @@ package validators
 import (
 	"fmt"
 	"freecreate/internal/err"
+	"freecreate/internal/queries"
 	"freecreate/internal/utils"
 	"net/url"
 )
@@ -39,7 +40,7 @@ func ValidateSearchParams(params url.Values) (ParamStruct, err.Error) {
 	}
 
 	genres := params["genres"]
-	validatedGenres, vErr := ValidateGenreLabels(genres)
+	validatedGenres, vErr := queries.ValidateGenreLabels(genres)
 	if vErr.E != nil {
 		return ParamStruct{}, vErr
 	}

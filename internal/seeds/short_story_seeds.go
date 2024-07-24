@@ -5,7 +5,6 @@ import (
 	"freecreate/internal/err"
 	"freecreate/internal/models"
 	"freecreate/internal/queries"
-	"freecreate/internal/utils"
 	"math/rand"
 	"time"
 
@@ -92,7 +91,7 @@ func makeShortStory(creatorId string) (models.ShortStory, err.Error) {
 func seedShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory) err.Error {
 	params := queries.CreateShortStoryParams(shortStory)
 
-	genres := utils.GetGenres()
+	genres := queries.GetGenres()
 	selectedGenres := make([]string, 0, 3)
 	for i:= 0; i < 3; i++ {
 		genre := genres[rand.Intn(len(genres))]

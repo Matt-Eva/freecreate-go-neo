@@ -3,7 +3,7 @@ package test_handlers
 import (
 	"errors"
 	"fmt"
-	"freecreate/internal/utils"
+	"freecreate/internal/queries"
 	"net/http"
 	"net/url"
 	"time"
@@ -45,7 +45,7 @@ func buildWritingQuery(params url.Values) ([]string, error) {
 }
 
 func buildWritingGenreQuery(genres []string) string {
-	genreLabels := utils.GetGenres()
+	genreLabels := queries.GetGenres()
 
 	queryLabels := "w:Writing"
 

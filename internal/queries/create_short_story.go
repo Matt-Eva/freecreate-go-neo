@@ -4,16 +4,15 @@ import (
 	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
-	"freecreate/internal/utils"
 )
 
 func CreateShortStoryQuery(genres []string) (string, err.Error) {
-	creatorLabel, cErr := utils.GetNodeLabel("Creator")
+	creatorLabel, cErr := GetNodeLabel("Creator")
 	if cErr.E != nil {
 		return "", cErr
 	}
 
-	writingLabel, wErr := utils.GetNodeLabel("Writing")
+	writingLabel, wErr := GetNodeLabel("Writing")
 	if wErr.E != nil {
 		return "", wErr
 	}
@@ -23,7 +22,7 @@ func CreateShortStoryQuery(genres []string) (string, err.Error) {
 		return "", gErr
 	}
 
-	createdLabel, lErr := utils.GetRelationshipLabel("CREATED")
+	createdLabel, lErr := GetRelationshipLabel("CREATED")
 	if lErr.E != nil {
 		return "", lErr
 	}
