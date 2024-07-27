@@ -74,7 +74,9 @@ func seedCreator(ctx context.Context, neo neo4j.DriverWithContext, userId string
 		return gErr
 	}
 
-	params := queries.NeoParamsFromStruct(creator)
+	params := map[string]any{
+		"creatorParams": queries.NeoParamsFromStruct(creator),
+	}
 
 	query := `
 		MATCH (u:User {uid: $userId})	
