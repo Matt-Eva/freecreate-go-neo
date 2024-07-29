@@ -5,16 +5,15 @@ import (
 	"testing"
 )
 
-
-func TestNeoRecordToStruct(t *testing.T){
+func TestNeoRecordToStruct(t *testing.T) {
 	type TestStruct struct {
-		Field string
+		Field  string
 		Number int
 		MyBool bool
 	}
 	testStruct := TestStruct{}
-	testMap := map[string]any {
-		"Field": "sup",
+	testMap := map[string]any{
+		"Field":  "sup",
 		"Number": 600,
 		"MyBool": true,
 	}
@@ -23,7 +22,7 @@ func TestNeoRecordToStruct(t *testing.T){
 		cErr.Log()
 		t.Fatalf("above error occurred")
 	}
-	if testStruct.Field != "sup" || testStruct.Number != 600 || testStruct.MyBool != true{
+	if testStruct.Field != "sup" || testStruct.Number != 600 || testStruct.MyBool != true {
 		fmt.Println(testMap, testStruct)
 		t.Fatalf("could not convert test map to test struct")
 	}

@@ -10,25 +10,25 @@ import (
 )
 
 type CreatedShortStory struct {
-	Author string
-	AuthorImg string
-	Title string
-	Description string
-	Uid string
-	Thumbnail string
-	WritingType string
-	CreatedAt string
-	UpdatedAt string
+	Author       string
+	AuthorImg    string
+	Title        string
+	Description  string
+	Uid          string
+	Thumbnail    string
+	WritingType  string
+	CreatedAt    string
+	UpdatedAt    string
 	LibraryCount int64
-	Likes int64
-	Views int64
-	Donations int64
-	Rank int64
-	RelRank int64
+	Likes        int64
+	Views        int64
+	Donations    int64
+	Rank         int64
+	RelRank      int64
 	OriginalYear int
 }
 
-func CreateShortStory( ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory, genres, tags []string) (CreatedShortStory, err.Error) {
+func CreateShortStory(ctx context.Context, neo neo4j.DriverWithContext, shortStory models.ShortStory, genres, tags []string) (CreatedShortStory, err.Error) {
 	query, qErr := CreateShortStoryQuery(genres, tags)
 	if qErr.E != nil {
 		return CreatedShortStory{}, err.Error{}
@@ -41,7 +41,7 @@ func CreateShortStory( ctx context.Context, neo neo4j.DriverWithContext, shortSt
 		e := err.NewFromErr(nErr)
 		return CreatedShortStory{}, e
 	}
-	if len(result.Records) < 1{
+	if len(result.Records) < 1 {
 		return CreatedShortStory{}, err.New("create short story op returning no record")
 	} else if len(result.Records) > 1 {
 		return CreatedShortStory{}, err.New("create short story op returning more than one record")
@@ -49,7 +49,6 @@ func CreateShortStory( ctx context.Context, neo neo4j.DriverWithContext, shortSt
 
 	createdStory := CreatedShortStory{}
 	// record := result.Records[0]
-	
 
 	return createdStory, err.Error{}
 }

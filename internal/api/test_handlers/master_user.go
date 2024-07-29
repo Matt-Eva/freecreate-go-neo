@@ -13,24 +13,24 @@ import (
 )
 
 type returnUser struct {
-	Username string `json:"username"`
+	Username    string `json:"username"`
 	DisplayName string `json:"displayName"`
 }
 
-func HandleMasterUser( ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore)http.HandlerFunc{
-	return func(w http.ResponseWriter, r *http.Request){
-		handleMasterUser(w, r,ctx, neo, store)
+func HandleMasterUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		handleMasterUser(w, r, ctx, neo, store)
 	}
 }
 
-func handleMasterUser(w http.ResponseWriter, r *http.Request,ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
 	aErr := middleware.AuthenticateUser(r, store)
-	if aErr.E != nil{
+	if aErr.E != nil {
 		// user, uErr := getMasterUserFromDb(ctx, neo)
 	}
 }
 
-func getMasterUserFromDb(ctx context.Context, neo neo4j.DriverWithContext)(returnUser, err.Error){
+func getMasterUserFromDb(ctx context.Context, neo neo4j.DriverWithContext) (returnUser, err.Error) {
 	dbName := os.Getenv("NEO_DB")
 	query := `
 		MATCH (u:User)
@@ -48,7 +48,7 @@ func getMasterUserFromDb(ctx context.Context, neo neo4j.DriverWithContext)(retur
 	user := returnUser{}
 	cErr := queries.NeoRecordToStruct(resultMap, &user)
 	if cErr.E != nil {
-return returnUser{}, err.Error{}
+		return returnUser{}, err.Error{}
 	}
 
 	return user, err.Error{}

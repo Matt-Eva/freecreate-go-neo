@@ -23,7 +23,7 @@ func InitRedis() *redis.Client {
 	return client
 }
 
-func InitRedisSessionStore(ctx context.Context, redis *redis.Client)(*redisstore.RedisStore, err.Error){
+func InitRedisSessionStore(ctx context.Context, redis *redis.Client) (*redisstore.RedisStore, err.Error) {
 	fmt.Println("initializing session store")
 	store, rErr := redisstore.NewRedisStore(ctx, redis)
 	if rErr != nil {

@@ -6,11 +6,11 @@ import (
 	"reflect"
 )
 
-func NeoRecordToStruct(record map[string]any, structPointer interface{})(err.Error){
+func NeoRecordToStruct(record map[string]any, structPointer interface{}) err.Error {
 	value := reflect.ValueOf(structPointer).Elem()
 	t := value.Type()
 
-	for i := 0; i < t.NumField(); i ++{
+	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
 		name := field.Name
 		recordValue, ok := record[name]
@@ -48,8 +48,8 @@ func NeoRecordToStruct(record map[string]any, structPointer interface{})(err.Err
 	return err.Error{}
 }
 
-func convString(value interface{}, name string)(string, err.Error){
-	switch v := value.(type){
+func convString(value interface{}, name string) (string, err.Error) {
+	switch v := value.(type) {
 	case string:
 		return v, err.Error{}
 	default:
@@ -58,8 +58,8 @@ func convString(value interface{}, name string)(string, err.Error){
 	}
 }
 
-func convInt(value interface{}, name string)(int64, err.Error){
-	switch v := value.(type){
+func convInt(value interface{}, name string) (int64, err.Error) {
+	switch v := value.(type) {
 	case int64:
 		return v, err.Error{}
 	case int:
@@ -76,8 +76,8 @@ func convInt(value interface{}, name string)(int64, err.Error){
 	}
 }
 
-func convBool(value interface{}, name string)(bool, err.Error){
-	switch v := value.(type){
+func convBool(value interface{}, name string) (bool, err.Error) {
+	switch v := value.(type) {
 	case bool:
 		return v, err.Error{}
 	default:
