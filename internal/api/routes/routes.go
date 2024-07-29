@@ -24,7 +24,7 @@ func CreateRoutes(ctx context.Context, mongo *mongo.Client, neo neo4j.DriverWith
 	router.HandleFunc("/api", middleware.AddDrivers(test_handlers.TestHandler, neo, mongo, redis, ctx)).Methods("GET")
 	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(test_handlers.TestCachePostHandler, redis, ctx)).Methods("POST")
 	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(test_handlers.TestCacheGetHandler, redis, ctx)).Methods("GET")
-	router.HandleFunc("/api/master-user", middleware.AddNeoDriver(test_handlers.HandleMasterUser, neo)).Methods("GET")
+	router.HandleFunc("/api/master-user", test_handlers.HandleMasterUser(neo, sessionStore)).Methods("GET")
 
 	// APPLICATION ENDPOINTS
 	// =====================
