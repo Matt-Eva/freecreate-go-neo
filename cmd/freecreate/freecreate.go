@@ -23,11 +23,11 @@ func run(ctx context.Context) err.Error {
 		return neoErr
 	}
 
-	mongo, mErr := config.InitMongo(ctx)
-	if mErr.E != nil {
-		defer config.MongoDisconnect(mongo, ctx)
-		return mErr
-	}
+	// mongo, mErr := config.InitMongo(ctx)
+	// if mErr.E != nil {
+	// 	defer config.MongoDisconnect(mongo, ctx)
+	// 	return mErr
+	// }
 
 	redis := config.InitRedis()
 
@@ -36,7 +36,7 @@ func run(ctx context.Context) err.Error {
 		return sErr
 	}
 
-	if rErr := routes.CreateRoutes(ctx, mongo, neo, redis, sessionStore); rErr.E != nil {
+	if rErr := routes.CreateRoutes(ctx,  neo, redis, sessionStore); rErr.E != nil {
 		return rErr
 	}
 

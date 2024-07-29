@@ -12,16 +12,15 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/rbcervilla/redisstore/v9"
 	"github.com/redis/go-redis/v9"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CreateRoutes(ctx context.Context, mongo *mongo.Client, neo neo4j.DriverWithContext, redis *redis.Client, sessionStore *redisstore.RedisStore) err.Error {
+func CreateRoutes(ctx context.Context,  neo neo4j.DriverWithContext, redis *redis.Client, sessionStore *redisstore.RedisStore) err.Error {
 	router := mux.NewRouter()
 
 	// TEST ENDPOINTS
 	// =====================
 
-	router.HandleFunc("/api", middleware.AddDrivers(test_handlers.TestHandler, neo, mongo, redis, ctx)).Methods("GET")
+	// router.HandleFunc("/api", middleware.AddDrivers(test_handlers.TestHandler, neo, mongo, redis, ctx)).Methods("GET")
 	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(test_handlers.TestCachePostHandler, redis, ctx)).Methods("POST")
 	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(test_handlers.TestCacheGetHandler, redis, ctx)).Methods("GET")
 	router.HandleFunc("/api/master-user", test_handlers.HandleMasterUser(ctx, neo, sessionStore)).Methods("GET")
@@ -45,7 +44,7 @@ func CreateRoutes(ctx context.Context, mongo *mongo.Client, neo neo4j.DriverWith
 	// timeFrame == previous year - query neo specific year, order by rank && rel_rank
 	// router.HandleFunc("/api/search/year", middleware.AddNeoDriver(handlers.SearchYearHandler, neo)).Methods("GET")
 
-	router.HandleFunc("/api/default-content", middleware.AddMongoDriver(handlers.DefaultContentHandler, mongo)).Methods("GET")
+	// router.HandleFunc("/api/default-content", middleware.AddMongoDriver(handlers.DefaultContentHandler, mongo)).Methods("GET")
 
 	// AUTH ROUTES
 	router.HandleFunc("/api/login", handlers.Login).Methods("POST")

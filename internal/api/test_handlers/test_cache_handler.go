@@ -24,7 +24,7 @@ func TestCachePostHandler(w http.ResponseWriter, r *http.Request, redis *redis.C
 
 	fmt.Println(postData)
 
-	json.NewEncoder(w).Encode(&postData)
+	json.NewEncoder(w).Encode(postData)
 }
 
 func TestCacheGetHandler(w http.ResponseWriter, r *http.Request, redis *redis.Client, ctx context.Context) {
