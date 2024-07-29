@@ -6,27 +6,46 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/sessions"
 	"github.com/rbcervilla/redisstore/v9"
 )
 
 type authenticatedUser struct {
 	Username string
 	DisplayName string
-	Uid string
 }
 
-func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (*sessions.Session, err.Error) {
-	userSession := os.Getenv("USER_SESSION")
-	user, gErr := store.Get(r, userSession)
+func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (authenticatedUser, err.Error) {
+	sessionName := os.Getenv("USER_SESSION")
+	userSession, gErr := store.Get(r, sessionName)
 	if gErr != nil {
-		return user, err.NewFromErr(gErr)
+		return authenticatedUser{}, err.NewFromErr(gErr)
 	}
 
-	username := user.Values["username"]
-	if username == nil {
-		fmt.Println("user not authenticated")
-		return user, err.New("user not logged in")
+	username, displayName := userSession.Values["username"], userSession.Values["displayName"] 
+	if username == nil || displayName == nil {
+		msg := fmt.Sprintf("user session attribute(s) nil\n: username: %T\n, displayName: %T", username, displayName, )
+		fmt.Println(msg)
+		return authenticatedUser{}, err.New(msg)
+	}
+
+	usernameS, ok := username.(string)
+	if !ok {
+		return authenticatedUser{}, err.New("could not convert session username to string")
+	}
+
+	displayNameS, ok := displayName.(string)
+	if !ok {
+		return authenticatedUser{}, err.New("could not convert session displayname to string")
+	}
+
+	// uidS, ok := uid.(string)
+	// if !ok {
+	// 	return authenticatedUser{}, err.New("could not convert session uid to string")
+	// }
+
+	user := authenticatedUser {
+		Username: usernameS,
+		DisplayName: displayNameS,
 	}
 
 	fmt.Println("user authenticated")

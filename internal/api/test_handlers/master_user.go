@@ -25,7 +25,7 @@ func HandleMasterUser(ctx context.Context, neo neo4j.DriverWithContext, store *r
 }
 
 func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
-	userSession, aErr := middleware.AuthenticateUser(r, store)
+	authenticatedUser, aErr := middleware.AuthenticateUser(r, store)
 	if aErr.E != nil {
 		user, uErr := getMasterUserFromDb(ctx, neo)
 		if uErr.E != nil {
@@ -45,23 +45,9 @@ func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Contex
 		return
 	}
 
-	username, ok := userSession.Values["username"].(string)
-	if !ok {
-		e := err.New("could not convert user session user name to string")
-		e.Log()
-		http.Error(w, e.E.Error(), http.StatusInternalServerError)
-	}
-
-	displayName, ok := userSession.Values["displayName"].(string)
-	if !ok{
-		e := err.New("could not convert user session display name to string")
-		e.Log()
-		http.Error(w, e.E.Error(), http.StatusInternalServerError)
-	}
-
 	user := returnUser{
-		Username: username,
-		DisplayName: displayName,
+		Username: authenticatedUser.Username,
+		DisplayName: authenticatedUser.DisplayName,
 	}
 	
 	json.NewEncoder(w).Encode(user)
