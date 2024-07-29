@@ -30,7 +30,13 @@ func run(ctx context.Context) err.Error {
 	}
 
 	redis := config.InitRedis()
-	if rErr := routes.CreateRoutes(ctx, mongo, neo, redis); rErr.E != nil {
+
+	sessionStore, sErr := config.InitRedisSessionStore(ctx, redis)
+	if sErr.E != nil {
+		return sErr
+	}
+
+	if rErr := routes.CreateRoutes(ctx, mongo, neo, redis, sessionStore); rErr.E != nil {
 		return rErr
 	}
 

@@ -10,11 +10,12 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
+	"github.com/rbcervilla/redisstore/v9"
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CreateRoutes(ctx context.Context, mongo *mongo.Client, neo neo4j.DriverWithContext, redis *redis.Client) err.Error {
+func CreateRoutes(ctx context.Context, mongo *mongo.Client, neo neo4j.DriverWithContext, redis *redis.Client, sessionStore *redisstore.RedisStore) err.Error {
 	router := mux.NewRouter()
 
 	// TEST ENDPOINTS
