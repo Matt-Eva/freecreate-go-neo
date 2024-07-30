@@ -36,7 +36,7 @@ func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Contex
 
 		user := middleware.AuthenticatedUser{
 		}
-		utils.MapToStruct(result, user)
+		utils.MapToStruct(result, &user)
 
 		sErr := middleware.CreateUserSession(w, r, store, user)
 		if sErr.E != nil {
@@ -45,7 +45,11 @@ func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Contex
 			return
 		}
 
-		json.NewEncoder(w).Encode(user)
+		returnUser := returnUser{
+			user.Username,
+			user.DisplayName,
+		}
+		json.NewEncoder(w).Encode(returnUser)
 		return
 	}
 

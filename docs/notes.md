@@ -199,3 +199,5 @@ Like - 10
 List - 10
 Library - 100
 Donation - 1000
+
+## Authentication

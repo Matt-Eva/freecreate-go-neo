@@ -2,3 +2,4 @@ tmp/
 .env
 dump.rdb
 db_seeds
+private_notes.md

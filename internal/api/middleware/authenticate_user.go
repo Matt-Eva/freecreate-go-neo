@@ -10,9 +10,9 @@ import (
 )
 
 type AuthenticatedUser struct {
-	Username string
-	DisplayName string
-	Uid string
+	Username string `json:"username"`
+	DisplayName string `json:"displayName"`
+	Uid string `json:"uid"`
 }
 
 func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (AuthenticatedUser, err.Error) {
@@ -69,6 +69,22 @@ func CreateUserSession(w http.ResponseWriter, r *http.Request, store *redisstore
 	wErr := session.Save(r, w)
 	if wErr != nil {
 		return err.NewFromErr(wErr)
+	}
+
+	return err.Error{}
+}
+
+func DestroyUserSession(w http.ResponseWriter, r *http.Request, store *redisstore.RedisStore) err.Error{
+	sessionName := os.Getenv("USER_SESSION")
+	session, sErr := store.Get(r, sessionName)
+	if sErr != nil {
+		return err.NewFromErr(sErr)
+	}
+
+	session.Options.MaxAge = -1
+	dErr := session.Save(r, w)
+	if dErr != nil {
+		return err.NewFromErr(dErr)
 	}
 
 	return err.Error{}
