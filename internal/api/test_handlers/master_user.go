@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"freecreate/internal/api/middleware"
 	"freecreate/internal/err"
-	"freecreate/internal/queries"
+	"freecreate/internal/utils"
 	"net/http"
 	"os"
 
@@ -33,10 +33,10 @@ func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Contex
 			http.Error(w, uErr.E.Error(), http.StatusInternalServerError)
 			return
 		}
-		
+
 		user := middleware.AuthenticatedUser{
 		}
-		queries.NeoRecordToStruct(result, user)
+		utils.MapToStruct(result, user)
 
 		sErr := middleware.CreateUserSession(w, r, store, user)
 		if sErr.E != nil {
