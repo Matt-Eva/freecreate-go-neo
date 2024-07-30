@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
+	"freecreate/internal/utils"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
@@ -103,7 +104,7 @@ func CreateShortStoryQuery(genres []string, tags []string) (string, err.Error) {
 func CreateShortStoryParams(shortStory models.ShortStory) map[string]any {
 	params := map[string]any{
 		"creatorId":        shortStory.CreatorId,
-		"shortStoryParams": NeoParamsFromStruct(shortStory),
+		"shortStoryParams": utils.StructToMap(shortStory),
 	}
 
 	return params

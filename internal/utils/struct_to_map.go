@@ -1,11 +1,11 @@
-package queries
+package utils
 
 import (
 	"reflect"
 	"strings"
 )
 
-func NeoParamsFromStruct(s interface{}) map[string]any {
+func StructToMap(s interface{}) map[string]any {
 	v := reflect.ValueOf(s)
 	t := v.Type()
 	params := make(map[string]any)

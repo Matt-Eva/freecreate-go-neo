@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
-	"freecreate/internal/queries"
+	"freecreate/internal/utils"
 
 	"github.com/go-faker/faker/v4"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -75,7 +75,7 @@ func seedCreator(ctx context.Context, neo neo4j.DriverWithContext, userId string
 	}
 
 	params := map[string]any{
-		"creatorParams": queries.NeoParamsFromStruct(creator),
+		"creatorParams": utils.StructToMap(creator),
 	}
 
 	query := `

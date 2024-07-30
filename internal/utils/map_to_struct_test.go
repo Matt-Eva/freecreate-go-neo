@@ -1,11 +1,11 @@
-package queries
+package utils
 
 import (
 	"fmt"
 	"testing"
 )
 
-func TestNeoRecordToStruct(t *testing.T) {
+func TestMapToStruct(t *testing.T) {
 	type TestStruct struct {
 		Field  string
 		Number int
@@ -17,7 +17,7 @@ func TestNeoRecordToStruct(t *testing.T) {
 		"Number": 600,
 		"MyBool": true,
 	}
-	cErr := NeoRecordToStruct(testMap, &testStruct)
+	cErr := MapToStruct(testMap, &testStruct)
 	if cErr.E != nil {
 		cErr.Log()
 		t.Fatalf("above error occurred")

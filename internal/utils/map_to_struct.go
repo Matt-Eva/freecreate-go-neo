@@ -1,4 +1,4 @@
-package queries
+package utils
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"reflect"
 )
 
-func NeoRecordToStruct(record map[string]any, structPointer interface{}) err.Error {
+func MapToStruct(record map[string]any, structPointer interface{}) err.Error {
 	value := reflect.ValueOf(structPointer).Elem()
 	t := value.Type()
 

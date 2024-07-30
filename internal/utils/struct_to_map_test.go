@@ -1,11 +1,11 @@
-package queries
+package utils
 
 import (
 	"fmt"
 	"testing"
 )
 
-func TestNeoParamsFromStruct(t *testing.T) {
+func TestStructToMap(t *testing.T) {
 	type Embedded struct {
 		Inner string
 	}
@@ -24,7 +24,7 @@ func TestNeoParamsFromStruct(t *testing.T) {
 		"inner": "hello",
 		"outer": "world",
 	}
-	generatedMap := NeoParamsFromStruct(testStruct)
+	generatedMap := StructToMap(testStruct)
 	for key, val := range generatedMap {
 		testVal, ok := testMap[key]
 		if !ok {
