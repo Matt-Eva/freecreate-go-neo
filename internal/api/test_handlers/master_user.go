@@ -13,11 +13,6 @@ import (
 	"github.com/rbcervilla/redisstore/v9"
 )
 
-type returnUser struct {
-	Username    string `json:"username"`
-	DisplayName string `json:"displayName"`
-}
-
 func HandleMasterUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handleMasterUser(w, r, ctx, neo, store)
@@ -25,7 +20,7 @@ func HandleMasterUser(ctx context.Context, neo neo4j.DriverWithContext, store *r
 }
 
 func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
-	authenticatedUser, aErr := middleware.AuthenticateUser(r, store)
+	user, aErr := middleware.AuthenticateUser(r, store)
 	if aErr.E != nil {
 		result, uErr := getMasterUserFromDb(ctx, neo)
 		if uErr.E != nil {
@@ -34,8 +29,7 @@ func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Contex
 			return
 		}
 
-		user := middleware.AuthenticatedUser{
-		}
+		user := middleware.AuthenticatedUser{}
 		utils.MapToStruct(result, &user)
 
 		sErr := middleware.CreateUserSession(w, r, store, user)
@@ -45,17 +39,8 @@ func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Contex
 			return
 		}
 
-		returnUser := returnUser{
-			user.Username,
-			user.DisplayName,
-		}
-		json.NewEncoder(w).Encode(returnUser)
+		json.NewEncoder(w).Encode(user)
 		return
-	}
-
-	user := returnUser{
-		Username: authenticatedUser.Username,
-		DisplayName: authenticatedUser.DisplayName,
 	}
 	
 	json.NewEncoder(w).Encode(user)

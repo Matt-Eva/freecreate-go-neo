@@ -25,7 +25,6 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 	username, displayName, uid := userSession.Values["username"], userSession.Values["displayName"], userSession.Values["uid"] 
 	if username == nil || displayName == nil || uid == nil {
 		msg := fmt.Sprintf("user session attribute(s) nil\n: username: %T\n displayName: %T\n uid: %T", username, displayName, uid)
-		fmt.Println(msg)
 		return AuthenticatedUser{}, err.New(msg)
 	}
 
