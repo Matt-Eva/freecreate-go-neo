@@ -26,6 +26,7 @@ type Writing struct {
 	Rank         int64
 	RelRank      int64
 	OriginalYear int
+	Years []int
 	Published    bool
 }
 

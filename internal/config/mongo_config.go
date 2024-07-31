@@ -8,7 +8,6 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"gopkg.in/mgo.v2/bson"
 )
 
 func InitMongo(ctx context.Context) (*mongo.Client, err.Error) {
@@ -22,11 +21,11 @@ func InitMongo(ctx context.Context) (*mongo.Client, err.Error) {
 		return client, e
 	}
 
-	pErr := client.Database("freecreate").RunCommand(ctx, bson.D{{"ping", 1}}).Err()
-	if pErr != nil {
-		e := err.NewFromErr(pErr)
-		return client, e
-	}
+	// pErr := client.Database("freecreate").RunCommand(ctx, bson.D{{"ping", 1}}).Err()
+	// if pErr != nil {
+	// 	e := err.NewFromErr(pErr)
+	// 	return client, e
+	// }
 
 	fmt.Println("mongo connected")
 	return client, err.Error{}

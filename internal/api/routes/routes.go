@@ -87,6 +87,10 @@ func CreateRoutes(ctx context.Context,  neo neo4j.DriverWithContext, redis *redi
 	router.HandleFunc("/api/creator", handlers.DeleteCreator).Methods("DELETE")
 
 	// WRITING ROUTES
+	router.HandleFunc("/api/Writing", handlers.GetWriting).Methods("GET")
+	router.HandleFunc("/api/Writing", handlers.CreateWriting).Methods("POST")
+	router.HandleFunc("/api/Writing", handlers.UpdateWriting).Methods("PATCH")
+	router.HandleFunc("/api/Writing", handlers.DeleteWriting).Methods("DELETE")
 	router.HandleFunc("/api/draft", handlers.GetDraft).Methods("GET")
 	router.HandleFunc("/api/draft", handlers.CreateDraft).Methods("POST")
 	router.HandleFunc("/api/draft", handlers.UpdateDraft).Methods("PATCH")

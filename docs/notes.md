@@ -33,7 +33,7 @@ So, I think it's best to ditch this sharding strategy and just focus on leveragi
 
 However, we should still have an all-time database for all-time queries. Otherwise we'll simply have too much data to comb through.
 
-### Sharded Architecture (deprecated)
+### Sharded Architecture
 
 - <a href="https://neo4j.com/docs/operations-manual/current/tutorial/tutorial-composite-database/#tutorial-composite-database-get-results">Composite Database Query Docs</a>
 
@@ -188,9 +188,17 @@ Can apply `apoc.lock()` to lock node for writes. <a href="https://claude.ai/chat
 
 ## Caching
 
-It's actually easier to just use MongoDB for the query cache. We can set the "genre" to be the combo of specific keys
+It could actually be easier to just use MongoDB for the query cache. We can set the "genre" to be the combo of specific keys
 and can create a composite index with the time frame.
 We could then simply store the cached queries as lists in the document.
+
+## Mongo Sharding
+
+## Chapters & Draft_Chapters
+
+Shard key: creator name / creator id / title / neo id
+
+Overarching
 
 ## Weighting
 
