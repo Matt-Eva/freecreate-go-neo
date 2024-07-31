@@ -12,9 +12,10 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/rbcervilla/redisstore/v9"
 	"github.com/redis/go-redis/v9"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CreateRoutes(ctx context.Context,  neo neo4j.DriverWithContext, redis *redis.Client, sessionStore *redisstore.RedisStore) err.Error {
+func CreateRoutes(ctx context.Context,  neo neo4j.DriverWithContext, mongo *mongo.Client, redis *redis.Client, sessionStore *redisstore.RedisStore) err.Error {
 	router := mux.NewRouter()
 
 	// TEST ENDPOINTS
@@ -87,10 +88,10 @@ func CreateRoutes(ctx context.Context,  neo neo4j.DriverWithContext, redis *redi
 	router.HandleFunc("/api/creator", handlers.DeleteCreator).Methods("DELETE")
 
 	// WRITING ROUTES
-	router.HandleFunc("/api/Writing", handlers.GetWriting).Methods("GET")
-	router.HandleFunc("/api/Writing", handlers.CreateWriting).Methods("POST")
-	router.HandleFunc("/api/Writing", handlers.UpdateWriting).Methods("PATCH")
-	router.HandleFunc("/api/Writing", handlers.DeleteWriting).Methods("DELETE")
+	router.HandleFunc("/api/writing", handlers.GetWriting).Methods("GET")
+	router.HandleFunc("/api/writing", handlers.CreateWriting(ctx, neo, mongo, sessionStore)).Methods("POST")
+	router.HandleFunc("/api/writing", handlers.UpdateWriting).Methods("PATCH")
+	router.HandleFunc("/api/writing", handlers.DeleteWriting).Methods("DELETE")
 	router.HandleFunc("/api/draft", handlers.GetDraft).Methods("GET")
 	router.HandleFunc("/api/draft", handlers.CreateDraft).Methods("POST")
 	router.HandleFunc("/api/draft", handlers.UpdateDraft).Methods("PATCH")

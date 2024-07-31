@@ -36,7 +36,7 @@ func run(ctx context.Context) err.Error {
 		return sErr
 	}
 
-	if rErr := routes.CreateRoutes(ctx,  neo, redis, sessionStore); rErr.E != nil {
+	if rErr := routes.CreateRoutes(ctx, neo, mongo, redis, sessionStore); rErr.E != nil {
 		return rErr
 	}
 
