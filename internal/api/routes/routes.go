@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CreateRoutes(ctx context.Context,  neo neo4j.DriverWithContext, mongo *mongo.Client, redis *redis.Client, sessionStore *redisstore.RedisStore) err.Error {
+func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, redis *redis.Client, sessionStore *redisstore.RedisStore) err.Error {
 	router := mux.NewRouter()
 
 	// TEST ENDPOINTS

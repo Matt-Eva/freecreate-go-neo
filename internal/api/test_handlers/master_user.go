@@ -42,7 +42,7 @@ func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Contex
 		json.NewEncoder(w).Encode(user)
 		return
 	}
-	
+
 	json.NewEncoder(w).Encode(user)
 }
 
@@ -64,5 +64,3 @@ func getMasterUserFromDb(ctx context.Context, neo neo4j.DriverWithContext) (map[
 
 	return resultMap, err.Error{}
 }
-
-

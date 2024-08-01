@@ -10,9 +10,9 @@ import (
 )
 
 type AuthenticatedUser struct {
-	Username string `json:"username"`
+	Username    string `json:"username"`
 	DisplayName string `json:"displayName"`
-	Uid string `json:"uid"`
+	Uid         string `json:"uid"`
 }
 
 func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (AuthenticatedUser, err.Error) {
@@ -22,7 +22,7 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 		return AuthenticatedUser{}, err.NewFromErr(gErr)
 	}
 
-	username, displayName, uid := userSession.Values["username"], userSession.Values["displayName"], userSession.Values["uid"] 
+	username, displayName, uid := userSession.Values["username"], userSession.Values["displayName"], userSession.Values["uid"]
 	if username == nil || displayName == nil || uid == nil {
 		msg := fmt.Sprintf("user session attribute(s) nil\n: username: %T\n displayName: %T\n uid: %T", username, displayName, uid)
 		return AuthenticatedUser{}, err.New(msg)
@@ -43,10 +43,10 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 		return AuthenticatedUser{}, err.New("could not convert session uid to string")
 	}
 
-	user := AuthenticatedUser {
-		Username: usernameS,
+	user := AuthenticatedUser{
+		Username:    usernameS,
 		DisplayName: displayNameS,
-		Uid: uidS,
+		Uid:         uidS,
 	}
 
 	fmt.Println("user authenticated")
@@ -54,7 +54,7 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 	return user, err.Error{}
 }
 
-func CreateUserSession(w http.ResponseWriter, r *http.Request, store *redisstore.RedisStore, user AuthenticatedUser) err.Error{
+func CreateUserSession(w http.ResponseWriter, r *http.Request, store *redisstore.RedisStore, user AuthenticatedUser) err.Error {
 	userSession := os.Getenv("USER_SESSION")
 	session, sErr := store.Get(r, userSession)
 	if sErr != nil {
@@ -64,7 +64,7 @@ func CreateUserSession(w http.ResponseWriter, r *http.Request, store *redisstore
 	session.Values["username"] = user.Username
 	session.Values["displayName"] = user.DisplayName
 	session.Values["uid"] = user.Uid
-	
+
 	wErr := session.Save(r, w)
 	if wErr != nil {
 		return err.NewFromErr(wErr)
@@ -73,7 +73,7 @@ func CreateUserSession(w http.ResponseWriter, r *http.Request, store *redisstore
 	return err.Error{}
 }
 
-func DestroyUserSession(w http.ResponseWriter, r *http.Request, store *redisstore.RedisStore) err.Error{
+func DestroyUserSession(w http.ResponseWriter, r *http.Request, store *redisstore.RedisStore) err.Error {
 	sessionName := os.Getenv("USER_SESSION")
 	session, sErr := store.Get(r, sessionName)
 	if sErr != nil {
