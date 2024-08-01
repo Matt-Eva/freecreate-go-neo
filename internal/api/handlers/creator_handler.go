@@ -11,6 +11,11 @@ func GetCreator(w http.ResponseWriter, r *http.Request) {
 
 }
 
+type PostedCreator struct {
+	CreatorName string `json:"creatorName"`
+	CreatorId string `json:"creatorId"`
+}
+
 func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext) http.HandlerFunc {
 	return func (w http.ResponseWriter, r *http.Request){
 		createCreator(w, r, ctx, neo)
