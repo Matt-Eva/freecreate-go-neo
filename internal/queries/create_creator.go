@@ -14,10 +14,14 @@ func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, user middle
 
 }
 
+func checkUniqueCreator(){}
+
 func buildCheckUniqueCreatorQuery()(string, err.Error){
 
 	return "", err.Error{}
 }
+
+func buildCheckUniqueCreatorParams(){}
 
 func buildCreateCreatorQuery()(string, err.Error){
 	creatorLabel, cErr := GetNodeLabel("Creator")
