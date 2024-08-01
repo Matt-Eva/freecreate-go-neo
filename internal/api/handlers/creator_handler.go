@@ -1,12 +1,23 @@
 package handlers
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
+)
 
 func GetCreator(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func CreateCreator(w http.ResponseWriter, r *http.Request) {
+func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext) http.HandlerFunc {
+	return func (w http.ResponseWriter, r *http.Request){
+		createCreator(w, r, ctx, neo)
+	}
+}
+
+func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext){
 
 }
 
