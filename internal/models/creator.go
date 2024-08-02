@@ -7,12 +7,12 @@ import (
 )
 
 type Creator struct {
-	Uid        string
-	CreatorName       string
-	CreatorId  string
-	UserId     string
-	ProfilePic string
-	About      string
+	Uid         string
+	CreatorName string
+	CreatorId   string
+	UserId      string
+	ProfilePic  string
+	About       string
 }
 
 func (c Creator) validateCreator() err.Error {
@@ -36,18 +36,18 @@ func (c Creator) validateCreator() err.Error {
 }
 
 type PostedCreator struct {
-	CreatorName       string `json:"name"`
-	CreatorId  string `json:"creatorId"`
-	About      string `json:"about"`
+	CreatorName string `json:"name"`
+	CreatorId   string `json:"creatorId"`
+	About       string `json:"about"`
 }
 
 func GenerateCreator(userId string, p PostedCreator) (Creator, err.Error) {
 	creator := Creator{
-		Uid:        uuid.New().String(),
-		CreatorName:       p.CreatorName,
-		CreatorId:  p.CreatorId,
-		About:      p.About,
-		UserId:     userId,
+		Uid:         uuid.New().String(),
+		CreatorName: p.CreatorName,
+		CreatorId:   p.CreatorId,
+		About:       p.About,
+		UserId:      userId,
 	}
 
 	cErr := creator.validateCreator()

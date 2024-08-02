@@ -17,16 +17,14 @@ func GetCreator(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, r *http.Request) {
 		createCreator(w, r, ctx, neo, store)
 	}
 }
 
-
-
-func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
 	user, uErr := middleware.AuthenticateUser(r, store)
-	if uErr.E != nil{
+	if uErr.E != nil {
 		http.Error(w, uErr.E.Error(), http.StatusUnauthorized)
 	}
 
