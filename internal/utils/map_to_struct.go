@@ -6,6 +6,7 @@ import (
 	"reflect"
 )
 
+// directly modifies a struct via passed in pointer
 func MapToStruct(record map[string]any, structPointer interface{}) err.Error {
 	value := reflect.ValueOf(structPointer).Elem()
 	t := value.Type()
