@@ -3,25 +3,96 @@ package queries
 import (
 	"context"
 	"fmt"
-	"freecreate/internal/api/handlers"
 	"freecreate/internal/api/middleware"
 	"freecreate/internal/err"
+	"freecreate/internal/models"
+	"freecreate/internal/utils"
+	"os"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, user middleware.AuthenticatedUser, creator handlers.PostedCreator){
-
+type CreatedCreator struct {
+	Uid string `json:"uid"`
+	CreatorName string `json:"creatorName"`
+	CreatorId string `json:"creatorId"`
 }
 
-func checkUniqueCreator(){}
+func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, user middleware.AuthenticatedUser, creator models.Creator)(CreatedCreator, err.Error){
+	uErr := checkUniqueCreator(ctx, neo, creator)
+	if uErr.E != nil {
+		return CreatedCreator{}, uErr
+	}
+
+	query, qErr := buildCreateCreatorQuery()
+	if qErr.E !=nil {
+		return CreatedCreator{}, qErr
+	}
+
+	params := buildCreateCreatorParams(user, creator)
+
+	db := os.Getenv("NEO_DB")
+	if db == ""{
+		return CreatedCreator{}, err.New("NEO_DB environment variable return empty string")
+	}	
+	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
+	if nErr != nil {
+		return CreatedCreator{}, err.NewFromErr(nErr)
+	}
+	if len(result.Records) < 1{
+		return CreatedCreator{}, err.New("Create creator query returned zero records")
+	}
+
+	resultMap := result.Records[0].AsMap()
+	createdCreator := CreatedCreator{}
+	cErr := utils.MapToStruct(resultMap, createdCreator)
+	if cErr.E != nil {
+		return CreatedCreator{}, cErr
+	}
+
+	return createdCreator, err.Error{}
+}
+
+func checkUniqueCreator(ctx context.Context, neo neo4j.DriverWithContext, creator models.Creator) err.Error{
+	query, qErr := buildCheckUniqueCreatorQuery()
+	if qErr.E != nil {
+		return qErr
+	}
+
+	params := buildCheckUniqueCreatorParams(creator)
+
+	db := os.Getenv("NEO_DB")
+	if db == ""{
+		return err.New("NEO_DB environment variable return empty string")
+	}
+	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
+	if nErr != nil {
+		return err.NewFromErr(nErr)
+	}
+
+	if len(result.Records) > 0 {
+		return err.New("creatorId already exists")
+	}
+
+	return err.Error{}
+}
 
 func buildCheckUniqueCreatorQuery()(string, err.Error){
+	creatorLabel, cErr := GetNodeLabel("Creator")
+	if cErr.E != nil {
+		return "", cErr
+	}
 
-	return "", err.Error{}
+	query := fmt.Sprintf("MATCH (c:%s {creatorId: $creatorId})", creatorLabel)
+
+	return query, err.Error{}
 }
 
-func buildCheckUniqueCreatorParams(){}
+func buildCheckUniqueCreatorParams(creator models.Creator)(map[string]any){
+	return map[string]any{
+		"creatorId": creator.CreatorId,
+	}
+}
 
 func buildCreateCreatorQuery()(string, err.Error){
 	creatorLabel, cErr := GetNodeLabel("Creator")
@@ -39,10 +110,15 @@ func buildCreateCreatorQuery()(string, err.Error){
 		return "", rErr
 	}
 
-query := fmt.Sprintf("CREATE (c:%s $creatorParams) <-[r:%s]-(u:%s {uid: $userId})", creatorLabel, isCreatorLabel, userLabel)
-return query, err.Error{}
+	query := fmt.Sprintf("CREATE (c:%s $creatorParams) <-[r:%s]-(u:%s {uid: $userId})", creatorLabel, isCreatorLabel, userLabel)
+	return query, err.Error{}
 }
 
-func buildCreateCreatorParams(){
+func buildCreateCreatorParams(user middleware.AuthenticatedUser, creator models.Creator)(map[string]any){
+	creatorParams := utils.StructToMap(creator) 
 
+	return map[string]any{
+		"userId": user.Uid,
+		"creatorParams": creatorParams,
+	}
 }

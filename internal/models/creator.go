@@ -8,7 +8,7 @@ import (
 
 type Creator struct {
 	Uid        string
-	Name       string
+	CreatorName       string
 	CreatorId  string
 	UserId     string
 	ProfilePic string
@@ -19,7 +19,7 @@ func (c Creator) validateCreator() err.Error {
 	if c.Uid == "" {
 		return err.New("creator uid cannot be empty")
 	}
-	if c.Name == "" {
+	if c.CreatorName == "" {
 		return err.New("creator name cannot be empty")
 	}
 	if c.CreatorId == "" {
@@ -36,18 +36,16 @@ func (c Creator) validateCreator() err.Error {
 }
 
 type PostedCreator struct {
-	Name       string `json:"name"`
+	CreatorName       string `json:"name"`
 	CreatorId  string `json:"creatorId"`
-	ProfilePic string `json:"profilePic"`
 	About      string `json:"about"`
 }
 
-func (p PostedCreator) GenerateCreator(userId string) (Creator, err.Error) {
+func GenerateCreator(userId string, p PostedCreator) (Creator, err.Error) {
 	creator := Creator{
 		Uid:        uuid.New().String(),
-		Name:       p.Name,
+		CreatorName:       p.CreatorName,
 		CreatorId:  p.CreatorId,
-		ProfilePic: p.ProfilePic,
 		About:      p.About,
 		UserId:     userId,
 	}

@@ -20,6 +20,7 @@ func InitRedis() *redis.Client {
 		DB:       0,
 	})
 	fmt.Println("redis connected")
+	fmt.Println("redis client", client)
 	return client
 }
 
