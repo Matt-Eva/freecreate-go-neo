@@ -35,12 +35,6 @@ func (c Creator) validateCreator() err.Error {
 	return err.Error{}
 }
 
-type PostedCreator struct {
-	CreatorName string `json:"name"`
-	CreatorId   string `json:"creatorId"`
-	About       string `json:"about"`
-}
-
 func GenerateCreator(userId string, p PostedCreator) (Creator, err.Error) {
 	creator := Creator{
 		Uid:         uuid.New().String(),
@@ -57,3 +51,18 @@ func GenerateCreator(userId string, p PostedCreator) (Creator, err.Error) {
 
 	return creator, err.Error{}
 }
+
+type PostedCreator struct {
+	CreatorName string `json:"creatorName"`
+	CreatorId   string `json:"creatorId"`
+	About       string `json:"about"`
+}
+
+type CreatedCreator struct {
+	CreatorName string `json:"creatorName"`
+	CreatorId string `json:"creatorId"`
+	Uid string `json:"uid"`
+	UserId string `json:"userId"`
+	About string `json:"about"`
+}
+

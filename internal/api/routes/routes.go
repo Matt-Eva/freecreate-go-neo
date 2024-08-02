@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, redis *redis.Client, sessionStore *redisstore.RedisStore) err.Error {
+func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, redis *redis.Client, store *redisstore.RedisStore) err.Error {
 	router := mux.NewRouter()
 
 	// TEST ENDPOINTS
@@ -24,7 +24,7 @@ func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo
 	// router.HandleFunc("/api", middleware.AddDrivers(test_handlers.TestHandler, neo, mongo, redis, ctx)).Methods("GET")
 	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(test_handlers.TestCachePostHandler, redis, ctx)).Methods("POST")
 	router.HandleFunc("/api/test-cache", middleware.AddRedisDriver(test_handlers.TestCacheGetHandler, redis, ctx)).Methods("GET")
-	router.HandleFunc("/api/master-user", test_handlers.HandleMasterUser(ctx, neo, sessionStore)).Methods("GET")
+	router.HandleFunc("/api/master-user", test_handlers.HandleMasterUser(ctx, neo, store)).Methods("GET")
 
 	// APPLICATION ENDPOINTS
 	// =====================
@@ -83,13 +83,13 @@ func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo
 
 	// CREATOR ROUTES
 	router.HandleFunc("/api/creator", handlers.GetCreator).Methods("GET")
-	router.HandleFunc("/api/creator", handlers.CreateCreator(ctx, neo)).Methods("POST")
+	router.HandleFunc("/api/creator", handlers.CreateCreator(ctx, neo, store)).Methods("POST")
 	router.HandleFunc("/api/creator", handlers.UpdateCreator).Methods("PATCH")
 	router.HandleFunc("/api/creator", handlers.DeleteCreator).Methods("DELETE")
 
 	// WRITING ROUTES
 	router.HandleFunc("/api/writing", handlers.GetWriting).Methods("GET")
-	router.HandleFunc("/api/writing", handlers.CreateWriting(ctx, neo, mongo, sessionStore)).Methods("POST")
+	router.HandleFunc("/api/writing", handlers.CreateWriting(ctx, neo, mongo, store)).Methods("POST")
 	router.HandleFunc("/api/writing", handlers.UpdateWriting).Methods("PATCH")
 	router.HandleFunc("/api/writing", handlers.DeleteWriting).Methods("DELETE")
 	router.HandleFunc("/api/draft", handlers.GetDraft).Methods("GET")
