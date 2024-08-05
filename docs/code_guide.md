@@ -72,14 +72,11 @@ The primary model must have all fields and only those fields that correspond to 
 
 Models are implemented as `structs`.
 
-Any data that pertains to a specific type of data will be implemented as a model-related struct.
-This includes data the API receives and emits.
-
-All structs pertaining to a specific type of data should be stored in the model file.
-
 All models that will be entered into the database must have a factory function to generate the model and a validation function that validates the model's data upon generation.
 
 All generator and validation functions must have tests.
+
+Any data that is involved in the creation or updating of a database entity must be declared in the model file.
 
 ### Queries
 
@@ -100,6 +97,12 @@ Tests that test query string validity should <em>not</em> use validated labels -
 ### Controllers
 
 Controllers (called `handlers` in the codebase) are responsible for handling API endpoints. They are essentially the "glue" that handles incoming requests, call upon models and queries to format and validate data and run queries, and then send back a corresponding response.
+
+## Struct Definitions
+
+All functions declared in model, handler, and query files will have incoming and outgoing struct definitions. This will help prevent circular imports, and will make it easier to reason about data as it is passed between pieces of functionality.
+
+This also makes it harder to accidentally pass the wrong data to a specific function.
 
 ## Tests
 

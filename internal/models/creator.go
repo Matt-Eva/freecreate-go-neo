@@ -2,6 +2,7 @@ package models
 
 import (
 	"freecreate/internal/err"
+	"freecreate/internal/utils"
 
 	"github.com/google/uuid"
 )
@@ -35,14 +36,17 @@ func (c Creator) validateCreator() err.Error {
 	return err.Error{}
 }
 
-func GenerateCreator(userId string, p PostedCreator) (Creator, err.Error) {
-	creator := Creator{
-		Uid:         uuid.New().String(),
-		CreatorName: p.CreatorName,
-		CreatorId:   p.CreatorId,
-		About:       p.About,
-		UserId:      userId,
-	}
+type NewCreator struct {
+	CreatorName string 
+	CreatorId   string 
+	About       string 
+}
+
+func GenerateCreator(userId string, n NewCreator) (Creator, err.Error) {
+	var creator Creator
+	utils.StructToStruct(n, creator)
+	uid := uuid.New().String()
+	creator.Uid = uid
 
 	cErr := creator.validateCreator()
 	if cErr.E != nil {
@@ -50,19 +54,5 @@ func GenerateCreator(userId string, p PostedCreator) (Creator, err.Error) {
 	}
 
 	return creator, err.Error{}
-}
-
-type PostedCreator struct {
-	CreatorName string `json:"creatorName"`
-	CreatorId   string `json:"creatorId"`
-	About       string `json:"about"`
-}
-
-type CreatedCreator struct {
-	CreatorName string `json:"creatorName"`
-	CreatorId string `json:"creatorId"`
-	Uid string `json:"uid"`
-	UserId string `json:"userId"`
-	About string `json:"about"`
 }
 

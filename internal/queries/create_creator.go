@@ -12,10 +12,20 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
+type NewCreator struct {
+	Uid         string
+	CreatorName string
+	CreatorId   string
+	UserId      string
+	ProfilePic  string
+	About       string
+}
+
 type CreatedCreator struct {
 	Uid         string `json:"uid"`
 	CreatorName string `json:"creatorName"`
 	CreatorId   string `json:"creatorId"`
+	About 		string `json:"about"`
 }
 
 func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, user middleware.AuthenticatedUser, creator models.Creator) (CreatedCreator, err.Error) {
