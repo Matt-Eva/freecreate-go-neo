@@ -16,7 +16,7 @@ type CreatedCreator struct {
 	Uid         string `json:"uid"`
 	CreatorName string `json:"creatorName"`
 	CreatorId   string `json:"creatorId"`
-	About 		string `json:"about"`
+	About       string `json:"about"`
 }
 
 func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, user middleware.AuthenticatedUser, creator models.Creator) (CreatedCreator, err.Error) {

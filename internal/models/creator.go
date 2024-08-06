@@ -8,14 +8,14 @@ import (
 )
 
 type Creator struct {
-	Uid         string
-	Name string
-	CreatorId   string
-	UserId      string
-	ProfilePic  string
-	About       string
-	CreatedAt   int64
-	UpdatedAt   int64
+	Uid        string
+	Name       string
+	CreatorId  string
+	UserId     string
+	ProfilePic string
+	About      string
+	CreatedAt  int64
+	UpdatedAt  int64
 }
 
 func (c Creator) validateCreator() err.Error {
@@ -39,9 +39,9 @@ func (c Creator) validateCreator() err.Error {
 }
 
 type NewCreator struct {
-	Name string 
-	CreatorId   string 
-	About       string 
+	Name      string
+	CreatorId string
+	About     string
 }
 
 func GenerateCreator(userId string, n NewCreator) (Creator, err.Error) {
@@ -61,20 +61,20 @@ func GenerateCreator(userId string, n NewCreator) (Creator, err.Error) {
 }
 
 type UpdatedCreatorInfo struct {
-	Uid string
-	Name string
+	Uid       string
+	Name      string
 	CreatorId string
-	About string
+	About     string
 }
 
-func (u UpdatedCreatorInfo) validateUpdatedCreator()err.Error {
-	if u.CreatorId == ""{
+func (u UpdatedCreatorInfo) validateUpdatedCreator() err.Error {
+	if u.CreatorId == "" {
 		return err.New("creator id cannot be empty")
 	}
-	if u.Name == ""{
+	if u.Name == "" {
 		return err.New("creator name cannot be empty")
 	}
-	if u.Uid == ""{
+	if u.Uid == "" {
 		return err.New("uid must be sent up with creator info")
 	}
 
@@ -82,13 +82,13 @@ func (u UpdatedCreatorInfo) validateUpdatedCreator()err.Error {
 }
 
 type IncomingUpdatedCreatorInfo struct {
-	Uid string
-	Name string
+	Uid       string
+	Name      string
 	CreatorId string
-	About string
+	About     string
 }
 
-func MakeUpdatedCreatorInfo(i IncomingUpdatedCreatorInfo)(UpdatedCreatorInfo, err.Error) {
+func MakeUpdatedCreatorInfo(i IncomingUpdatedCreatorInfo) (UpdatedCreatorInfo, err.Error) {
 	var u UpdatedCreatorInfo
 	if e := utils.StructToStruct(i, u); e.E != nil {
 		return u, e
@@ -99,5 +99,3 @@ func MakeUpdatedCreatorInfo(i IncomingUpdatedCreatorInfo)(UpdatedCreatorInfo, er
 
 	return u, err.Error{}
 }
-
-

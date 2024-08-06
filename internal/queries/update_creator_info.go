@@ -12,13 +12,13 @@ import (
 )
 
 type UpdatedCreator struct {
-	Uid string
-	Name string
+	Uid       string
+	Name      string
 	CreatorId string
-	About string
+	About     string
 }
 
-func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info models.UpdatedCreatorInfo)(UpdatedCreator, err.Error){
+func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info models.UpdatedCreatorInfo) (UpdatedCreator, err.Error) {
 	params := buildUpdateCreatorInfoParams(info)
 	query, qErr := buildUpdateCreatorInfoQuery(params)
 	if qErr.E != nil {
@@ -26,7 +26,7 @@ func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info mo
 	}
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return UpdatedCreator{}, err.New("NEO_DB environment variable returned empty string")
 	}
 	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
@@ -47,7 +47,7 @@ func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info mo
 	return updatedCreator, err.Error{}
 }
 
-func buildUpdateCreatorInfoQuery(params map[string]any)(string, err.Error){
+func buildUpdateCreatorInfoQuery(params map[string]any) (string, err.Error) {
 	creatorLabel, cErr := GetNodeLabel("Creator")
 	if cErr.E != nil {
 		return "", cErr
@@ -56,22 +56,22 @@ func buildUpdateCreatorInfoQuery(params map[string]any)(string, err.Error){
 	matchQuery := fmt.Sprintf("MATCH (c:%s {uid: $uid})", creatorLabel)
 
 	type AttrStruct struct {
-		Key string
+		Key       string
 		Attribute string
 	}
 
 	var setAttributes []AttrStruct
-	for key := range params{
+	for key := range params {
 		attribute := "$" + key
 		attrMap := AttrStruct{
 			Attribute: attribute,
-			Key: key,
+			Key:       key,
 		}
 		setAttributes = append(setAttributes, attrMap)
 	}
 
 	setQuery := ""
-	for _, attrMap := range setAttributes{
+	for _, attrMap := range setAttributes {
 		query := fmt.Sprintf("SET c.%s = %s", attrMap.Key, attrMap.Attribute)
 		setQuery += query
 	}
@@ -83,7 +83,7 @@ func buildUpdateCreatorInfoQuery(params map[string]any)(string, err.Error){
 	return query, err.Error{}
 }
 
-func buildUpdateCreatorInfoParams(info models.UpdatedCreatorInfo)map[string]any{
+func buildUpdateCreatorInfoParams(info models.UpdatedCreatorInfo) map[string]any {
 	params := utils.StructToMap(info)
 	return params
 }

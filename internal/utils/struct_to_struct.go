@@ -6,32 +6,31 @@ import (
 	"reflect"
 )
 
-func StructToStruct(sender interface{}, receiverPntr interface{})(err.Error){
+func StructToStruct(sender interface{}, receiverPntr interface{}) err.Error {
 	receiverValue := reflect.ValueOf(receiverPntr).Elem()
 	receiverType := receiverValue.Type()
 
 	senderValue := reflect.ValueOf(sender)
 
-	for i:= 0 ; i < receiverType.NumField(); i++ {
+	for i := 0; i < receiverType.NumField(); i++ {
 		field := receiverType.Field(i)
 		name := field.Name
 		receiverFieldType := field.Type.Kind()
 		receiverFieldValue := receiverValue.Field(i)
 
 		senderFieldValue := senderValue.FieldByName(name)
-		if !senderFieldValue.IsValid(){
+		if !senderFieldValue.IsValid() {
 			msg := fmt.Sprintf("sender struct does not have field name %s", name)
 			return err.New(msg)
 		}
 		senderFieldType := senderFieldValue.Type().Kind()
-		
-		if receiverFieldType != senderFieldType{
+
+		if receiverFieldType != senderFieldType {
 			msg := fmt.Sprintf("struct field %s field type does not match", name)
 			return err.New(msg)
 		}
 		receiverFieldValue.Set(senderFieldValue)
 	}
-
 
 	return err.Error{}
 }

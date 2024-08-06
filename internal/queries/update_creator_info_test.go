@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestBuildUpdateCreatorInfoQuery(t *testing.T){
+func TestBuildUpdateCreatorInfoQuery(t *testing.T) {
 	params := map[string]any{
 		"name": "bob",
 	}
@@ -15,10 +15,10 @@ func TestBuildUpdateCreatorInfoQuery(t *testing.T){
 		qErr.Log()
 		t.Fatal("above error occurred during testing")
 	}
-	
-	strippedValid := strings.ReplaceAll(validQuery, " ", "" )
+
+	strippedValid := strings.ReplaceAll(validQuery, " ", "")
 	strippedGenerated := strings.ReplaceAll(generatedQuery, " ", "")
 	if strippedGenerated != strippedValid {
-		t.Fatalf ("query strings do not match: \n %s \n \n %s", strippedValid, strippedGenerated)
+		t.Fatalf("query strings do not match: \n %s \n \n %s", strippedValid, strippedGenerated)
 	}
 }

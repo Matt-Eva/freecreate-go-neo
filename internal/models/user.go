@@ -8,17 +8,17 @@ import (
 )
 
 type User struct {
-	Uid         string
-	UserId string
-	Username    string
-	Email       string
-	Password    string
-	ProfilePic  string
-	BirthYear   int
-	BirthMonth  int
-	BirthDay    int
-	CreatedAt   int64
-	UpdatedAt   int64
+	Uid        string
+	UserId     string
+	Username   string
+	Email      string
+	Password   string
+	ProfilePic string
+	BirthYear  int
+	BirthMonth int
+	BirthDay   int
+	CreatedAt  int64
+	UpdatedAt  int64
 }
 
 func (u User) validateUser() err.Error {
@@ -68,15 +68,15 @@ func (u User) validateUser() err.Error {
 }
 
 type PostedUser struct {
-	UserId          string 
-	Username             string 
-	Email                string 
-	BirthDay             int    
-	BirthYear            int    
-	BirthMonth           int    
-	ProfilePic           string 
-	Password             string 
-	PasswordConfirmation string 
+	UserId               string
+	Username             string
+	Email                string
+	BirthDay             int
+	BirthYear            int
+	BirthMonth           int
+	ProfilePic           string
+	Password             string
+	PasswordConfirmation string
 }
 
 func GenerateUser(p PostedUser) (User, err.Error) {
@@ -87,17 +87,17 @@ func GenerateUser(p PostedUser) (User, err.Error) {
 	uid := uuid.New().String()
 	now := time.Now().UnixMilli()
 	u := User{
-		UserId: p.UserId,
-		Password:    p.Password,
-		Username:    p.Username,
-		BirthYear:   p.BirthYear,
-		BirthMonth:  p.BirthMonth,
-		BirthDay:    p.BirthDay,
-		Uid:         uid,
-		Email:       p.Email,
-		ProfilePic:  p.ProfilePic,
-		CreatedAt:   now,
-		UpdatedAt:   now,
+		UserId:     p.UserId,
+		Password:   p.Password,
+		Username:   p.Username,
+		BirthYear:  p.BirthYear,
+		BirthMonth: p.BirthMonth,
+		BirthDay:   p.BirthDay,
+		Uid:        uid,
+		Email:      p.Email,
+		ProfilePic: p.ProfilePic,
+		CreatedAt:  now,
+		UpdatedAt:  now,
 	}
 
 	vErr := u.validateUser()

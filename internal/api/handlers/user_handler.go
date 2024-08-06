@@ -15,23 +15,23 @@ import (
 )
 
 type ReturnUser struct {
-	Uid string `json:"uid"`
-	UserId          string `json:"userId"`
-	Username             string `json:"username"`
-	Email                string `json:"email"`
-	BirthDay             int    `json:"birthday"`
-	BirthYear            int    `json:"birthYear"`
-	BirthMonth           int    `json:"birthMonth"`
-	ProfilePic           string `json:"profilePic"`
+	Uid        string `json:"uid"`
+	UserId     string `json:"userId"`
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	BirthDay   int    `json:"birthday"`
+	BirthYear  int    `json:"birthYear"`
+	BirthMonth int    `json:"birthMonth"`
+	ProfilePic string `json:"profilePic"`
 }
 
-func GetUser(store *redisstore.RedisStore) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func GetUser(store *redisstore.RedisStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		getUser(w, r, store)
 	}
 }
 
-func getUser (w http.ResponseWriter, r *http.Request, store *redisstore.RedisStore){
+func getUser(w http.ResponseWriter, r *http.Request, store *redisstore.RedisStore) {
 	authenticatedUser, aErr := middleware.AuthenticateUser(r, store)
 	if aErr.E != nil {
 		aErr.Log()
@@ -55,13 +55,13 @@ func getUser (w http.ResponseWriter, r *http.Request, store *redisstore.RedisSto
 }
 
 func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
-return func (w http.ResponseWriter, r *http.Request){
-	createUser(w, r, ctx, neo, store)
-}
+	return func(w http.ResponseWriter, r *http.Request) {
+		createUser(w, r, ctx, neo, store)
+	}
 }
 
 type PostedUser struct {
-	UserId          string `json:"userId"`
+	UserId               string `json:"userId"`
 	Username             string `json:"username"`
 	Email                string `json:"email"`
 	BirthDay             int    `json:"birthday"`
@@ -124,7 +124,7 @@ func createUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	if e:= json.NewEncoder(w).Encode(returnUser); e != nil {
+	if e := json.NewEncoder(w).Encode(returnUser); e != nil {
 		newE := err.NewFromErr(e)
 		newE.Log()
 		http.Error(w, e.Error(), http.StatusInternalServerError)
@@ -132,8 +132,6 @@ func createUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	}
 
 }
-
-
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 

@@ -10,14 +10,14 @@ import (
 )
 
 type AuthenticatedUser struct {
-	Uid string `json:"uid"`
-	UserId          string `json:"userId"`
-	Username             string `json:"username"`
-	Email                string `json:"email"`
-	BirthDay             int    `json:"birthday"`
-	BirthYear            int    `json:"birthYear"`
-	BirthMonth           int    `json:"birthMonth"`
-	ProfilePic           string `json:"profilePic"`
+	Uid        string `json:"uid"`
+	UserId     string `json:"userId"`
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	BirthDay   int    `json:"birthday"`
+	BirthYear  int    `json:"birthYear"`
+	BirthMonth int    `json:"birthMonth"`
+	ProfilePic string `json:"profilePic"`
 }
 
 func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (AuthenticatedUser, err.Error) {
@@ -35,11 +35,10 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 	birthMonth := userSession.Values["birthMonth"]
 	birthYear := userSession.Values["birthYear"]
 	profilePic := userSession.Values["profilePic"]
-	
 
-	if username == nil || userId == nil || uid == nil || email == nil || birthDay == nil || birthMonth == nil || birthYear == nil || birthYear == profilePic{
+	if username == nil || userId == nil || uid == nil || email == nil || birthDay == nil || birthMonth == nil || birthYear == nil || birthYear == profilePic {
 		msg := fmt.Sprintf(
-			"user session attribute(s) nil\n: username: %T\n userId: %T\n uid: %T\n email: %T\n birthDay: %T\n birthMonth: %T\n birthYear: %T\n profilePic: %T", 
+			"user session attribute(s) nil\n: username: %T\n userId: %T\n uid: %T\n email: %T\n birthDay: %T\n birthMonth: %T\n birthYear: %T\n profilePic: %T",
 			username, userId, uid, email, birthDay, birthMonth, birthYear, profilePic)
 		return AuthenticatedUser{}, err.New(msg)
 	}
@@ -60,9 +59,9 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 	}
 
 	user := AuthenticatedUser{
-		Username:    usernameS,
-		UserId: userIdS,
-		Uid:         uidS,
+		Username: usernameS,
+		UserId:   userIdS,
+		Uid:      uidS,
 	}
 
 	fmt.Println("user authenticated")

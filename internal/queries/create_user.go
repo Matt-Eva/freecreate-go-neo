@@ -24,8 +24,7 @@ type CreatedUser struct {
 	UpdatedAt   int64
 }
 
-
-func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.User)(CreatedUser, err.Error){
+func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.User) (CreatedUser, err.Error) {
 	params := utils.StructToMap(user)
 	query, qErr := buildCreateUserQuery()
 	if qErr.E != nil {
@@ -33,7 +32,7 @@ func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.Us
 	}
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return CreatedUser{}, err.New("could not get neo db env variable")
 	}
 	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
@@ -54,14 +53,14 @@ func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.Us
 	return createdUser, err.Error{}
 }
 
-func buildCreateUserQuery()(string, err.Error){
+func buildCreateUserQuery() (string, err.Error) {
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return "", uErr
 	}
 
 	createQuery := fmt.Sprintf("CREATE(u:%s $userParams)", userLabel)
-	
+
 	returnQuery := `
 		RETURN u.uid AS Uid,
 		u.displayName AS DisplayName,

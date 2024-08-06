@@ -18,7 +18,7 @@ type ResponseCreator struct {
 	CreatorName string `json:"creatorName"`
 	CreatorId   string `json:"creatorId"`
 	About       string `json:"about"`
-	Uid			string `json:"uid"`
+	Uid         string `json:"uid"`
 }
 
 func GetCreator(w http.ResponseWriter, r *http.Request) {
@@ -91,19 +91,19 @@ func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 }
 
 func UpdateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, r *http.Request) {
 		updateCreator(w, r, ctx, neo, store)
 	}
 }
 
 type PostedUpdatedCreatorInfo struct {
-	Uid string `json:"uid"`
+	Uid         string `json:"uid"`
 	CreatorName string `json:"creatorName"`
-	CreatorId string 	`json:"creatorId"`
-	About string		`json:"about"`
+	CreatorId   string `json:"creatorId"`
+	About       string `json:"about"`
 }
 
-func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
 	_, uErr := middleware.AuthenticateUser(r, store)
 	if uErr.E != nil {
 		uErr.Log()
