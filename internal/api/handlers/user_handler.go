@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"freecreate/internal/api/middleware"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
 	"freecreate/internal/queries"
@@ -73,6 +74,20 @@ func createUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	if cErr.E != nil {
 		cErr.Log()
 		http.Error(w, cErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var authenticatedUser middleware.AuthenticatedUser
+	if e := utils.StructToStruct(createdUser, authenticatedUser); e.E != nil {
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	sErr := middleware.CreateUserSession(w, r, store, authenticatedUser)
+	if sErr.E != nil {
+		sErr.Log()
+		http.Error(w, sErr.E.Error(), http.StatusInternalServerError)
 		return
 	}
 
