@@ -12,15 +12,6 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-type NewCreator struct {
-	Uid         string
-	CreatorName string
-	CreatorId   string
-	UserId      string
-	ProfilePic  string
-	About       string
-}
-
 type CreatedCreator struct {
 	Uid         string `json:"uid"`
 	CreatorName string `json:"creatorName"`

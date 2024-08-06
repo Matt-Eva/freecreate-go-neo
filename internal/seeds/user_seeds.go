@@ -112,7 +112,7 @@ func createMasterUser() (models.User, err.Error) {
 		BirthDay:             1,
 	}
 
-	u, vErr := models.MakeNewUser(p)
+	u, vErr := models.GenerateUser(p)
 	if vErr.E != nil {
 		return models.User{}, vErr
 	}
@@ -174,7 +174,7 @@ func makeSeedUser() (models.User, err.Error) {
 		BirthDay:             1,
 	}
 
-	u, vErr := models.MakeNewUser(p)
+	u, vErr := models.GenerateUser(p)
 	if vErr.E != nil {
 		return u, vErr
 	}

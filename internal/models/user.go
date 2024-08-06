@@ -68,18 +68,18 @@ func (u User) validateUser() err.Error {
 }
 
 type PostedUser struct {
-	DisplayName          string `json:"displayName"`
-	Username             string `json:"username"`
-	Email                string `json:"email"`
-	BirthDay             int    `json:"birthday"`
-	BirthYear            int    `json:"birthYear"`
-	BirthMonth           int    `json:"birthMonth"`
-	ProfilePic           string `json:"profilePic"`
-	Password             string `json:"password"`
-	PasswordConfirmation string `json:"passwordConfirmation"`
+	DisplayName          string 
+	Username             string 
+	Email                string 
+	BirthDay             int    
+	BirthYear            int    
+	BirthMonth           int    
+	ProfilePic           string 
+	Password             string 
+	PasswordConfirmation string 
 }
 
-func MakeNewUser(p PostedUser) (User, err.Error) {
+func GenerateUser(p PostedUser) (User, err.Error) {
 	if p.Password != p.PasswordConfirmation {
 		e := err.New("password and password confirmation do not match")
 		return User{}, e

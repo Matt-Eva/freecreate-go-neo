@@ -53,7 +53,7 @@ func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo
 
 	// USER ROUTES
 	router.HandleFunc("/api/user", handlers.GetUser).Methods("GET")
-	router.HandleFunc("/api/user", handlers.CreateUser).Methods("POST")
+	router.HandleFunc("/api/user", handlers.CreateUser(ctx, neo, store)).Methods("POST")
 	router.HandleFunc("/api/user", handlers.UpdateUser).Methods("PATCH")
 	router.HandleFunc("/api/user", handlers.DeleteUser).Methods("DELETE")
 	router.HandleFunc("/api/user/reading-history", handlers.GetReadingHistory).Methods("GET")

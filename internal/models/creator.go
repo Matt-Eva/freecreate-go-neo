@@ -14,6 +14,8 @@ type Creator struct {
 	UserId      string
 	ProfilePic  string
 	About       string
+	CreatedAt   int64
+	UpdatedAt   int64
 }
 
 func (c Creator) validateCreator() err.Error {

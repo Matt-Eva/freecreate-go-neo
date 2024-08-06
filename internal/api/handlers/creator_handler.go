@@ -67,13 +67,6 @@ func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
-	var queryCreator queries.NewCreator
-	if e := utils.StructToStruct(creatorModel, queryCreator); e.E != nil {
-		e.Log()
-		http.Error(w, e.E.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	createdCreator, cErr := queries.CreateCreator(ctx, neo, user, creatorModel)
 	if cErr.E != nil {
 		cErr.Log()
@@ -140,14 +133,7 @@ func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
-	var queryCreatorInfo queries.IncomingUpdatedCreatorInfo
-	if e := utils.StructToStruct(updatedCreatorInfo, queryCreatorInfo); e.E != nil {
-		e.Log()
-		http.Error(w, e.E.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	updatedCreator, qErr := queries.UpdateCreatorInfo(ctx, neo, queryCreatorInfo)
+	updatedCreator, qErr := queries.UpdateCreatorInfo(ctx, neo, updatedCreatorInfo)
 	if qErr.E != nil {
 		qErr.Log()
 		http.Error(w, qErr.E.Error(), http.StatusInternalServerError)

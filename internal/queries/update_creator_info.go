@@ -4,18 +4,12 @@ import (
 	"context"
 	"fmt"
 	"freecreate/internal/err"
+	"freecreate/internal/models"
 	"freecreate/internal/utils"
 	"os"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
-
-type IncomingUpdatedCreatorInfo struct {
-	Uid string
-	Name string
-	CreatorId string
-	About string
-}
 
 type UpdatedCreator struct {
 	Uid string
@@ -24,7 +18,7 @@ type UpdatedCreator struct {
 	About string
 }
 
-func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info IncomingUpdatedCreatorInfo)(UpdatedCreator, err.Error){
+func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info models.UpdatedCreatorInfo)(UpdatedCreator, err.Error){
 	params := buildUpdateCreatorInfoParams(info)
 	query, qErr := buildUpdateCreatorInfoQuery(params)
 	if qErr.E != nil {
@@ -89,7 +83,7 @@ func buildUpdateCreatorInfoQuery(params map[string]any)(string, err.Error){
 	return query, err.Error{}
 }
 
-func buildUpdateCreatorInfoParams(info IncomingUpdatedCreatorInfo)map[string]any{
+func buildUpdateCreatorInfoParams(info models.UpdatedCreatorInfo)map[string]any{
 	params := utils.StructToMap(info)
 	return params
 }
