@@ -9,7 +9,7 @@ import (
 
 type User struct {
 	Uid         string
-	DisplayName string
+	UserId string
 	Username    string
 	Email       string
 	Password    string
@@ -26,7 +26,7 @@ func (u User) validateUser() err.Error {
 		e := "user uid is empty"
 		return err.New(e)
 	}
-	if u.DisplayName == "" {
+	if u.UserId == "" {
 		e := "user display name is empty"
 		return err.New(e)
 	}
@@ -68,7 +68,7 @@ func (u User) validateUser() err.Error {
 }
 
 type PostedUser struct {
-	DisplayName          string 
+	UserId          string 
 	Username             string 
 	Email                string 
 	BirthDay             int    
@@ -87,7 +87,7 @@ func GenerateUser(p PostedUser) (User, err.Error) {
 	uid := uuid.New().String()
 	now := time.Now().UnixMilli()
 	u := User{
-		DisplayName: p.DisplayName,
+		UserId: p.UserId,
 		Password:    p.Password,
 		Username:    p.Username,
 		BirthYear:   p.BirthYear,

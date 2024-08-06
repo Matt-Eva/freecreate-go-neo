@@ -102,7 +102,7 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) err.Error 
 
 func createMasterUser() (models.User, err.Error) {
 	p := models.PostedUser{
-		DisplayName:          "Matt",
+		UserId:          "Matt",
 		Username:             "Matt",
 		Email:                faker.Email(),
 		Password:             os.Getenv("SEED_USER_PASSWORD"),
@@ -164,8 +164,8 @@ func makeSeedUser() (models.User, err.Error) {
 		return models.User{}, e
 	}
 	p := models.PostedUser{
-		DisplayName:          faker.Name(),
-		Username:             faker.Username(),
+		UserId:          faker.Username(),
+		Username:             faker.Name(),
 		Email:                faker.Email(),
 		Password:             password,
 		PasswordConfirmation: password,

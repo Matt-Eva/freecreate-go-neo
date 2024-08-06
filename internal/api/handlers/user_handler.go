@@ -16,7 +16,7 @@ import (
 
 type ReturnUser struct {
 	Uid string `json:"uid"`
-	DisplayName          string `json:"displayName"`
+	UserId          string `json:"userId"`
 	Username             string `json:"username"`
 	Email                string `json:"email"`
 	BirthDay             int    `json:"birthday"`
@@ -25,8 +25,33 @@ type ReturnUser struct {
 	ProfilePic           string `json:"profilePic"`
 }
 
-func GetUser(w http.ResponseWriter, r *http.Request) {
+func GetUser(store *redisstore.RedisStore) http.HandlerFunc{
+	return func (w http.ResponseWriter, r *http.Request){
+		getUser(w, r, store)
+	}
+}
 
+func getUser (w http.ResponseWriter, r *http.Request, store *redisstore.RedisStore){
+	authenticatedUser, aErr := middleware.AuthenticateUser(r, store)
+	if aErr.E != nil {
+		aErr.Log()
+		http.Error(w, aErr.E.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	var returnUser ReturnUser
+	if e := utils.StructToStruct(authenticatedUser, returnUser); e.E != nil {
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if e := json.NewEncoder(w).Encode(returnUser); e != nil {
+		newE := err.NewFromErr(e)
+		newE.Log()
+		http.Error(w, e.Error(), http.StatusUnauthorized)
+	}
 }
 
 func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
@@ -36,7 +61,7 @@ return func (w http.ResponseWriter, r *http.Request){
 }
 
 type PostedUser struct {
-	DisplayName          string `json:"displayName"`
+	UserId          string `json:"userId"`
 	Username             string `json:"username"`
 	Email                string `json:"email"`
 	BirthDay             int    `json:"birthday"`
