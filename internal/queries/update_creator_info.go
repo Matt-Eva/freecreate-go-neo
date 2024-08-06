@@ -61,7 +61,7 @@ func buildUpdateCreatorInfoQuery(params map[string]any)(string, err.Error){
 	}
 
 	var setAttributes []AttrStruct
-	for key, _ := range params{
+	for key := range params{
 		attribute := "$" + key
 		attrMap := AttrStruct{
 			Attribute: attribute,
