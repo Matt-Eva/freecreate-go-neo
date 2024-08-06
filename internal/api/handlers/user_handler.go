@@ -130,13 +130,32 @@ func createUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
-
 }
 
-func UpdateUser(w http.ResponseWriter, r *http.Request) {
+func UpdateUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
+	return func (w http.ResponseWriter, r *http.Request){
+		updateUser(w, r, ctx, neo, store)
+	}
+}
+
+type PatchedUser struct {
+	UserId               string `json:"userId"`
+	Username             string `json:"username"`
+	Email                string `json:"email"`
+	BirthDay             int    `json:"birthday"`
+	BirthYear            int    `json:"birthYear"`
+	BirthMonth           int    `json:"birthMonth"`
+	ProfilePic           string `json:"profilePic"`
+}
+
+func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
 
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func UpdatePassword(){
 
 }
