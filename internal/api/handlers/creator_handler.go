@@ -14,6 +14,13 @@ import (
 	"github.com/rbcervilla/redisstore/v9"
 )
 
+type ResponseCreator struct {
+	CreatorName string `json:"creatorName"`
+	CreatorId   string `json:"creatorId"`
+	About       string `json:"about"`
+	Uid			string `json:"uid"`
+}
+
 func GetCreator(w http.ResponseWriter, r *http.Request) {
 
 }
@@ -28,13 +35,6 @@ type PostedCreator struct {
 	CreatorName string `json:"creatorName"`
 	CreatorId   string `json:"creatorId"`
 	About       string `json:"about"`
-}
-
-type ResponseCreator struct {
-	CreatorName string `json:"creatorName"`
-	CreatorId   string `json:"creatorId"`
-	About       string `json:"about"`
-	Uid			string `json:"uid"`
 }
 
 func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
@@ -97,8 +97,77 @@ func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 	}
 }
 
-func UpdateCreator(w http.ResponseWriter, r *http.Request) {
+func UpdateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
+	return func (w http.ResponseWriter, r *http.Request){
+		updateCreator(w, r, ctx, neo, store)
+	}
+}
 
+type PostedUpdatedCreatorInfo struct {
+	Uid string `json:"uid"`
+	CreatorName string `json:"creatorName"`
+	CreatorId string 	`json:"creatorId"`
+	About string		`json:"about"`
+}
+
+func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+	_, uErr := middleware.AuthenticateUser(r, store)
+	if uErr.E != nil {
+		uErr.Log()
+		http.Error(w, uErr.E.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	var postedInfo PostedUpdatedCreatorInfo
+	if e := json.NewDecoder(r.Body).Decode(&postedInfo); e != nil {
+		newE := err.NewFromErr(e)
+		newE.Log()
+		http.Error(w, newE.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var incomingInfo models.IncomingUpdatedCreatorInfo
+	if e := utils.StructToStruct(postedInfo, incomingInfo); e.E != nil {
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	updatedCreatorInfo, cErr := models.MakeUpdatedCreatorInfo(incomingInfo)
+	if cErr.E != nil {
+		cErr.Log()
+		http.Error(w, cErr.E.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	var queryCreatorInfo queries.IncomingUpdatedCreatorInfo
+	if e := utils.StructToStruct(updatedCreatorInfo, queryCreatorInfo); e.E != nil {
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	updatedCreator, qErr := queries.UpdateCreatorInfo(ctx, neo, queryCreatorInfo)
+	if qErr.E != nil {
+		qErr.Log()
+		http.Error(w, qErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var responseCreator ResponseCreator
+	if e := utils.StructToStruct(updatedCreator, responseCreator); e.E != nil {
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if e := json.NewEncoder(w).Encode(responseCreator); e != nil {
+		newE := err.NewFromErr(e)
+		newE.Log()
+		http.Error(w, newE.E.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func DeleteCreator(w http.ResponseWriter, r *http.Request) {
