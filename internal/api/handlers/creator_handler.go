@@ -21,7 +21,54 @@ type ResponseCreator struct {
 	Uid         string `json:"uid"`
 }
 
-func GetCreator(w http.ResponseWriter, r *http.Request) {
+// for loading a single creator
+func GetCreator(ctx context.Context, neo neo4j.DriverWithContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		getCreator(w, r, ctx, neo)
+	}
+}
+
+func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext){
+	urlParams := r.URL.Query()
+	creatorIds, ok := urlParams["creatorId"]
+	if !ok {
+		e := err.New("url params does not include creatorId")
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusBadRequest)
+		return
+	}
+	if len(creatorIds) < 1{
+		e := err.New("url params does not include creatorId")
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusBadRequest)
+		return
+	}
+
+	creator, cErr := queries.GetCreator(ctx, neo, creatorIds[0])
+	if cErr.E != nil {
+		cErr.Log()
+		http.Error(w, cErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var returnCreator ResponseCreator
+	if e := utils.StructToStruct(creator, &returnCreator); e.E != nil {
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if e := json.NewEncoder(w).Encode(returnCreator); e!= nil {
+		newE := err.NewFromErr(e)
+		newE.Log()
+		http.Error(w, newE.E.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+// for loading a user's creator profiles
+func GetCreators(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
 
 }
 
