@@ -149,6 +149,56 @@ type PatchedUser struct {
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+	authenticatedUser, aErr := middleware.AuthenticateUser(r, store)
+	if aErr.E != nil {
+		aErr.Log()
+		http.Error(w, aErr.E.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	var patchedUser PatchedUser
+	if e := json.NewDecoder(r.Body).Decode(&patchedUser); e != nil {
+		newE := err.NewFromErr(e)
+		newE.Log()
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var patchedUserModel models.PatchedUser
+	if e := utils.StructToStruct(patchedUser, patchedUserModel); e.E != nil {
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	updatedUserModel, vErr := models.GenerateUpdatedUserInfo(patchedUserModel)
+	if vErr.E != nil {
+		vErr.Log()
+		http.Error(w, vErr.E.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	updatedUser, uErr := queries.UpdateUserInfo(ctx, neo, authenticatedUser.Uid, updatedUserModel)
+	if uErr.E != nil {
+		uErr.Log()
+		http.Error(w, uErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var returnUser ReturnUser
+	if e := utils.StructToStruct(updatedUser, returnUser); e.E != nil {
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if e := json.NewEncoder(w).Encode(returnUser); e != nil {
+		newE := err.NewFromErr(e)
+		newE.Log()
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
 
 }
 
