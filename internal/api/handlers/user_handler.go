@@ -185,12 +185,34 @@ func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		return
 	}
 
-	var returnUser ReturnUser
-	if e := utils.StructToStruct(updatedUser, returnUser); e.E != nil {
+	dErr := middleware.DestroyUserSession(w, r, store)
+	if dErr.E != nil {
+		dErr.Log()
+		http.Error(w, dErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var newAuthUser middleware.AuthenticatedUser
+	if e := utils.StructToStruct(updatedUser, &newAuthUser); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	sErr := middleware.CreateUserSession(w, r, store, newAuthUser)
+	if sErr.E != nil {
+		sErr.Log()
+		http.Error(w, sErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var returnUser ReturnUser
+	if e := utils.StructToStruct(updatedUser, &returnUser); e.E != nil {
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
 
 	w.Header().Set("Content-Type", "application/json")
 	if e := json.NewEncoder(w).Encode(returnUser); e != nil {
@@ -199,11 +221,30 @@ func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
-
 }
 
-func DeleteUser(w http.ResponseWriter, r *http.Request) {
+func DeleteUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request){
+		deleteUser(w, r, ctx, neo, store)
+	}
+}
 
+func deleteUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+	authenticatedUser, aErr := middleware.AuthenticateUser(r, store)
+	if aErr.E != nil {
+		aErr.Log()
+		http.Error(w, aErr.E.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	dErr := queries.DeleteUser(ctx, neo, authenticatedUser.Uid)
+	if dErr.E!= nil {
+		dErr.Log()
+		http.Error(w, dErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func UpdatePassword(){
