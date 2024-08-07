@@ -46,7 +46,7 @@ func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.Us
 
 	resultMap := result.Records[0].AsMap()
 	var createdUser CreatedUser
-	if e := utils.MapToStruct(resultMap, createdUser); e.E != nil {
+	if e := utils.MapToStruct(resultMap, &createdUser); e.E != nil {
 		return CreatedUser{}, e
 	}
 

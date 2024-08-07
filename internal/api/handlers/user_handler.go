@@ -40,7 +40,7 @@ func getUser(w http.ResponseWriter, r *http.Request, store *redisstore.RedisStor
 	}
 
 	var returnUser ReturnUser
-	if e := utils.StructToStruct(authenticatedUser, returnUser); e.E != nil {
+	if e := utils.StructToStruct(authenticatedUser, &returnUser); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusUnauthorized)
 		return
@@ -82,7 +82,7 @@ func createUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	}
 
 	var postedUserModel models.PostedUser
-	if e := utils.StructToStruct(postedUser, postedUserModel); e.E != nil {
+	if e := utils.StructToStruct(postedUser, &postedUserModel); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
@@ -103,7 +103,7 @@ func createUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	}
 
 	var authenticatedUser middleware.AuthenticatedUser
-	if e := utils.StructToStruct(createdUser, authenticatedUser); e.E != nil {
+	if e := utils.StructToStruct(createdUser, &authenticatedUser); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
@@ -117,7 +117,7 @@ func createUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	}
 
 	var returnUser ReturnUser
-	if e := utils.StructToStruct(createdUser, returnUser); e.E != nil {
+	if e := utils.StructToStruct(createdUser, &returnUser); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
@@ -165,7 +165,7 @@ func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	}
 
 	var patchedUserModel models.PatchedUser
-	if e := utils.StructToStruct(patchedUser, patchedUserModel); e.E != nil {
+	if e := utils.StructToStruct(patchedUser, &patchedUserModel); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
