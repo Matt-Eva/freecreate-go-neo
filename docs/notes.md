@@ -209,3 +209,7 @@ Library - 100
 Donation - 1000
 
 ## Authentication
+
+## Text Search
+
+Take in text search, parse search values, see if they correspond to any genres, tags,
