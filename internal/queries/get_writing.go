@@ -10,12 +10,14 @@ import (
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"gopkg.in/mgo.v2/bson"
 )
 
 type RetrievedChapter struct {
 	Title string `bson:"title"`
-	Number int	`bson:"number"`
+	Number int	`bson:"chapter_number"`
+	Uid string 	`bson:"uid"`
 }
 
 type RetrievedNeoWriting struct {
@@ -44,8 +46,39 @@ func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.C
 	neoErrorChan := make(chan err.Error)
 	go getNeoWriting(ctx, neo, creatorId, writingId, neoChan, neoErrorChan)
 
-	mongoChan := make(chan RetrievedChapter)
+	mongoChan := make(chan []RetrievedChapter)
 	mongoErrorChan := make(chan err.Error)
+	go getMongoChapters(ctx, mongo, creatorId, writingId, mongoChan, mongoErrorChan)
+
+	for e := range neoErrorChan{
+		return RetrievedWriting{}, e
+	}
+	for e := range mongoErrorChan{
+		return RetrievedWriting{}, e
+	}
+
+	if len(neoChan) > 1{
+		return RetrievedWriting{}, err.New("multiple writing nodes returned")
+	}
+	if len(mongoChan) > 1 {
+		return RetrievedWriting{}, err.New("mutiple sets of chapters returned")
+	}
+
+	retrievedWriting := &RetrievedWriting{}
+	for w := range neoChan{
+		retrievedWriting.Uid = w.Uid
+		retrievedWriting.Title = w.Title
+		retrievedWriting.Description = w.Description
+		retrievedWriting.Author = w.Author
+		retrievedWriting.Genres = w.Genres
+		retrievedWriting.Tags = w.Tags
+		retrievedWriting.CreatorId = w.CreatorId
+	}
+	for c := range mongoChan{
+		retrievedWriting.Chapters = c
+	}
+
+	return (*retrievedWriting), err.Error{}
 }
 
 func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string, neoChan chan RetrievedNeoWriting, errorChan chan err.Error){
@@ -75,7 +108,7 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 		runtime.Goexit()  
 	}
 	if len(neoResult.Records) < 1{
-		errorChan <- err.New("no records runtime.Goexit()ed from database query")
+		errorChan <- err.New("no records returned from database query")
 		runtime.Goexit()  
 	}
 
@@ -160,20 +193,30 @@ func buildNeoGetWritingQuery()(string, err.Error){
 	
 }
 
-func getMongoChapters(ctx context.Context, mongo *mongo.Client, creatorId, writingId string, mongoChan chan RetrievedChapter, errorChan chan err.Error){
+func getMongoChapters(ctx context.Context, mongo *mongo.Client, creatorId, writingId string, mongoChan chan []RetrievedChapter, errorChan chan err.Error){
 	defer close(mongoChan)
 	defer close(errorChan)
 
-	filter := bson.D{{"creatorId", creatorId}, {"neoId", writingId}}
+	filter := bson.D{{"creator_id", creatorId}, {"neo_id", writingId}}
 
 	chapterColl := mongo.Database("freecreate").Collection("chapters")
 
-	cursor, mErr := chapterColl.Find(ctx, filter)
+	queryOptions := options.Find().SetProjection(bson.D{{"title", 1}, {"chatper_number", 1}} )
+
+	cursor, mErr := chapterColl.Find(ctx, filter, queryOptions)
 	if mErr != nil {
 		e := err.NewFromErr(mErr)
 		errorChan <- e
 		runtime.Goexit()
 	}
 
+	var results []RetrievedChapter
+	if e := cursor.All(ctx, &results); e != nil {
+		newE := err.NewFromErr(e)
+		errorChan <-newE
+		runtime.Goexit()
+	}
+
+	mongoChan <- results
 	
 }
