@@ -11,7 +11,7 @@ func TestMapToStruct(t *testing.T) {
 		Number int
 		MyBool bool
 	}
-	testStruct := TestStruct{}
+	var testStruct TestStruct
 	testMap := map[string]any{
 		"Field":  "sup",
 		"Number": 600,
@@ -25,5 +25,18 @@ func TestMapToStruct(t *testing.T) {
 	if testStruct.Field != "sup" || testStruct.Number != 600 || testStruct.MyBool != true {
 		fmt.Println(testMap, testStruct)
 		t.Fatalf("could not convert test map to test struct")
+	}
+
+	type EmbeddedStruct struct{
+		Slice []string
+	}
+	var testEmbeddedStruct EmbeddedStruct
+	embeddedMap := map[string]any {
+		"Slice": []string{"hellow"},
+	}
+	eErr := MapToStruct(embeddedMap, &testEmbeddedStruct)
+	if eErr.E != nil {
+		eErr.Log()
+		t.Fatal("above error occurred")
 	}
 }
