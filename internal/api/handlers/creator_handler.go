@@ -21,7 +21,21 @@ type ResponseCreator struct {
 	Uid         string `json:"uid"`
 }
 
-// for loading a single creator
+func (r ResponseCreator) validateResponseCreator() err.Error{
+	if r.Name == ""{
+		return err.New("response creator name cannot be empty")
+	}
+	if r.Uid == ""{
+		return err.New("response creator Uid cannot be empty")
+	}
+	if r.CreatorId == ""{
+		return err.New("response creator creatorId cannot be empty")
+	}
+
+	return err.Error{}
+}
+
+// GET CREATOR
 func GetCreator(ctx context.Context, neo neo4j.DriverWithContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		getCreator(w, r, ctx, neo)
@@ -58,6 +72,13 @@ func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		return
 	}
 
+	vErr := returnCreator.validateResponseCreator()
+	if vErr.E != nil {
+		vErr.Log()
+		http.Error(w, vErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	if e := json.NewEncoder(w).Encode(returnCreator); e!= nil {
 		newE := err.NewFromErr(e)
@@ -67,11 +88,52 @@ func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	}
 }
 
-// for loading a user's creator profiles
-func GetCreators(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
-
+// GET USER CREATORS
+func GetUserCreators(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc{
+	return func (w http.ResponseWriter, r *http.Request){
+		getUserCreators(w, r, ctx, neo, store)
+	}
 }
 
+func getUserCreators(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+	user, aErr := middleware.AuthenticateUser(r, store)
+	if aErr.E != nil {
+		aErr.Log()
+		http.Error(w, aErr.E.Error(), http.StatusUnauthorized)
+	}
+
+	retrievedUserCreators, qErr := queries.GetUserCreators(ctx, neo, user.Uid)
+	if qErr.E != nil {
+		qErr.Log()
+		http.Error(w, qErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var responseCreators []ResponseCreator
+	for _, creator := range retrievedUserCreators {
+		var responseCreator ResponseCreator
+		if e := utils.StructToStruct(creator, &responseCreator); e.E != nil {
+			e.Log()
+		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		return
+		}
+		if e := responseCreator.validateResponseCreator(); e.E != nil {
+			e.Log()
+		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		return
+		}
+		responseCreators = append(responseCreators, responseCreator)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if e := json.NewEncoder(w).Encode(responseCreators); e!=nil {
+		newE := err.NewFromErr(e)
+		newE.Log()
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+	}
+}
+
+// CREATE CREATOR
 func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		createCreator(w, r, ctx, neo, store)
@@ -128,6 +190,13 @@ func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
+	vErr := responseCreator.validateResponseCreator()
+	if vErr.E != nil {
+		vErr.Log()
+		http.Error(w, vErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	if e := json.NewEncoder(w).Encode(responseCreator); e != nil {
 		newE := err.NewFromErr(e)
@@ -137,13 +206,14 @@ func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 	}
 }
 
+// UPDATE CREATOR INFO
 func UpdateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		updateCreator(w, r, ctx, neo, store)
 	}
 }
 
-type PostedUpdatedCreatorInfo struct {
+type PatchedUpdatedCreatorInfo struct {
 	Uid         string `json:"uid"`
 	CreatorName string `json:"creatorName"`
 	CreatorId   string `json:"creatorId"`
@@ -158,8 +228,8 @@ func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
-	var postedInfo PostedUpdatedCreatorInfo
-	if e := json.NewDecoder(r.Body).Decode(&postedInfo); e != nil {
+	var patchedInfo PatchedUpdatedCreatorInfo
+	if e := json.NewDecoder(r.Body).Decode(&patchedInfo); e != nil {
 		newE := err.NewFromErr(e)
 		newE.Log()
 		http.Error(w, newE.E.Error(), http.StatusInternalServerError)
@@ -167,7 +237,7 @@ func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 	}
 
 	var incomingInfo models.IncomingUpdatedCreatorInfo
-	if e := utils.StructToStruct(postedInfo, incomingInfo); e.E != nil {
+	if e := utils.StructToStruct(patchedInfo, &incomingInfo); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
@@ -194,6 +264,13 @@ func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
+	vErr := responseCreator.validateResponseCreator()
+	if vErr.E != nil {
+		vErr.Log()
+		http.Error(w, vErr.E.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	if e := json.NewEncoder(w).Encode(responseCreator); e != nil {
 		newE := err.NewFromErr(e)
@@ -203,6 +280,7 @@ func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 	}
 }
 
+// DELETE CREATOR
 func DeleteCreator(w http.ResponseWriter, r *http.Request) {
 
 }
