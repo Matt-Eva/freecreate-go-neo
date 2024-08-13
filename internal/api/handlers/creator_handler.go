@@ -100,6 +100,7 @@ func getUserCreators(w http.ResponseWriter, r *http.Request, ctx context.Context
 	if aErr.E != nil {
 		aErr.Log()
 		http.Error(w, aErr.E.Error(), http.StatusUnauthorized)
+		return
 	}
 
 	retrievedUserCreators, qErr := queries.GetUserCreators(ctx, neo, user.Uid)
