@@ -13,10 +13,10 @@ import (
 )
 
 type CreatedCreator struct {
-	Uid         string `json:"uid"`
-	CreatorName string `json:"creatorName"`
-	CreatorId   string `json:"creatorId"`
-	About       string `json:"about"`
+	Uid         string 
+	Name string 
+	CreatorId   string 
+	About       string 
 }
 
 func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, user middleware.AuthenticatedUser, creator models.Creator) (CreatedCreator, err.Error) {
@@ -46,7 +46,7 @@ func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, user middle
 
 	resultMap := result.Records[0].AsMap()
 	createdCreator := CreatedCreator{}
-	cErr := utils.MapToStruct(resultMap, createdCreator)
+	cErr := utils.MapToStruct(resultMap, &createdCreator)
 	if cErr.E != nil {
 		return CreatedCreator{}, cErr
 	}
@@ -84,7 +84,9 @@ func buildCheckUniqueCreatorQuery() (string, err.Error) {
 		return "", cErr
 	}
 
-	query := fmt.Sprintf("MATCH (c:%s {creatorId: $creatorId})", creatorLabel)
+	matchQuery := fmt.Sprintf("MATCH (c:%s {creatorId: $creatorId})", creatorLabel)
+	returnQuery := `RETURN c.uid AS Uid`
+	query := matchQuery + returnQuery
 
 	return query, err.Error{}
 }
@@ -111,7 +113,9 @@ func buildCreateCreatorQuery() (string, err.Error) {
 		return "", rErr
 	}
 
-	query := fmt.Sprintf("CREATE (c:%s $creatorParams) <-[r:%s]-(u:%s {uid: $userId})", creatorLabel, isCreatorLabel, userLabel)
+	createQuery := fmt.Sprintf("CREATE (c:%s $creatorParams) <-[r:%s]-(u:%s {uid: $userId})", creatorLabel, isCreatorLabel, userLabel)
+	returnQuery := `RETURN c.uid AS Uid, c.name AS Name, c.about AS About, c.creatorId AS CreatorId`
+	query := createQuery + returnQuery
 	return query, err.Error{}
 }
 

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"freecreate/internal/err"
 	"freecreate/internal/utils"
 
@@ -46,11 +47,15 @@ type NewCreator struct {
 
 func GenerateCreator(userId string, n NewCreator) (Creator, err.Error) {
 	var creator Creator
-	utils.StructToStruct(n, &creator)
+	creator.Name = n.Name
+	creator.CreatorId = n.CreatorId
+	creator.About = n.About
 	uid := uuid.New().String()
 	creator.Uid = uid
 	creator.UserId = userId
 	creator.ProfilePic = ""
+
+	fmt.Println(creator)
 
 	cErr := creator.validateCreator()
 	if cErr.E != nil {

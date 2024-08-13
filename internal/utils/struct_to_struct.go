@@ -20,8 +20,7 @@ func StructToStruct(sender interface{}, receiverPntr interface{}) err.Error {
 
 		senderFieldValue := senderValue.FieldByName(name)
 		if !senderFieldValue.IsValid() {
-			msg := fmt.Sprintf("sender struct does not have field name %s", name)
-			return err.New(msg)
+			continue
 		}
 		senderFieldType := senderFieldValue.Type().Kind()
 

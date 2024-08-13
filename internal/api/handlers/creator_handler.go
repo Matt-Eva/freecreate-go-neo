@@ -101,7 +101,7 @@ func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 	}
 
 	var newCreator models.NewCreator
-	if e := utils.StructToStruct(postedCreator, newCreator); e.E != nil {
+	if e := utils.StructToStruct(postedCreator, &newCreator); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
@@ -121,8 +121,8 @@ func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
-	responseCreator := ResponseCreator{}
-	if e := utils.StructToStruct(createdCreator, responseCreator); e.E != nil {
+	var responseCreator ResponseCreator
+	if e := utils.StructToStruct(createdCreator, &responseCreator); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
