@@ -20,6 +20,35 @@ type AuthenticatedUser struct {
 	ProfilePic string `json:"profilePic"`
 }
 
+func (a AuthenticatedUser) validateAuthenticatedUser() err.Error{
+	if a.Uid == ""{
+		return err.New("authenticated user Uid cannot be empty")
+	}
+	if a.UserId == ""{
+		return err.New("authenticated user UserId cannot be empty")
+	}
+	if a.Username == ""{
+		return err.New("authenticated user Username cannot be empty")
+	}
+	if a.Email == ""{
+		return err.New("authenticated user Email cannot be empty")
+	}
+	if a.ProfilePic == ""{
+		return err.New("authenticated user ProfilePic cannot be empty")
+	}
+	if a.BirthDay == 0{
+		return err.New("authenticated user BirthDay cannot be empty")
+	}
+	if a.BirthMonth == 0{
+		return err.New("authenticated user BirthMonth cannot be empty")
+	}
+	if a.BirthYear == 0{
+		return err.New("authenticated user BirthYear cannot be empty")
+	}
+
+	return err.Error{}
+}
+
 func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (AuthenticatedUser, err.Error) {
 	sessionName := os.Getenv("USER_SESSION")
 	userSession, gErr := store.Get(r, sessionName)
@@ -36,7 +65,7 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 	birthYear := userSession.Values["birthYear"]
 	profilePic := userSession.Values["profilePic"]
 
-	if username == nil || userId == nil || uid == nil || email == nil || birthDay == nil || birthMonth == nil || birthYear == nil || birthYear == profilePic {
+	if username == nil || userId == nil || uid == nil || email == nil || birthDay == nil || birthMonth == nil || birthYear == nil  || profilePic == nil {
 		msg := fmt.Sprintf(
 			"user session attribute(s) nil\n: username: %T\n userId: %T\n uid: %T\n email: %T\n birthDay: %T\n birthMonth: %T\n birthYear: %T\n profilePic: %T",
 			username, userId, uid, email, birthDay, birthMonth, birthYear, profilePic)
@@ -58,18 +87,51 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 		return AuthenticatedUser{}, err.New("could not convert session uid to string")
 	}
 
+	emailS, ok := email.(string)
+	if !ok {
+		return AuthenticatedUser{}, err.New("could not convert session email to string")
+	}
+
+	birthDayI, ok := birthDay.(int)
+	if !ok {
+		return AuthenticatedUser{}, err.New("could not convert session birthDay to int")
+	}
+
+	birthMonthI, ok := birthMonth.(int)
+	if !ok {
+		return AuthenticatedUser{}, err.New("could not convert session birthMonth to int")
+	}
+
+	birthYearI, ok := birthYear.(int)
+	if !ok {
+		return AuthenticatedUser{}, err.New("could not convert session birthYear to int")
+	}
+
+	profilePicS, ok := profilePic.(string)
+	if !ok {
+		return AuthenticatedUser{}, err.New("could not convert session profilePic to string")
+	}
+
 	user := AuthenticatedUser{
 		Username: usernameS,
 		UserId:   userIdS,
 		Uid:      uidS,
+		Email: emailS,
+		BirthDay: birthDayI,
+		BirthMonth: birthMonthI,
+		BirthYear: birthYearI,
+		ProfilePic: profilePicS,
 	}
-
-	fmt.Println("user authenticated")
 
 	return user, err.Error{}
 }
 
 func CreateUserSession(w http.ResponseWriter, r *http.Request, store *redisstore.RedisStore, user AuthenticatedUser) err.Error {
+	vErr := user.validateAuthenticatedUser()
+	if vErr.E != nil {
+		return vErr
+	}
+	
 	userSession := os.Getenv("USER_SESSION")
 	session, sErr := store.Get(r, userSession)
 	if sErr != nil {
