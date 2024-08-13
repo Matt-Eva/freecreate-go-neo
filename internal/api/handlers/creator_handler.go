@@ -15,20 +15,20 @@ import (
 )
 
 type ResponseCreator struct {
-	Name string `json:"name"`
-	CreatorId   string `json:"creatorId"`
-	About       string `json:"about"`
-	Uid         string `json:"uid"`
+	Name      string `json:"name"`
+	CreatorId string `json:"creatorId"`
+	About     string `json:"about"`
+	Uid       string `json:"uid"`
 }
 
-func (r ResponseCreator) validateResponseCreator() err.Error{
-	if r.Name == ""{
+func (r ResponseCreator) validateResponseCreator() err.Error {
+	if r.Name == "" {
 		return err.New("response creator name cannot be empty")
 	}
-	if r.Uid == ""{
+	if r.Uid == "" {
 		return err.New("response creator Uid cannot be empty")
 	}
-	if r.CreatorId == ""{
+	if r.CreatorId == "" {
 		return err.New("response creator creatorId cannot be empty")
 	}
 
@@ -42,7 +42,7 @@ func GetCreator(ctx context.Context, neo neo4j.DriverWithContext) http.HandlerFu
 	}
 }
 
-func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext){
+func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext) {
 	urlParams := r.URL.Query()
 	creatorIds, ok := urlParams["creatorId"]
 	if !ok {
@@ -51,7 +51,7 @@ func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		http.Error(w, e.E.Error(), http.StatusBadRequest)
 		return
 	}
-	if len(creatorIds) < 1{
+	if len(creatorIds) < 1 {
 		e := err.New("url params does not include creatorId")
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusBadRequest)
@@ -80,7 +80,7 @@ func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	if e := json.NewEncoder(w).Encode(returnCreator); e!= nil {
+	if e := json.NewEncoder(w).Encode(returnCreator); e != nil {
 		newE := err.NewFromErr(e)
 		newE.Log()
 		http.Error(w, newE.E.Error(), http.StatusInternalServerError)
@@ -89,13 +89,13 @@ func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 }
 
 // GET USER CREATORS
-func GetUserCreators(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc{
-	return func (w http.ResponseWriter, r *http.Request){
+func GetUserCreators(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		getUserCreators(w, r, ctx, neo, store)
 	}
 }
 
-func getUserCreators(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+func getUserCreators(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
 	user, aErr := middleware.AuthenticateUser(r, store)
 	if aErr.E != nil {
 		aErr.Log()
@@ -114,19 +114,19 @@ func getUserCreators(w http.ResponseWriter, r *http.Request, ctx context.Context
 		var responseCreator ResponseCreator
 		if e := utils.StructToStruct(creator, &responseCreator); e.E != nil {
 			e.Log()
-		http.Error(w, e.E.Error(), http.StatusInternalServerError)
-		return
+			http.Error(w, e.E.Error(), http.StatusInternalServerError)
+			return
 		}
 		if e := responseCreator.validateResponseCreator(); e.E != nil {
 			e.Log()
-		http.Error(w, e.E.Error(), http.StatusInternalServerError)
-		return
+			http.Error(w, e.E.Error(), http.StatusInternalServerError)
+			return
 		}
 		responseCreators = append(responseCreators, responseCreator)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	if e := json.NewEncoder(w).Encode(responseCreators); e!=nil {
+	if e := json.NewEncoder(w).Encode(responseCreators); e != nil {
 		newE := err.NewFromErr(e)
 		newE.Log()
 		http.Error(w, e.Error(), http.StatusInternalServerError)
@@ -141,9 +141,9 @@ func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redi
 }
 
 type PostedCreator struct {
-	Name string `json:"name"`
-	CreatorId   string `json:"creatorId"`
-	About       string `json:"about"`
+	Name      string `json:"name"`
+	CreatorId string `json:"creatorId"`
+	About     string `json:"about"`
 }
 
 func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {

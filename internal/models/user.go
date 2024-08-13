@@ -114,16 +114,16 @@ func GenerateUser(p PostedUser) (User, err.Error) {
 // ====== Updated User Info ======
 
 type UpdatedUserInfo struct {
-	UserId               string
-	Username             string
-	Email                string
-	BirthDay             int
-	BirthYear            int
-	BirthMonth           int
-	ProfilePic           string
+	UserId     string
+	Username   string
+	Email      string
+	BirthDay   int
+	BirthYear  int
+	BirthMonth int
+	ProfilePic string
 }
 
-func (u UpdatedUserInfo) validateUpdateUserInfo() err.Error{
+func (u UpdatedUserInfo) validateUpdateUserInfo() err.Error {
 	if u.UserId == "" {
 		e := "user display name is empty"
 		return err.New(e)
@@ -156,16 +156,16 @@ func (u UpdatedUserInfo) validateUpdateUserInfo() err.Error{
 }
 
 type PatchedUser struct {
-	UserId               string
-	Username             string
-	Email                string
-	BirthDay             int
-	BirthYear            int
-	BirthMonth           int
-	ProfilePic           string
+	UserId     string
+	Username   string
+	Email      string
+	BirthDay   int
+	BirthYear  int
+	BirthMonth int
+	ProfilePic string
 }
 
-func GenerateUpdatedUserInfo(p PatchedUser)(UpdatedUserInfo, err.Error){
+func GenerateUpdatedUserInfo(p PatchedUser) (UpdatedUserInfo, err.Error) {
 	var updatedUser UpdatedUserInfo
 	if e := utils.StructToStruct(p, updatedUser); e.E != nil {
 		return updatedUser, e
@@ -178,4 +178,3 @@ func GenerateUpdatedUserInfo(p PatchedUser)(UpdatedUserInfo, err.Error){
 
 	return updatedUser, err.Error{}
 }
-

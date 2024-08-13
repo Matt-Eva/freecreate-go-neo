@@ -11,25 +11,25 @@ import (
 )
 
 type RetrievedCreator struct {
-	Name string
-	CreatorId string
+	Name       string
+	CreatorId  string
 	ProfilePic string
-	About string
-	Uid string
+	About      string
+	Uid        string
 }
 
-func GetCreator(ctx context.Context, neo neo4j.DriverWithContext, creatorId string)(RetrievedCreator, err.Error){
+func GetCreator(ctx context.Context, neo neo4j.DriverWithContext, creatorId string) (RetrievedCreator, err.Error) {
 	params := map[string]any{
 		"creatorId": creatorId,
 	}
-	
+
 	query, qErr := buildGetCreatorQuery()
 	if qErr.E != nil {
 		return RetrievedCreator{}, qErr
 	}
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return RetrievedCreator{}, err.New("could not get db environment variable")
 	}
 
@@ -52,7 +52,7 @@ func GetCreator(ctx context.Context, neo neo4j.DriverWithContext, creatorId stri
 	return creator, err.Error{}
 }
 
-func buildGetCreatorQuery()(string, err.Error){
+func buildGetCreatorQuery() (string, err.Error) {
 	creatorLabel, lErr := GetNodeLabel("Creator")
 	if lErr.E != nil {
 		return "", err.Error{}

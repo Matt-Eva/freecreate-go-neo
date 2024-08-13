@@ -28,7 +28,7 @@ func GetNodeLabel(label string) (string, err.Error) {
 var relLabelMap = map[string]string{
 	"IS_CREATOR": "IS_CREATOR", // User -> Creator
 	"CREATED":    "CREATED",    // Creator -> Writing
-	"HAS_TAG": "HAS_TAG", // Writing -> Tag
+	"HAS_TAG":    "HAS_TAG",    // Writing -> Tag
 }
 
 func GetRelationshipLabel(label string) (string, err.Error) {

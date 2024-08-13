@@ -38,7 +38,7 @@ func TestStructToStruct(t *testing.T) {
 
 	}
 
-//== testing conversion of struct with fewer fields to struct with more fields ==
+	//== testing conversion of struct with fewer fields to struct with more fields ==
 
 	type ShortSender struct {
 		StringField string
@@ -46,7 +46,7 @@ func TestStructToStruct(t *testing.T) {
 
 	type LongReceiver struct {
 		StringField string
-		NumField int
+		NumField    int
 	}
 	shortSender := ShortSender{
 		"string",
@@ -57,7 +57,7 @@ func TestStructToStruct(t *testing.T) {
 		sErr.Log()
 		t.Fatal("above error occurred")
 	}
-	
+
 	if longReceiver.StringField != shortSender.StringField {
 		t.Error("did not convert matching fields correctly")
 	}

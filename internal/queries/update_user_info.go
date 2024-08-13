@@ -12,17 +12,17 @@ import (
 )
 
 type UpdatedUser struct {
-	Uid 	string
-	UserId               string
-	Username             string
-	Email                string
-	BirthDay             int
-	BirthYear            int
-	BirthMonth           int
-	ProfilePic           string
+	Uid        string
+	UserId     string
+	Username   string
+	Email      string
+	BirthDay   int
+	BirthYear  int
+	BirthMonth int
+	ProfilePic string
 }
 
-func UpdateUserInfo(ctx context.Context, neo neo4j.DriverWithContext, userId string, user models.UpdatedUserInfo)(UpdatedUser, err.Error){
+func UpdateUserInfo(ctx context.Context, neo neo4j.DriverWithContext, userId string, user models.UpdatedUserInfo) (UpdatedUser, err.Error) {
 	params := utils.StructToMap(user)
 
 	query, qErr := buildUpdateUserInfoQuery(params)
@@ -33,7 +33,7 @@ func UpdateUserInfo(ctx context.Context, neo neo4j.DriverWithContext, userId str
 	params["userId"] = userId
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return UpdatedUser{}, err.New("could not get neo db env variable")
 	}
 
@@ -55,17 +55,16 @@ func UpdateUserInfo(ctx context.Context, neo neo4j.DriverWithContext, userId str
 	return updatedUser, err.Error{}
 }
 
-func buildUpdateUserInfoQuery(params map[string]any)(string, err.Error){
+func buildUpdateUserInfoQuery(params map[string]any) (string, err.Error) {
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return "", uErr
 	}
 
-	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId})",userLabel)
-
+	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId})", userLabel)
 
 	type AttrStruct struct {
-		Key string
+		Key       string
 		Attribute string
 	}
 

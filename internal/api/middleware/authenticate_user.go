@@ -20,29 +20,29 @@ type AuthenticatedUser struct {
 	ProfilePic string `json:"profilePic"`
 }
 
-func (a AuthenticatedUser) validateAuthenticatedUser() err.Error{
-	if a.Uid == ""{
+func (a AuthenticatedUser) validateAuthenticatedUser() err.Error {
+	if a.Uid == "" {
 		return err.New("authenticated user Uid cannot be empty")
 	}
-	if a.UserId == ""{
+	if a.UserId == "" {
 		return err.New("authenticated user UserId cannot be empty")
 	}
-	if a.Username == ""{
+	if a.Username == "" {
 		return err.New("authenticated user Username cannot be empty")
 	}
-	if a.Email == ""{
+	if a.Email == "" {
 		return err.New("authenticated user Email cannot be empty")
 	}
-	if a.ProfilePic == ""{
+	if a.ProfilePic == "" {
 		return err.New("authenticated user ProfilePic cannot be empty")
 	}
-	if a.BirthDay == 0{
+	if a.BirthDay == 0 {
 		return err.New("authenticated user BirthDay cannot be empty")
 	}
-	if a.BirthMonth == 0{
+	if a.BirthMonth == 0 {
 		return err.New("authenticated user BirthMonth cannot be empty")
 	}
-	if a.BirthYear == 0{
+	if a.BirthYear == 0 {
 		return err.New("authenticated user BirthYear cannot be empty")
 	}
 
@@ -65,7 +65,7 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 	birthYear := userSession.Values["birthYear"]
 	profilePic := userSession.Values["profilePic"]
 
-	if username == nil || userId == nil || uid == nil || email == nil || birthDay == nil || birthMonth == nil || birthYear == nil  || profilePic == nil {
+	if username == nil || userId == nil || uid == nil || email == nil || birthDay == nil || birthMonth == nil || birthYear == nil || profilePic == nil {
 		msg := fmt.Sprintf(
 			"user session attribute(s) nil\n: username: %T\n userId: %T\n uid: %T\n email: %T\n birthDay: %T\n birthMonth: %T\n birthYear: %T\n profilePic: %T",
 			username, userId, uid, email, birthDay, birthMonth, birthYear, profilePic)
@@ -113,13 +113,13 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 	}
 
 	user := AuthenticatedUser{
-		Username: usernameS,
-		UserId:   userIdS,
-		Uid:      uidS,
-		Email: emailS,
-		BirthDay: birthDayI,
+		Username:   usernameS,
+		UserId:     userIdS,
+		Uid:        uidS,
+		Email:      emailS,
+		BirthDay:   birthDayI,
 		BirthMonth: birthMonthI,
-		BirthYear: birthYearI,
+		BirthYear:  birthYearI,
 		ProfilePic: profilePicS,
 	}
 
@@ -131,7 +131,7 @@ func CreateUserSession(w http.ResponseWriter, r *http.Request, store *redisstore
 	if vErr.E != nil {
 		return vErr
 	}
-	
+
 	userSession := os.Getenv("USER_SESSION")
 	session, sErr := store.Get(r, userSession)
 	if sErr != nil {

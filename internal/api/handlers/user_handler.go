@@ -133,22 +133,22 @@ func createUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 }
 
 func UpdateUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, r *http.Request) {
 		updateUser(w, r, ctx, neo, store)
 	}
 }
 
 type PatchedUser struct {
-	UserId               string `json:"userId"`
-	Username             string `json:"username"`
-	Email                string `json:"email"`
-	BirthDay             int    `json:"birthday"`
-	BirthYear            int    `json:"birthYear"`
-	BirthMonth           int    `json:"birthMonth"`
-	ProfilePic           string `json:"profilePic"`
+	UserId     string `json:"userId"`
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	BirthDay   int    `json:"birthday"`
+	BirthYear  int    `json:"birthYear"`
+	BirthMonth int    `json:"birthMonth"`
+	ProfilePic string `json:"profilePic"`
 }
 
-func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
 	authenticatedUser, aErr := middleware.AuthenticateUser(r, store)
 	if aErr.E != nil {
 		aErr.Log()
@@ -213,7 +213,6 @@ func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		return
 	}
 
-
 	w.Header().Set("Content-Type", "application/json")
 	if e := json.NewEncoder(w).Encode(returnUser); e != nil {
 		newE := err.NewFromErr(e)
@@ -224,12 +223,12 @@ func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 }
 
 func DeleteUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, r *http.Request) {
 		deleteUser(w, r, ctx, neo, store)
 	}
 }
 
-func deleteUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+func deleteUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
 	authenticatedUser, aErr := middleware.AuthenticateUser(r, store)
 	if aErr.E != nil {
 		aErr.Log()
@@ -238,7 +237,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	}
 
 	dErr := queries.DeleteUser(ctx, neo, authenticatedUser.Uid)
-	if dErr.E!= nil {
+	if dErr.E != nil {
 		dErr.Log()
 		http.Error(w, dErr.E.Error(), http.StatusInternalServerError)
 		return
@@ -247,6 +246,6 @@ func deleteUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func UpdatePassword(){
+func UpdatePassword() {
 
 }

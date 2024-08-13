@@ -9,7 +9,7 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-func DeleteUser(ctx context.Context, neo neo4j.DriverWithContext, userId string) err.Error{
+func DeleteUser(ctx context.Context, neo neo4j.DriverWithContext, userId string) err.Error {
 	params := map[string]any{
 		"userId": userId,
 	}
@@ -20,7 +20,7 @@ func DeleteUser(ctx context.Context, neo neo4j.DriverWithContext, userId string)
 	}
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return err.New("could not get db env variable")
 	}
 
@@ -32,7 +32,7 @@ func DeleteUser(ctx context.Context, neo neo4j.DriverWithContext, userId string)
 	return err.Error{}
 }
 
-func buildDeleteUserQuery()(string, err.Error){
+func buildDeleteUserQuery() (string, err.Error) {
 	userLabel, lErr := GetNodeLabel("User")
 	if lErr.E != nil {
 		return "", lErr
@@ -44,5 +44,5 @@ func buildDeleteUserQuery()(string, err.Error){
 
 	query := matchQuery + deleteQuery
 
-	return query , err.Error{}
+	return query, err.Error{}
 }

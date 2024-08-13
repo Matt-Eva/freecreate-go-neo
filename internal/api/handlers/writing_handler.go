@@ -14,25 +14,25 @@ import (
 )
 
 type ReturnedWriting struct {
-	Uid string 	`json:"uid"`
-	Title string	`json:"title"`
-	Description string	`json:"description"`
-	Author string	`json:"author"`
-	Genres []string	`json:"genres"`
-	Tags []string	`json:"tags"`
-	CreatorId string	`json:"creatorId"`
-	Chapters []queries.RetrievedChapter `json:"chapters"`
+	Uid         string                     `json:"uid"`
+	Title       string                     `json:"title"`
+	Description string                     `json:"description"`
+	Author      string                     `json:"author"`
+	Genres      []string                   `json:"genres"`
+	Tags        []string                   `json:"tags"`
+	CreatorId   string                     `json:"creatorId"`
+	Chapters    []queries.RetrievedChapter `json:"chapters"`
 }
 
 func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client) http.HandlerFunc {
- return func (w http.ResponseWriter, r *http.Request){
-	getWriting(w, r, ctx, neo,  mongo)
- }
+	return func(w http.ResponseWriter, r *http.Request) {
+		getWriting(w, r, ctx, neo, mongo)
+	}
 }
 
-func getWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client){
+func getWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client) {
 	urlParams := r.URL.Query()
-	creatorIds , ok := urlParams["creatorId"]
+	creatorIds, ok := urlParams["creatorId"]
 	if !ok {
 		e := err.New("url params does not include creator id")
 		http.Error(w, e.E.Error(), http.StatusBadRequest)
@@ -51,7 +51,7 @@ func getWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		http.Error(w, e.E.Error(), http.StatusBadRequest)
 		return
 	}
-	if len(writingIds) != 1  {
+	if len(writingIds) != 1 {
 		e := err.New("invalid number of writing id params - must be 1 and only 1")
 		http.Error(w, e.E.Error(), http.StatusBadRequest)
 		return

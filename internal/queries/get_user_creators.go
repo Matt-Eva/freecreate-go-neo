@@ -11,26 +11,26 @@ import (
 )
 
 type RetrievedUserCreator struct {
-Name string
-Uid string
-CreatorId string
-About string
+	Name      string
+	Uid       string
+	CreatorId string
+	About     string
 }
 
-func (r RetrievedUserCreator) validatedRetrievedUserCreator() err.Error{
-	if r.Name == ""{	
+func (r RetrievedUserCreator) validatedRetrievedUserCreator() err.Error {
+	if r.Name == "" {
 		return err.New("retrieved user creator name cannot be empty")
 	}
-	if r.Uid == ""{	
+	if r.Uid == "" {
 		return err.New("retrieved user creator Uid cannot be empty")
 	}
-	if r.CreatorId == ""{	
+	if r.CreatorId == "" {
 		return err.New("retrieved user creator CreatorId cannot be empty")
 	}
 	return err.Error{}
 }
 
-func GetUserCreators(ctx context.Context, neo neo4j.DriverWithContext, userId string)([]RetrievedUserCreator, err.Error){
+func GetUserCreators(ctx context.Context, neo neo4j.DriverWithContext, userId string) ([]RetrievedUserCreator, err.Error) {
 	query, qErr := buildGetUserCreatorsQuery()
 	if qErr.E != nil {
 		return []RetrievedUserCreator{}, qErr
@@ -40,7 +40,7 @@ func GetUserCreators(ctx context.Context, neo neo4j.DriverWithContext, userId st
 	}
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return []RetrievedUserCreator{}, err.New("neo db environment variable is empty")
 	}
 
@@ -50,7 +50,7 @@ func GetUserCreators(ctx context.Context, neo neo4j.DriverWithContext, userId st
 	}
 
 	var retrievedCreators []RetrievedUserCreator
-	for _, record := range result.Records{
+	for _, record := range result.Records {
 		recordMap := record.AsMap()
 		var retrievedCreator RetrievedUserCreator
 		if e := utils.MapToStruct(recordMap, &retrievedCreator); e.E != nil {
@@ -62,11 +62,11 @@ func GetUserCreators(ctx context.Context, neo neo4j.DriverWithContext, userId st
 		}
 		retrievedCreators = append(retrievedCreators, retrievedCreator)
 	}
-	
+
 	return retrievedCreators, err.Error{}
 }
 
-func buildGetUserCreatorsQuery()(string, err.Error){
+func buildGetUserCreatorsQuery() (string, err.Error) {
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return "", uErr
