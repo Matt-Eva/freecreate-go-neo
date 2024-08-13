@@ -46,7 +46,7 @@ type NewCreator struct {
 
 func GenerateCreator(userId string, n NewCreator) (Creator, err.Error) {
 	var creator Creator
-	utils.StructToStruct(n, creator)
+	utils.StructToStruct(n, &creator)
 	uid := uuid.New().String()
 	creator.Uid = uid
 	creator.UserId = userId

@@ -15,7 +15,7 @@ import (
 )
 
 type ResponseCreator struct {
-	CreatorName string `json:"creatorName"`
+	Name string `json:"name"`
 	CreatorId   string `json:"creatorId"`
 	About       string `json:"about"`
 	Uid         string `json:"uid"`
@@ -79,7 +79,7 @@ func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redi
 }
 
 type PostedCreator struct {
-	CreatorName string `json:"creatorName"`
+	Name string `json:"name"`
 	CreatorId   string `json:"creatorId"`
 	About       string `json:"about"`
 }
