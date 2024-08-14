@@ -18,33 +18,68 @@ type UpdatedCreator struct {
 	About     string
 }
 
-func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info models.UpdatedCreatorInfo) (UpdatedCreator, err.Error) {
+func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info models.UpdatedCreatorInfo) (UpdatedCreator, bool, err.Error) {
+	exists, uErr := checkUniqueCreatorId(ctx, neo, info.CreatorId)
+	if uErr.E != nil && exists {
+		return UpdatedCreator{}, true, uErr
+	} else if uErr.E != nil {
+		return UpdatedCreator{}, false, uErr
+	}
+
 	params := buildUpdateCreatorInfoParams(info)
 	query, qErr := buildUpdateCreatorInfoQuery(params)
 	if qErr.E != nil {
-		return UpdatedCreator{}, qErr
+		return UpdatedCreator{}, false, qErr
 	}
 
 	db := os.Getenv("NEO_DB")
 	if db == "" {
-		return UpdatedCreator{}, err.New("NEO_DB environment variable returned empty string")
+		return UpdatedCreator{}, false, err.New("NEO_DB environment variable returned empty string")
 	}
 	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
 	if nErr != nil {
 		e := err.NewFromErr(nErr)
-		return UpdatedCreator{}, e
+		return UpdatedCreator{},false, e
 	}
 	if len(result.Records) < 1 {
-		return UpdatedCreator{}, err.New("db query returned zero records")
+		return UpdatedCreator{},false, err.New("db query returned zero records")
 	}
 
 	resultMap := result.Records[0].AsMap()
 	var updatedCreator UpdatedCreator
-	if e := utils.MapToStruct(resultMap, updatedCreator); e.E != nil {
-		return UpdatedCreator{}, e
+	if e := utils.MapToStruct(resultMap, &updatedCreator); e.E != nil {
+		return UpdatedCreator{}, false, e
 	}
 
-	return updatedCreator, err.Error{}
+	return updatedCreator, false, err.Error{}
+}
+
+func checkUniqueCreatorId(ctx context.Context, neo neo4j.DriverWithContext, creatorId string)(bool, err.Error){
+	creatorLabel, cErr := GetNodeLabel("Creator")
+	if cErr.E != nil {
+		return false, cErr
+	}
+
+	query := fmt.Sprintf("MATCH (c:%s {creatorId: $creatorId}) RETURN c.creatorId AS CreatorId", creatorLabel)
+	params := map[string]any {
+		"creatorId": creatorId,
+	}
+
+	db := os.Getenv("NEO_DB")
+	if db == ""{
+		return false, err.New("neo db env variable is empty")
+	}
+
+	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
+	if nErr != nil {
+		return false, err.NewFromErr(nErr)
+	}
+	if len(result.Records) > 0 {
+		msg := fmt.Sprintf("creator id '%s' already in use", creatorId)
+		return true, err.New(msg)
+	}
+
+	return false, err.Error{}
 }
 
 func buildUpdateCreatorInfoQuery(params map[string]any) (string, err.Error) {
@@ -70,13 +105,20 @@ func buildUpdateCreatorInfoQuery(params map[string]any) (string, err.Error) {
 		setAttributes = append(setAttributes, attrMap)
 	}
 
-	setQuery := ""
-	for _, attrMap := range setAttributes {
-		query := fmt.Sprintf("SET c.%s = %s", attrMap.Key, attrMap.Attribute)
+	setQuery := "SET "
+	for i, attrMap := range setAttributes {
+		query := ""
+		if i < len(setAttributes) - 1{
+			query = fmt.Sprintf("c.%s = %s, ", attrMap.Key, attrMap.Attribute)
+		} else {
+			query = fmt.Sprintf("c.%s = %s ", attrMap.Key, attrMap.Attribute)
+		}
 		setQuery += query
 	}
 
-	returnQuery := `RETURN c.uid AS Uid, c.name AS Name, c.creatorId AS CreatorId, c.about AS About`
+	returnQuery := `
+	RETURN c.uid AS Uid, c.name AS Name, c.creatorId AS CreatorId, c.about AS About
+	`
 
 	query := matchQuery + setQuery + returnQuery
 

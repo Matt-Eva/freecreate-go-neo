@@ -20,7 +20,7 @@ func StructToStruct(sender interface{}, receiverPntr interface{}) err.Error {
 
 		senderFieldValue := senderValue.FieldByName(name)
 		if !senderFieldValue.IsValid() {
-			continue
+			
 		}
 		senderFieldType := senderFieldValue.Type().Kind()
 

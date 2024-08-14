@@ -15,5 +15,5 @@ func ValidateWritingType(writingType string) (string, err.Error) {
 	}
 
 	errorMessage := fmt.Sprintf("%s is not a valid writing type", writingType)
-	return "", err.New(errorMessage)
+	return "", err.New(errorMessage,)
 }

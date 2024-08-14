@@ -42,6 +42,18 @@ func GetCreator(ctx context.Context, neo neo4j.DriverWithContext) http.HandlerFu
 	}
 }
 
+func GetUserCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc{
+	return func(w http.ResponseWriter, r *http.Request) {
+		_, aErr := middleware.AuthenticateUser(r, store)
+		if aErr.E != nil {
+			aErr.Log()
+			http.Error(w, aErr.E.Error(), http.StatusUnauthorized)
+			return
+		}
+		getCreator(w, r, ctx, neo)
+	}
+}
+
 func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext) {
 	urlParams := r.URL.Query()
 	creatorIds, ok := urlParams["creatorId"]
@@ -216,7 +228,7 @@ func UpdateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redi
 
 type PatchedUpdatedCreatorInfo struct {
 	Uid         string `json:"uid"`
-	CreatorName string `json:"creatorName"`
+	Name string `json:"name"`
 	CreatorId   string `json:"creatorId"`
 	About       string `json:"about"`
 }
@@ -251,15 +263,19 @@ func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
-	updatedCreator, qErr := queries.UpdateCreatorInfo(ctx, neo, updatedCreatorInfo)
-	if qErr.E != nil {
+	updatedCreator, exists, qErr := queries.UpdateCreatorInfo(ctx, neo, updatedCreatorInfo)
+	if qErr.E != nil && exists {
+		qErr.Log()
+		http.Error(w, qErr.E.Error(), http.StatusUnprocessableEntity)
+		return
+	} else if qErr.E != nil {
 		qErr.Log()
 		http.Error(w, qErr.E.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	var responseCreator ResponseCreator
-	if e := utils.StructToStruct(updatedCreator, responseCreator); e.E != nil {
+	if e := utils.StructToStruct(updatedCreator, &responseCreator); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return

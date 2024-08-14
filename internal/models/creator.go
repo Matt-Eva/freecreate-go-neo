@@ -95,7 +95,7 @@ type IncomingUpdatedCreatorInfo struct {
 
 func MakeUpdatedCreatorInfo(i IncomingUpdatedCreatorInfo) (UpdatedCreatorInfo, err.Error) {
 	var u UpdatedCreatorInfo
-	if e := utils.StructToStruct(i, u); e.E != nil {
+	if e := utils.StructToStruct(i, &u); e.E != nil {
 		return u, e
 	}
 	if e := u.validateUpdatedCreator(); e.E != nil {
