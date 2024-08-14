@@ -19,7 +19,7 @@ type ReturnUser struct {
 	UserId     string `json:"userId"`
 	Username   string `json:"username"`
 	Email      string `json:"email"`
-	BirthDay   int    `json:"birthday"`
+	BirthDay   int    `json:"birthDay"`
 	BirthYear  int    `json:"birthYear"`
 	BirthMonth int    `json:"birthMonth"`
 	ProfilePic string `json:"profilePic"`
@@ -64,7 +64,7 @@ type PostedUser struct {
 	UserId               string `json:"userId"`
 	Username             string `json:"username"`
 	Email                string `json:"email"`
-	BirthDay             int    `json:"birthday"`
+	BirthDay             int    `json:"birthDay"`
 	BirthYear            int    `json:"birthYear"`
 	BirthMonth           int    `json:"birthMonth"`
 	ProfilePic           string `json:"profilePic"`
@@ -142,7 +142,7 @@ type PatchedUser struct {
 	UserId     string `json:"userId"`
 	Username   string `json:"username"`
 	Email      string `json:"email"`
-	BirthDay   int    `json:"birthday"`
+	BirthDay   int    `json:"birthDay"`
 	BirthYear  int    `json:"birthYear"`
 	BirthMonth int    `json:"birthMonth"`
 }
