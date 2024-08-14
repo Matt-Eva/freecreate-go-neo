@@ -1,4 +1,4 @@
-package handlers
+package like_handler
 
 import "net/http"
 
