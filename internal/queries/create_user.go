@@ -13,7 +13,7 @@ import (
 
 type CreatedUser struct {
 	Uid         string
-	DisplayName string
+	UserId string
 	Username    string
 	Email       string
 	ProfilePic  string
@@ -25,6 +25,11 @@ type CreatedUser struct {
 }
 
 func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.User) (CreatedUser, err.Error) {
+	_, uErr := checkUniqueUser(ctx, neo, user.UserId)
+	if uErr.E != nil {
+		return CreatedUser{},  uErr
+	}
+	
 	params := utils.StructToMap(user)
 	query, qErr := buildCreateUserQuery()
 	if qErr.E != nil {
@@ -51,6 +56,33 @@ func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.Us
 	}
 
 	return createdUser, err.Error{}
+}
+
+func checkUniqueUser(ctx context.Context, neo neo4j.DriverWithContext, userId string)(int, err.Error){
+	userLabel, uErr := GetNodeLabel("User")
+	if uErr.E != nil {
+		return 500, uErr
+	}
+
+	query := fmt.Sprintf("MATCH (u:%s {userId: $userId}) RETURN u.userId AS userId", userLabel)
+	params := map[string]any {
+		"userId": userId,
+	}
+
+	db := os.Getenv("NEO_DB")
+	if db == ""{
+		return 500, err.New("neodb environment variable is empty")
+	}
+
+	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
+	if nErr != nil {
+		return 500, err.NewFromErr(nErr)
+	}
+	if len(result.Records) > 0{
+		return 422, err.New("user id already in use")
+	}
+
+	return 200, err.Error{}
 }
 
 func buildCreateUserQuery() (string, err.Error) {
