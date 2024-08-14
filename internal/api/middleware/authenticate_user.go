@@ -14,7 +14,7 @@ type AuthenticatedUser struct {
 	UserId     string `json:"userId"`
 	Username   string `json:"username"`
 	Email      string `json:"email"`
-	BirthDay   int    `json:"birthday"`
+	BirthDay   int    `json:"birthDay"`
 	BirthYear  int    `json:"birthYear"`
 	BirthMonth int    `json:"birthMonth"`
 	ProfilePic string `json:"profilePic"`
@@ -32,9 +32,6 @@ func (a AuthenticatedUser) validateAuthenticatedUser() err.Error {
 	}
 	if a.Email == "" {
 		return err.New("authenticated user Email cannot be empty")
-	}
-	if a.ProfilePic == "" {
-		return err.New("authenticated user ProfilePic cannot be empty")
 	}
 	if a.BirthDay == 0 {
 		return err.New("authenticated user BirthDay cannot be empty")

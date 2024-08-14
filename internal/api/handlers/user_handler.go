@@ -145,7 +145,6 @@ type PatchedUser struct {
 	BirthDay   int    `json:"birthday"`
 	BirthYear  int    `json:"birthYear"`
 	BirthMonth int    `json:"birthMonth"`
-	ProfilePic string `json:"profilePic"`
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
@@ -182,13 +181,6 @@ func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	if uErr.E != nil {
 		uErr.Log()
 		http.Error(w, uErr.E.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	dErr := middleware.DestroyUserSession(w, r, store)
-	if dErr.E != nil {
-		dErr.Log()
-		http.Error(w, dErr.E.Error(), http.StatusInternalServerError)
 		return
 	}
 

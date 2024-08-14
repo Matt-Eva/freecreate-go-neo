@@ -120,7 +120,6 @@ type UpdatedUserInfo struct {
 	BirthDay   int
 	BirthYear  int
 	BirthMonth int
-	ProfilePic string
 }
 
 func (u UpdatedUserInfo) validateUpdateUserInfo() err.Error {
@@ -134,10 +133,6 @@ func (u UpdatedUserInfo) validateUpdateUserInfo() err.Error {
 	}
 	if u.Email == "" {
 		e := "user email is empty"
-		return err.New(e)
-	}
-	if u.ProfilePic != "" {
-		e := "profile pic must be empty - not currently accepting images"
 		return err.New(e)
 	}
 	if u.BirthYear == 0 || u.BirthYear < 1900 {
@@ -162,12 +157,11 @@ type PatchedUser struct {
 	BirthDay   int
 	BirthYear  int
 	BirthMonth int
-	ProfilePic string
 }
 
 func GenerateUpdatedUserInfo(p PatchedUser) (UpdatedUserInfo, err.Error) {
 	var updatedUser UpdatedUserInfo
-	if e := utils.StructToStruct(p, updatedUser); e.E != nil {
+	if e := utils.StructToStruct(p, &updatedUser); e.E != nil {
 		return updatedUser, e
 	}
 

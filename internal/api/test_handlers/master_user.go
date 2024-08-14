@@ -3,6 +3,7 @@ package test_handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"freecreate/internal/api/middleware"
 	"freecreate/internal/err"
 	"freecreate/internal/utils"
@@ -39,9 +40,13 @@ func handleMasterUser(w http.ResponseWriter, r *http.Request, ctx context.Contex
 			return
 		}
 
+		fmt.Println("master user logged in", user)
+
 		json.NewEncoder(w).Encode(user)
 		return
 	}
+
+	fmt.Println("master user authenticated", user)
 
 	json.NewEncoder(w).Encode(user)
 }
@@ -51,7 +56,7 @@ func getMasterUserFromDb(ctx context.Context, neo neo4j.DriverWithContext) (map[
 	query := `
 		MATCH (u:User)
 		WHERE u.masterUser = true
-		RETURN u.username AS Username, u.userId AS UserId, u.uid AS Uid
+		RETURN u.username AS Username, u.userId AS UserId, u.uid AS Uid, u.email AS Email, u.birthDay AS BirthDay, u.birthMonth AS BirthMonth, u.birthYear AS BirthYear, u.profilePic AS ProfilePic
 	`
 	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, nil, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(dbName))
 	if nErr != nil {

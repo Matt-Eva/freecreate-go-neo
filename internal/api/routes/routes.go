@@ -49,7 +49,7 @@ func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo
 
 	// AUTH ROUTES
 	router.HandleFunc("/api/login", handlers.Login).Methods("POST")
-	router.HandleFunc("/api/logout", handlers.Logout).Methods("DELETE")
+	router.HandleFunc("/api/logout", handlers.Logout(store)).Methods("DELETE")
 
 	// USER ROUTES
 	router.HandleFunc("/api/user", handlers.GetUser(store)).Methods("GET")

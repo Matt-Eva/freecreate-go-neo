@@ -30,7 +30,7 @@ func UpdateUserInfo(ctx context.Context, neo neo4j.DriverWithContext, userId str
 		return UpdatedUser{}, qErr
 	}
 
-	params["userId"] = userId
+	params["uid"] = userId
 
 	db := os.Getenv("NEO_DB")
 	if db == "" {
@@ -61,7 +61,7 @@ func buildUpdateUserInfoQuery(params map[string]any) (string, err.Error) {
 		return "", uErr
 	}
 
-	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId})", userLabel)
+	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $uid}) ", userLabel)
 
 	type AttrStruct struct {
 		Key       string
@@ -78,10 +78,15 @@ func buildUpdateUserInfoQuery(params map[string]any) (string, err.Error) {
 		attrList = append(attrList, attrStruct)
 	}
 
-	setQuery := ""
-	for _, attrStruct := range attrList {
-		query := fmt.Sprintf("SET u.%s = %s", attrStruct.Key, attrStruct.Attribute)
-		setQuery += query
+	setQuery := "SET "
+	for i, attrStruct := range attrList {
+		if i < len(attrList) - 1 {
+			query := fmt.Sprintf("u.%s = %s,", attrStruct.Key, attrStruct.Attribute)
+			setQuery += query
+		} else {
+			query :=  fmt.Sprintf("u.%s = %s", attrStruct.Key, attrStruct.Attribute)
+			setQuery += query
+		}
 	}
 
 	returnQuery := `
@@ -92,7 +97,7 @@ func buildUpdateUserInfoQuery(params map[string]any) (string, err.Error) {
 		u.birthDay AS BirthDay,
 		u.birthYear AS BirthYear,
 		u.birthMonth AS BirthMonth,
-		u.profilePic AS ProfilePic,
+		u.profilePic AS ProfilePic
 	`
 
 	query := matchQuery + setQuery + returnQuery
