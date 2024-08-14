@@ -24,7 +24,7 @@ func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info mo
 	if aErr.E != nil {
 		return UpdatedCreator{}, false, status, aErr
 	}
-	
+
 	exists, uErr := checkUniqueCreatorId(ctx, neo, info.CreatorId)
 	if uErr.E != nil && exists {
 		return UpdatedCreator{}, true, 422, uErr
@@ -47,10 +47,10 @@ func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info mo
 	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
 	if nErr != nil {
 		e := err.NewFromErr(nErr)
-		return UpdatedCreator{},false, 500, e
+		return UpdatedCreator{}, false, 500, e
 	}
 	if len(result.Records) < 1 {
-		return UpdatedCreator{},false, 500, err.New("db query returned zero records")
+		return UpdatedCreator{}, false, 500, err.New("db query returned zero records")
 	}
 
 	resultMap := result.Records[0].AsMap()
@@ -62,7 +62,7 @@ func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info mo
 	return updatedCreator, false, 201, err.Error{}
 }
 
-func checkAuthorizedUser(ctx context.Context, neo neo4j.DriverWithContext, userId, creatorId string)(int, err.Error){
+func checkAuthorizedUser(ctx context.Context, neo neo4j.DriverWithContext, userId, creatorId string) (int, err.Error) {
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return 500, uErr
@@ -75,7 +75,7 @@ func checkAuthorizedUser(ctx context.Context, neo neo4j.DriverWithContext, userI
 
 	creatorLabel, cErr := GetNodeLabel("Creator")
 	if cErr.E != nil {
-return 500, cErr
+		return 500, cErr
 	}
 
 	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId}), (c:%s {uid: $creatorId})", userLabel, creatorLabel)
@@ -83,7 +83,7 @@ return 500, cErr
 	query := matchQuery + returnQuery
 
 	params := map[string]any{
-		"userId": userId,
+		"userId":    userId,
 		"creatorId": creatorId,
 	}
 
@@ -106,26 +106,26 @@ return 500, cErr
 		return 500, err.New("exists value from database could not be converted to boolean")
 	}
 
-	if exists{
+	if exists {
 		return 200, err.Error{}
 	} else {
 		return 401, err.New("user does not have access to this creator profile")
 	}
 }
 
-func checkUniqueCreatorId(ctx context.Context, neo neo4j.DriverWithContext, creatorId string)(bool, err.Error){
+func checkUniqueCreatorId(ctx context.Context, neo neo4j.DriverWithContext, creatorId string) (bool, err.Error) {
 	creatorLabel, cErr := GetNodeLabel("Creator")
 	if cErr.E != nil {
 		return false, cErr
 	}
 
 	query := fmt.Sprintf("MATCH (c:%s {creatorId: $creatorId}) RETURN c.creatorId AS CreatorId", creatorLabel)
-	params := map[string]any {
+	params := map[string]any{
 		"creatorId": creatorId,
 	}
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return false, err.New("neo db env variable is empty")
 	}
 
@@ -157,7 +157,7 @@ func buildUpdateCreatorInfoQuery(params map[string]any) (string, err.Error) {
 		return "", iErr
 	}
 
-	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId}) - [:%s] -> (c:%s {uid: $uid})",userLabel, isCreatorLabel, creatorLabel)
+	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId}) - [:%s] -> (c:%s {uid: $uid})", userLabel, isCreatorLabel, creatorLabel)
 
 	type AttrStruct struct {
 		Key       string
@@ -177,7 +177,7 @@ func buildUpdateCreatorInfoQuery(params map[string]any) (string, err.Error) {
 	setQuery := "SET "
 	for i, attrMap := range setAttributes {
 		query := ""
-		if i < len(setAttributes) - 1{
+		if i < len(setAttributes)-1 {
 			query = fmt.Sprintf("c.%s = %s, ", attrMap.Key, attrMap.Attribute)
 		} else {
 			query = fmt.Sprintf("c.%s = %s ", attrMap.Key, attrMap.Attribute)

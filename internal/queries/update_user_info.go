@@ -80,11 +80,11 @@ func buildUpdateUserInfoQuery(params map[string]any) (string, err.Error) {
 
 	setQuery := "SET "
 	for i, attrStruct := range attrList {
-		if i < len(attrList) - 1 {
+		if i < len(attrList)-1 {
 			query := fmt.Sprintf("u.%s = %s,", attrStruct.Key, attrStruct.Attribute)
 			setQuery += query
 		} else {
-			query :=  fmt.Sprintf("u.%s = %s", attrStruct.Key, attrStruct.Attribute)
+			query := fmt.Sprintf("u.%s = %s", attrStruct.Key, attrStruct.Attribute)
 			setQuery += query
 		}
 	}

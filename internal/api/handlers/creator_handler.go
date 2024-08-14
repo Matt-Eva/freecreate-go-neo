@@ -219,10 +219,10 @@ func UpdateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redi
 }
 
 type PatchedUpdatedCreatorInfo struct {
-	Uid         string `json:"uid"`
-	Name string `json:"name"`
-	CreatorId   string `json:"creatorId"`
-	About       string `json:"about"`
+	Uid       string `json:"uid"`
+	Name      string `json:"name"`
+	CreatorId string `json:"creatorId"`
+	About     string `json:"about"`
 }
 
 func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
