@@ -113,9 +113,10 @@ func buildCreateCreatorQuery() (string, err.Error) {
 		return "", rErr
 	}
 
-	createQuery := fmt.Sprintf("CREATE (c:%s $creatorParams) <-[r:%s]-(u:%s {uid: $userId})", creatorLabel, isCreatorLabel, userLabel)
+	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId})", userLabel)
+	createQuery := fmt.Sprintf("CREATE (c:%s $creatorParams) <-[r:%s]-(u)", creatorLabel, isCreatorLabel)
 	returnQuery := `RETURN c.uid AS Uid, c.name AS Name, c.about AS About, c.creatorId AS CreatorId`
-	query := createQuery + returnQuery
+	query := matchQuery + createQuery + returnQuery
 	return query, err.Error{}
 }
 

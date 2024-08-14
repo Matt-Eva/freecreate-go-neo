@@ -76,6 +76,7 @@ func seedCreator(ctx context.Context, neo neo4j.DriverWithContext, userId string
 
 	params := map[string]any{
 		"creatorParams": utils.StructToMap(creator),
+		"userId": userId,
 	}
 
 	query := `

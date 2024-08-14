@@ -42,18 +42,6 @@ func GetCreator(ctx context.Context, neo neo4j.DriverWithContext) http.HandlerFu
 	}
 }
 
-func GetUserCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc{
-	return func(w http.ResponseWriter, r *http.Request) {
-		_, aErr := middleware.AuthenticateUser(r, store)
-		if aErr.E != nil {
-			aErr.Log()
-			http.Error(w, aErr.E.Error(), http.StatusUnauthorized)
-			return
-		}
-		getCreator(w, r, ctx, neo)
-	}
-}
-
 func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext) {
 	urlParams := r.URL.Query()
 	creatorIds, ok := urlParams["creatorId"]
@@ -68,6 +56,10 @@ func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusBadRequest)
 		return
+	} else if len(creatorIds) > 1 {
+		e := err.New("url params cannot have more than one creatorId")
+		e.Log()
+		http.Error(w, e.E.Error(), http.StatusBadRequest)
 	}
 
 	creator, cErr := queries.GetCreator(ctx, neo, creatorIds[0])
@@ -122,7 +114,7 @@ func getUserCreators(w http.ResponseWriter, r *http.Request, ctx context.Context
 		return
 	}
 
-	var responseCreators []ResponseCreator
+	responseCreators := make([]ResponseCreator, 0)
 	for _, creator := range retrievedUserCreators {
 		var responseCreator ResponseCreator
 		if e := utils.StructToStruct(creator, &responseCreator); e.E != nil {
@@ -234,7 +226,7 @@ type PatchedUpdatedCreatorInfo struct {
 }
 
 func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
-	_, uErr := middleware.AuthenticateUser(r, store)
+	user, uErr := middleware.AuthenticateUser(r, store)
 	if uErr.E != nil {
 		uErr.Log()
 		http.Error(w, uErr.E.Error(), http.StatusUnauthorized)
@@ -263,14 +255,14 @@ func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
-	updatedCreator, exists, qErr := queries.UpdateCreatorInfo(ctx, neo, updatedCreatorInfo)
+	updatedCreator, exists, status, qErr := queries.UpdateCreatorInfo(ctx, neo, updatedCreatorInfo, user.Uid)
 	if qErr.E != nil && exists {
 		qErr.Log()
-		http.Error(w, qErr.E.Error(), http.StatusUnprocessableEntity)
+		http.Error(w, qErr.E.Error(), status)
 		return
 	} else if qErr.E != nil {
 		qErr.Log()
-		http.Error(w, qErr.E.Error(), http.StatusInternalServerError)
+		http.Error(w, qErr.E.Error(), status)
 		return
 	}
 

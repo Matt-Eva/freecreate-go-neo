@@ -18,40 +18,99 @@ type UpdatedCreator struct {
 	About     string
 }
 
-func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info models.UpdatedCreatorInfo) (UpdatedCreator, bool, err.Error) {
+// return creator, if creatorId already exists, http status, error
+func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info models.UpdatedCreatorInfo, userId string) (UpdatedCreator, bool, int, err.Error) {
+	status, aErr := checkAuthorizedUser(ctx, neo, userId, info.Uid)
+	if aErr.E != nil {
+		return UpdatedCreator{}, false, status, aErr
+	}
+	
 	exists, uErr := checkUniqueCreatorId(ctx, neo, info.CreatorId)
 	if uErr.E != nil && exists {
-		return UpdatedCreator{}, true, uErr
+		return UpdatedCreator{}, true, 422, uErr
 	} else if uErr.E != nil {
-		return UpdatedCreator{}, false, uErr
+		return UpdatedCreator{}, false, 500, uErr
 	}
 
 	params := buildUpdateCreatorInfoParams(info)
 	query, qErr := buildUpdateCreatorInfoQuery(params)
 	if qErr.E != nil {
-		return UpdatedCreator{}, false, qErr
+		return UpdatedCreator{}, false, 500, qErr
 	}
+	params["userId"] = userId
 
 	db := os.Getenv("NEO_DB")
 	if db == "" {
-		return UpdatedCreator{}, false, err.New("NEO_DB environment variable returned empty string")
+		return UpdatedCreator{}, false, 500, err.New("NEO_DB environment variable returned empty string")
 	}
+
 	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
 	if nErr != nil {
 		e := err.NewFromErr(nErr)
-		return UpdatedCreator{},false, e
+		return UpdatedCreator{},false, 500, e
 	}
 	if len(result.Records) < 1 {
-		return UpdatedCreator{},false, err.New("db query returned zero records")
+		return UpdatedCreator{},false, 500, err.New("db query returned zero records")
 	}
 
 	resultMap := result.Records[0].AsMap()
 	var updatedCreator UpdatedCreator
 	if e := utils.MapToStruct(resultMap, &updatedCreator); e.E != nil {
-		return UpdatedCreator{}, false, e
+		return UpdatedCreator{}, false, 500, e
 	}
 
-	return updatedCreator, false, err.Error{}
+	return updatedCreator, false, 201, err.Error{}
+}
+
+func checkAuthorizedUser(ctx context.Context, neo neo4j.DriverWithContext, userId, creatorId string)(int, err.Error){
+	userLabel, uErr := GetNodeLabel("User")
+	if uErr.E != nil {
+		return 500, uErr
+	}
+
+	isCreatorLabel, iErr := GetRelationshipLabel("IS_CREATOR")
+	if iErr.E != nil {
+		return 500, iErr
+	}
+
+	creatorLabel, cErr := GetNodeLabel("Creator")
+	if cErr.E != nil {
+return 500, cErr
+	}
+
+	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId}), (c:%s {uid: $creatorId})", userLabel, creatorLabel)
+	returnQuery := fmt.Sprintf("RETURN exists((u) - [:%s] -> (c)) AS exists", isCreatorLabel)
+	query := matchQuery + returnQuery
+
+	params := map[string]any{
+		"userId": userId,
+		"creatorId": creatorId,
+	}
+
+	db := os.Getenv("NEO_DB")
+	if db == "" {
+		return 500, err.New("NEO_DB environment variable returned empty string")
+	}
+
+	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
+	if nErr != nil {
+		return 500, err.NewFromErr(nErr)
+	}
+	value, ok := result.Records[0].Get("exists")
+	if !ok {
+		return 500, err.New("returned record does not have exists attribute")
+	}
+
+	exists, ok := value.(bool)
+	if !ok {
+		return 500, err.New("exists value from database could not be converted to boolean")
+	}
+
+	if exists{
+		return 200, err.Error{}
+	} else {
+		return 401, err.New("user does not have access to this creator profile")
+	}
 }
 
 func checkUniqueCreatorId(ctx context.Context, neo neo4j.DriverWithContext, creatorId string)(bool, err.Error){
@@ -88,7 +147,17 @@ func buildUpdateCreatorInfoQuery(params map[string]any) (string, err.Error) {
 		return "", cErr
 	}
 
-	matchQuery := fmt.Sprintf("MATCH (c:%s {uid: $uid})", creatorLabel)
+	userLabel, uErr := GetNodeLabel("User")
+	if uErr.E != nil {
+		return "", uErr
+	}
+
+	isCreatorLabel, iErr := GetRelationshipLabel("IS_CREATOR")
+	if iErr.E != nil {
+		return "", iErr
+	}
+
+	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId}) - [:%s] -> (c:%s {uid: $uid})",userLabel, isCreatorLabel, creatorLabel)
 
 	type AttrStruct struct {
 		Key       string
