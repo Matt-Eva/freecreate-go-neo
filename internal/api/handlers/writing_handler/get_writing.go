@@ -81,12 +81,3 @@ func getWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		return
 	}
 }
-
-
-func UpdateWriting(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func DeleteWriting(w http.ResponseWriter, r *http.Request) {
-
-}
