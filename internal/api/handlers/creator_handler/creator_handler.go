@@ -16,7 +16,7 @@ import (
 
 type ResponseCreator struct {
 	Name      string `json:"name"`
-	CreatorId string `json:"creatorId"`
+	UniqueName string `json:"uniqueName"`
 	About     string `json:"about"`
 	Uid       string `json:"uid"`
 }
@@ -28,8 +28,8 @@ func (r ResponseCreator) validateResponseCreator() err.Error {
 	if r.Uid == "" {
 		return err.New("response creator Uid cannot be empty")
 	}
-	if r.CreatorId == "" {
-		return err.New("response creator creatorId cannot be empty")
+	if r.UniqueName == "" {
+		return err.New("response creator UniqueName cannot be empty")
 	}
 
 	return err.Error{}
@@ -147,7 +147,7 @@ func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redi
 
 type PostedCreator struct {
 	Name      string `json:"name"`
-	CreatorId string `json:"creatorId"`
+	UniqueName string `json:"uniqueName"`
 	About     string `json:"about"`
 }
 
@@ -221,7 +221,7 @@ func UpdateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redi
 type PatchedUpdatedCreatorInfo struct {
 	Uid       string `json:"uid"`
 	Name      string `json:"name"`
-	CreatorId string `json:"creatorId"`
+	UniqueName string `json:"uniqueName"`
 	About     string `json:"about"`
 }
 
