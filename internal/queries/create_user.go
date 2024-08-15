@@ -13,7 +13,7 @@ import (
 
 type CreatedUser struct {
 	Uid         string
-	UserId string
+	UniqueName string
 	Username    string
 	Email       string
 	ProfilePic  string
@@ -25,7 +25,7 @@ type CreatedUser struct {
 }
 
 func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.User) (CreatedUser, err.Error) {
-	_, uErr := checkUniqueUser(ctx, neo, user.UserId)
+	_, uErr := checkUniqueUser(ctx, neo, user.UniqueName)
 	if uErr.E != nil {
 		return CreatedUser{},  uErr
 	}
@@ -58,15 +58,15 @@ func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.Us
 	return createdUser, err.Error{}
 }
 
-func checkUniqueUser(ctx context.Context, neo neo4j.DriverWithContext, userId string)(int, err.Error){
+func checkUniqueUser(ctx context.Context, neo neo4j.DriverWithContext, uniqueName string)(int, err.Error){
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return 500, uErr
 	}
 
-	query := fmt.Sprintf("MATCH (u:%s {userId: $userId}) RETURN u.userId AS userId", userLabel)
+	query := fmt.Sprintf("MATCH (u:%s {uniqueName: $uniqueName}) RETURN u.uniqueName AS uniqueName", userLabel)
 	params := map[string]any {
-		"userId": userId,
+		"uniqueName": uniqueName,
 	}
 
 	db := os.Getenv("NEO_DB")
@@ -95,7 +95,7 @@ func buildCreateUserQuery() (string, err.Error) {
 
 	returnQuery := `
 		RETURN u.uid AS Uid,
-		u.displayName AS DisplayName,
+		u.uniqueName AS UniqueName,
 		u.username AS Username,
 		u.email AS Email,
 		e.profilePic AS ProfilePic,
