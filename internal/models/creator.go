@@ -11,7 +11,7 @@ import (
 type Creator struct {
 	Uid        string
 	Name       string
-	CreatorId  string
+	UniqueName  string
 	UserId     string
 	ProfilePic string
 	About      string
@@ -26,7 +26,7 @@ func (c Creator) validateCreator() err.Error {
 	if c.Name == "" {
 		return err.New("creator name cannot be empty")
 	}
-	if c.CreatorId == "" {
+	if c.UniqueName == "" {
 		return err.New("creator unique identifier - user provided - cannot be empty")
 	}
 	if c.UserId == "" {
@@ -41,14 +41,14 @@ func (c Creator) validateCreator() err.Error {
 
 type NewCreator struct {
 	Name      string
-	CreatorId string
+	UniqueName string
 	About     string
 }
 
 func GenerateCreator(userId string, n NewCreator) (Creator, err.Error) {
 	var creator Creator
 	creator.Name = n.Name
-	creator.CreatorId = n.CreatorId
+	creator.UniqueName = n.UniqueName
 	creator.About = n.About
 	uid := uuid.New().String()
 	creator.Uid = uid
@@ -68,12 +68,12 @@ func GenerateCreator(userId string, n NewCreator) (Creator, err.Error) {
 type UpdatedCreatorInfo struct {
 	Uid       string
 	Name      string
-	CreatorId string
+	UniqueName string
 	About     string
 }
 
 func (u UpdatedCreatorInfo) validateUpdatedCreator() err.Error {
-	if u.CreatorId == "" {
+	if u.UniqueName == "" {
 		return err.New("creator id cannot be empty")
 	}
 	if u.Name == "" {
@@ -89,7 +89,7 @@ func (u UpdatedCreatorInfo) validateUpdatedCreator() err.Error {
 type IncomingUpdatedCreatorInfo struct {
 	Uid       string
 	Name      string
-	CreatorId string
+	UniqueName string
 	About     string
 }
 

@@ -15,7 +15,7 @@ import (
 type CreatedCreator struct {
 	Uid       string
 	Name      string
-	CreatorId string
+	UniqueName string
 	About     string
 }
 
@@ -84,7 +84,7 @@ func buildCheckUniqueCreatorQuery() (string, err.Error) {
 		return "", cErr
 	}
 
-	matchQuery := fmt.Sprintf("MATCH (c:%s {creatorId: $creatorId})", creatorLabel)
+	matchQuery := fmt.Sprintf("MATCH (c:%s {uniqueName: $uniqueName})", creatorLabel)
 	returnQuery := `RETURN c.uid AS Uid`
 	query := matchQuery + returnQuery
 
@@ -93,7 +93,7 @@ func buildCheckUniqueCreatorQuery() (string, err.Error) {
 
 func buildCheckUniqueCreatorParams(creator models.Creator) map[string]any {
 	return map[string]any{
-		"creatorId": creator.CreatorId,
+		"uniqueName": creator.UniqueName,
 	}
 }
 
@@ -115,7 +115,7 @@ func buildCreateCreatorQuery() (string, err.Error) {
 
 	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId})", userLabel)
 	createQuery := fmt.Sprintf("CREATE (c:%s $creatorParams) <-[r:%s]-(u)", creatorLabel, isCreatorLabel)
-	returnQuery := `RETURN c.uid AS Uid, c.name AS Name, c.about AS About, c.creatorId AS CreatorId`
+	returnQuery := `RETURN c.uid AS Uid, c.name AS Name, c.about AS About, c.uniqueName AS UniqueName`
 	query := matchQuery + createQuery + returnQuery
 	return query, err.Error{}
 }

@@ -25,7 +25,7 @@ func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info mo
 		return UpdatedCreator{}, false, status, aErr
 	}
 
-	exists, uErr := checkUniqueCreatorId(ctx, neo, info.CreatorId)
+	exists, uErr := checkUniqueCreatorId(ctx, neo, info.UniqueName)
 	if uErr.E != nil && exists {
 		return UpdatedCreator{}, true, 422, uErr
 	} else if uErr.E != nil {
@@ -113,15 +113,15 @@ func checkAuthorizedUser(ctx context.Context, neo neo4j.DriverWithContext, userI
 	}
 }
 
-func checkUniqueCreatorId(ctx context.Context, neo neo4j.DriverWithContext, creatorId string) (bool, err.Error) {
+func checkUniqueCreatorId(ctx context.Context, neo neo4j.DriverWithContext, uniqueName string) (bool, err.Error) {
 	creatorLabel, cErr := GetNodeLabel("Creator")
 	if cErr.E != nil {
 		return false, cErr
 	}
 
-	query := fmt.Sprintf("MATCH (c:%s {creatorId: $creatorId}) RETURN c.creatorId AS CreatorId", creatorLabel)
+	query := fmt.Sprintf("MATCH (c:%s {creatorId: $creatorId}) RETURN c.uniqueName AS UniqueName", creatorLabel)
 	params := map[string]any{
-		"creatorId": creatorId,
+		"uniqueName": uniqueName,
 	}
 
 	db := os.Getenv("NEO_DB")
@@ -134,7 +134,7 @@ func checkUniqueCreatorId(ctx context.Context, neo neo4j.DriverWithContext, crea
 		return false, err.NewFromErr(nErr)
 	}
 	if len(result.Records) > 0 {
-		msg := fmt.Sprintf("creator id '%s' already in use", creatorId)
+		msg := fmt.Sprintf("creator id '%s' already in use", uniqueName)
 		return true, err.New(msg)
 	}
 
@@ -186,7 +186,7 @@ func buildUpdateCreatorInfoQuery(params map[string]any) (string, err.Error) {
 	}
 
 	returnQuery := `
-	RETURN c.uid AS Uid, c.name AS Name, c.creatorId AS CreatorId, c.about AS About
+	RETURN c.uid AS Uid, c.name AS Name, c.uniqueName AS UniqueName, c.about AS About
 	`
 
 	query := matchQuery + setQuery + returnQuery
