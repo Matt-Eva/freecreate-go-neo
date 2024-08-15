@@ -11,7 +11,7 @@ import (
 
 type AuthenticatedUser struct {
 	Uid        string `json:"uid"`
-	UserId     string `json:"userId"`
+	UniqueName     string `json:"uniqueName"`
 	Username   string `json:"username"`
 	Email      string `json:"email"`
 	BirthDay   int    `json:"birthDay"`
@@ -24,8 +24,8 @@ func (a AuthenticatedUser) validateAuthenticatedUser() err.Error {
 	if a.Uid == "" {
 		return err.New("authenticated user Uid cannot be empty")
 	}
-	if a.UserId == "" {
-		return err.New("authenticated user UserId cannot be empty")
+	if a.UniqueName == "" {
+		return err.New("authenticated user UniqueName cannot be empty")
 	}
 	if a.Username == "" {
 		return err.New("authenticated user Username cannot be empty")
@@ -54,7 +54,7 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 	}
 
 	uid := userSession.Values["uid"]
-	userId := userSession.Values["userId"]
+	uniqueName := userSession.Values["uniqueName"]
 	username := userSession.Values["username"]
 	email := userSession.Values["email"]
 	birthDay := userSession.Values["birthDay"]
@@ -62,10 +62,10 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 	birthYear := userSession.Values["birthYear"]
 	profilePic := userSession.Values["profilePic"]
 
-	if username == nil || userId == nil || uid == nil || email == nil || birthDay == nil || birthMonth == nil || birthYear == nil || profilePic == nil {
+	if username == nil || uniqueName == nil || uid == nil || email == nil || birthDay == nil || birthMonth == nil || birthYear == nil || profilePic == nil {
 		msg := fmt.Sprintf(
-			"user session attribute(s) nil\n: username: %T\n userId: %T\n uid: %T\n email: %T\n birthDay: %T\n birthMonth: %T\n birthYear: %T\n profilePic: %T",
-			username, userId, uid, email, birthDay, birthMonth, birthYear, profilePic)
+			"user session attribute(s) nil\n: username: %T\n uniqueName: %T\n uid: %T\n email: %T\n birthDay: %T\n birthMonth: %T\n birthYear: %T\n profilePic: %T",
+			username, uniqueName, uid, email, birthDay, birthMonth, birthYear, profilePic)
 		return AuthenticatedUser{}, err.New(msg)
 	}
 
@@ -74,9 +74,9 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 		return AuthenticatedUser{}, err.New("could not convert session username to string")
 	}
 
-	userIdS, ok := userId.(string)
+	uniqueNameS, ok := uniqueName.(string)
 	if !ok {
-		return AuthenticatedUser{}, err.New("could not convert session userId to string")
+		return AuthenticatedUser{}, err.New("could not convert session uniqueName to string")
 	}
 
 	uidS, ok := uid.(string)
@@ -111,7 +111,7 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 
 	user := AuthenticatedUser{
 		Username:   usernameS,
-		UserId:     userIdS,
+		UniqueName:     uniqueNameS,
 		Uid:        uidS,
 		Email:      emailS,
 		BirthDay:   birthDayI,
@@ -136,7 +136,7 @@ func CreateUserSession(w http.ResponseWriter, r *http.Request, store *redisstore
 	}
 
 	session.Values["username"] = user.Username
-	session.Values["userId"] = user.UserId
+	session.Values["uniqueName"] = user.UniqueName
 	session.Values["uid"] = user.Uid
 	session.Values["email"] = user.Email
 	session.Values["birthDay"] = user.BirthDay
