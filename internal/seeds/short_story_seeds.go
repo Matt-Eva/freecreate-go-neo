@@ -110,7 +110,6 @@ func makeShortStory(creatorId string) (models.ShortStory, err.Error) {
 		Title:       faker.Sentence(),
 		Description: faker.Paragraph(),
 		WritingType: "shortStory",
-		Thumbnail:   "",
 		CreatorId:   creatorId,
 	}
 
