@@ -56,7 +56,7 @@ func getMasterUserFromDb(ctx context.Context, neo neo4j.DriverWithContext) (map[
 	query := `
 		MATCH (u:User)
 		WHERE u.masterUser = true
-		RETURN u.username AS Username, u.userId AS UserId, u.uid AS Uid, u.email AS Email, u.birthDay AS BirthDay, u.birthMonth AS BirthMonth, u.birthYear AS BirthYear, u.profilePic AS ProfilePic
+		RETURN u.username AS Username, u.uniqueName AS UniqueName, u.uid AS Uid, u.email AS Email, u.birthDay AS BirthDay, u.birthMonth AS BirthMonth, u.birthYear AS BirthYear, u.profilePic AS ProfilePic
 	`
 	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, nil, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(dbName))
 	if nErr != nil {

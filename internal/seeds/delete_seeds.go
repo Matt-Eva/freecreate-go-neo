@@ -11,7 +11,6 @@ import (
 func DeleteSeeds(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 	deleteQuery := `
 		MATCH(n)
-		WHERE n.seed = true
 		DETACH DELETE n
 	`
 
