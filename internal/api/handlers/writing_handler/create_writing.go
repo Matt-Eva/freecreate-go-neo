@@ -71,7 +71,7 @@ func handleCreateWriting(w http.ResponseWriter, r *http.Request, ctx context.Con
 		return
 	}
 
-	var returnedWriting *ReturnedWriting
+	returnedWriting := &ReturnedWriting{}
 
 	returnedWriting.Author = createdWriting.Author
 	returnedWriting.CreatorId = createdWriting.CreatorId
