@@ -5,7 +5,7 @@ import "testing"
 func TestBuildGenreLabels(t *testing.T) {
 	genres := []string{"Fantasy", "ScienceFiction", "Action"}
 	validLabels := ":Action:Fantasy:ScienceFiction"
-	generatedLabels, gErr := BuildGenreLabels(genres)
+	generatedLabels, gErr := buildGenreLabels(genres)
 	if gErr.E != nil {
 		gErr.Log()
 		t.Fatal("above error occurred")

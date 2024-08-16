@@ -12,17 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type ReturnedWriting struct {
-	Uid         string                     `json:"uid"`
-	Title       string                     `json:"title"`
-	Description string                     `json:"description"`
-	Author      string                     `json:"author"`
-	Genres      []string                   `json:"genres"`
-	Tags        []string                   `json:"tags"`
-	CreatorId   string                     `json:"creatorId"`
-	Chapters    []queries.RetrievedChapter `json:"chapters"`
-}
-
 func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		getWriting(w, r, ctx, neo, mongo)

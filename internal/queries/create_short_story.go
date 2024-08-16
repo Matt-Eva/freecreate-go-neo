@@ -65,7 +65,7 @@ func CreateShortStoryQuery(genres []string, tags []string) (string, err.Error) {
 		return "", wErr
 	}
 
-	genreLabels, gErr := BuildGenreLabels(genres)
+	genreLabels, gErr := buildGenreLabels(genres)
 	if gErr.E != nil {
 		return "", gErr
 	}

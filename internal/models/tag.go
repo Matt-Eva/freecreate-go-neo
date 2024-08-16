@@ -1,35 +1,35 @@
 package models
 
 import (
-	"errors"
-
-	"github.com/google/uuid"
+	"freecreate/internal/err"
+	"freecreate/internal/utils"
 )
 
 type Tag struct {
-	Uid string
 	Tag string
 }
 
-func (t Tag) validateTag() error {
-	if t.Uid == "" {
-		err := "tag uid cannot be empty"
-		return errors.New(err)
-	}
+func (t Tag) validateTag() err.Error {
 	if t.Tag == "" {
-		err := "tag name cannot be empty"
-		return errors.New(err)
+		e := "tag name cannot be empty"
+		return err.New(e)
 	}
-	return nil
+	return err.Error{}
 }
 
 type PostedTag struct {
 	Tag string
 }
 
-func (p PostedTag) generateTag() Tag {
-	return Tag{
-		Uid: uuid.New().String(),
-		Tag: p.Tag,
+func (p PostedTag) GenerateTag() (Tag, err.Error) {
+	var tag Tag
+	if tErr := utils.StructToStruct(p, &tag); tErr.E != nil {
+		return tag, tErr
 	}
+
+	if e := tag.validateTag(); e.E != nil {
+		return tag, e
+	}
+	
+	return tag, err.Error{}
 }

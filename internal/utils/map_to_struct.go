@@ -16,8 +16,8 @@ func MapToStruct(record map[string]any, structPointer interface{}) err.Error {
 		name := field.Name
 		recordValue, ok := record[name]
 		if !ok {
-			msg := fmt.Sprintf("neo4j record does not have attribute %s", name)
-			return err.New(msg)
+			fmt.Println("neo4j record does not have attribute %s", name)
+			continue
 		}
 
 		fieldType := field.Type.Kind()

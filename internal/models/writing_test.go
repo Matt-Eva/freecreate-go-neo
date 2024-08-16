@@ -10,7 +10,6 @@ func TestMakeWriting(t *testing.T) {
 		Title:       "hello",
 		Description: "World",
 		WritingType: "test",
-		Thumbnail:   "",
 		CreatorId:   "1",
 	}
 	year := time.Now().Year()
@@ -25,9 +24,7 @@ func TestMakeWriting(t *testing.T) {
 	if w.Description != p.Description {
 		t.Errorf("descriptions do not match")
 	}
-	if w.Thumbnail != p.Thumbnail {
-		t.Errorf("thumbnails do not match")
-	}
+
 	if w.CreatorId != p.CreatorId {
 		t.Errorf("creator ids do not match")
 	}

@@ -20,7 +20,7 @@ type UpdatedCreator struct {
 
 // return creator, if creatorId already exists, http status, error
 func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info models.UpdatedCreatorInfo, userId string) (UpdatedCreator, bool, int, err.Error) {
-	status, aErr := checkAuthorizedUser(ctx, neo, userId, info.Uid)
+	status, aErr := checkAuthorizedUserCreator(ctx, neo, userId, info.Uid)
 	if aErr.E != nil {
 		return UpdatedCreator{}, false, status, aErr
 	}
@@ -60,57 +60,6 @@ func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info mo
 	}
 
 	return updatedCreator, false, 201, err.Error{}
-}
-
-func checkAuthorizedUser(ctx context.Context, neo neo4j.DriverWithContext, userId, creatorId string) (int, err.Error) {
-	userLabel, uErr := GetNodeLabel("User")
-	if uErr.E != nil {
-		return 500, uErr
-	}
-
-	isCreatorLabel, iErr := GetRelationshipLabel("IS_CREATOR")
-	if iErr.E != nil {
-		return 500, iErr
-	}
-
-	creatorLabel, cErr := GetNodeLabel("Creator")
-	if cErr.E != nil {
-		return 500, cErr
-	}
-
-	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId}), (c:%s {uid: $creatorId})", userLabel, creatorLabel)
-	returnQuery := fmt.Sprintf("RETURN exists((u) - [:%s] -> (c)) AS exists", isCreatorLabel)
-	query := matchQuery + returnQuery
-
-	params := map[string]any{
-		"userId":    userId,
-		"creatorId": creatorId,
-	}
-
-	db := os.Getenv("NEO_DB")
-	if db == "" {
-		return 500, err.New("NEO_DB environment variable returned empty string")
-	}
-
-	result, nErr := neo4j.ExecuteQuery(ctx, neo, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(db))
-	if nErr != nil {
-		return 500, err.NewFromErr(nErr)
-	}
-	value, ok := result.Records[0].Get("exists")
-	if !ok {
-		return 500, err.New("returned record does not have exists attribute")
-	}
-
-	exists, ok := value.(bool)
-	if !ok {
-		return 500, err.New("exists value from database could not be converted to boolean")
-	}
-
-	if exists {
-		return 200, err.Error{}
-	} else {
-		return 401, err.New("user does not have access to this creator profile")
-	}
 }
 
 func checkUniqueCreatorId(ctx context.Context, neo neo4j.DriverWithContext, uniqueName string) (bool, err.Error) {
