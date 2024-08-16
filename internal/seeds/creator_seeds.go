@@ -101,9 +101,9 @@ func seedCreator(ctx context.Context, neo neo4j.DriverWithContext, userId string
 
 func makeSeedCreator(userId string) (models.Creator, err.Error) {
 	p := models.NewCreator{
-		Name:      faker.Name(),
+		Name:       faker.Name(),
 		UniqueName: faker.Username(),
-		About:     faker.Paragraph(),
+		About:      faker.Paragraph(),
 	}
 
 	c, gErr := models.GenerateCreator(userId, p)

@@ -15,10 +15,10 @@ import (
 )
 
 type ResponseCreator struct {
-	Name      string `json:"name"`
+	Name       string `json:"name"`
 	UniqueName string `json:"uniqueName"`
-	About     string `json:"about"`
-	Uid       string `json:"uid"`
+	About      string `json:"about"`
+	Uid        string `json:"uid"`
 }
 
 func (r ResponseCreator) validateResponseCreator() err.Error {
@@ -146,9 +146,9 @@ func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redi
 }
 
 type PostedCreator struct {
-	Name      string `json:"name"`
+	Name       string `json:"name"`
 	UniqueName string `json:"uniqueName"`
-	About     string `json:"about"`
+	About      string `json:"about"`
 }
 
 func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
@@ -219,10 +219,10 @@ func UpdateCreator(ctx context.Context, neo neo4j.DriverWithContext, store *redi
 }
 
 type PatchedUpdatedCreatorInfo struct {
-	Uid       string `json:"uid"`
-	Name      string `json:"name"`
+	Uid        string `json:"uid"`
+	Name       string `json:"name"`
 	UniqueName string `json:"uniqueName"`
-	About     string `json:"about"`
+	About      string `json:"about"`
 }
 
 func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {

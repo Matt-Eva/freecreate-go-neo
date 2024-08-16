@@ -12,7 +12,7 @@ import (
 
 type User struct {
 	Uid        string
-	UniqueName     string
+	UniqueName string
 	Username   string
 	Email      string
 	Password   string
@@ -71,7 +71,7 @@ func (u User) validateUser() err.Error {
 }
 
 type PostedUser struct {
-	UniqueName               string
+	UniqueName           string
 	Username             string
 	Email                string
 	BirthDay             int
@@ -90,7 +90,7 @@ func GenerateUser(p PostedUser) (User, err.Error) {
 	uid := uuid.New().String()
 	now := time.Now().UnixMilli()
 	u := User{
-		UniqueName:     p.UniqueName,
+		UniqueName: p.UniqueName,
 		Password:   p.Password,
 		Username:   p.Username,
 		BirthYear:  p.BirthYear,

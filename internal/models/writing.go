@@ -17,7 +17,7 @@ type Writing struct {
 	Thumbnail    string
 	WritingType  string
 	CreatorId    string
-	Font string
+	Font         string
 	CreatedAt    int64
 	UpdatedAt    int64
 	LibraryCount int64
@@ -36,7 +36,7 @@ func (w Writing) validateNewWriting(year int) err.Error {
 		e := "uid cannot be empty"
 		return err.New(e)
 	}
-	if w.Font == ""{
+	if w.Font == "" {
 		return err.New("font cannot be empty")
 	}
 	if w.Title == "" {
@@ -112,11 +112,11 @@ func (w Writing) validateNewWriting(year int) err.Error {
 }
 
 type PostedWriting struct {
-	Title       string 
-	Description string 
-	WritingType string 
-	Font string 
-	CreatorId   string 
+	Title       string
+	Description string
+	WritingType string
+	Font        string
+	CreatorId   string
 }
 
 func MakeWriting(p PostedWriting, year int) (Writing, err.Error) {

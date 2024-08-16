@@ -11,7 +11,7 @@ import (
 type Creator struct {
 	Uid        string
 	Name       string
-	UniqueName  string
+	UniqueName string
 	UserId     string
 	ProfilePic string
 	About      string
@@ -40,9 +40,9 @@ func (c Creator) validateCreator() err.Error {
 }
 
 type NewCreator struct {
-	Name      string
+	Name       string
 	UniqueName string
-	About     string
+	About      string
 }
 
 func GenerateCreator(userId string, n NewCreator) (Creator, err.Error) {
@@ -66,10 +66,10 @@ func GenerateCreator(userId string, n NewCreator) (Creator, err.Error) {
 }
 
 type UpdatedCreatorInfo struct {
-	Uid       string
-	Name      string
+	Uid        string
+	Name       string
 	UniqueName string
-	About     string
+	About      string
 }
 
 func (u UpdatedCreatorInfo) validateUpdatedCreator() err.Error {
@@ -87,10 +87,10 @@ func (u UpdatedCreatorInfo) validateUpdatedCreator() err.Error {
 }
 
 type IncomingUpdatedCreatorInfo struct {
-	Uid       string
-	Name      string
+	Uid        string
+	Name       string
 	UniqueName string
-	About     string
+	About      string
 }
 
 func MakeUpdatedCreatorInfo(i IncomingUpdatedCreatorInfo) (UpdatedCreatorInfo, err.Error) {

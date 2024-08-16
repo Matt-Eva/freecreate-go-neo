@@ -11,7 +11,7 @@ import (
 
 type AuthenticatedUser struct {
 	Uid        string `json:"uid"`
-	UniqueName     string `json:"uniqueName"`
+	UniqueName string `json:"uniqueName"`
 	Username   string `json:"username"`
 	Email      string `json:"email"`
 	BirthDay   int    `json:"birthDay"`
@@ -111,7 +111,7 @@ func AuthenticateUser(r *http.Request, store *redisstore.RedisStore) (Authentica
 
 	user := AuthenticatedUser{
 		Username:   usernameS,
-		UniqueName:     uniqueNameS,
+		UniqueName: uniqueNameS,
 		Uid:        uidS,
 		Email:      emailS,
 		BirthDay:   birthDayI,

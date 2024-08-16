@@ -13,10 +13,10 @@ import (
 )
 
 type CreatedCreator struct {
-	Uid       string
-	Name      string
+	Uid        string
+	Name       string
 	UniqueName string
-	About     string
+	About      string
 }
 
 func CreateCreator(ctx context.Context, neo neo4j.DriverWithContext, user middleware.AuthenticatedUser, creator models.Creator) (CreatedCreator, err.Error) {

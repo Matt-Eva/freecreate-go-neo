@@ -12,24 +12,24 @@ import (
 )
 
 type CreatedUser struct {
-	Uid         string
+	Uid        string
 	UniqueName string
-	Username    string
-	Email       string
-	ProfilePic  string
-	BirthYear   int
-	BirthMonth  int
-	BirthDay    int
-	CreatedAt   int64
-	UpdatedAt   int64
+	Username   string
+	Email      string
+	ProfilePic string
+	BirthYear  int
+	BirthMonth int
+	BirthDay   int
+	CreatedAt  int64
+	UpdatedAt  int64
 }
 
 func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.User) (CreatedUser, err.Error) {
 	_, uErr := checkUniqueUser(ctx, neo, user.UniqueName)
 	if uErr.E != nil {
-		return CreatedUser{},  uErr
+		return CreatedUser{}, uErr
 	}
-	
+
 	params := utils.StructToMap(user)
 	query, qErr := buildCreateUserQuery()
 	if qErr.E != nil {
@@ -58,19 +58,19 @@ func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, user models.Us
 	return createdUser, err.Error{}
 }
 
-func checkUniqueUser(ctx context.Context, neo neo4j.DriverWithContext, uniqueName string)(int, err.Error){
+func checkUniqueUser(ctx context.Context, neo neo4j.DriverWithContext, uniqueName string) (int, err.Error) {
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return 500, uErr
 	}
 
 	query := fmt.Sprintf("MATCH (u:%s {uniqueName: $uniqueName}) RETURN u.uniqueName AS uniqueName", userLabel)
-	params := map[string]any {
+	params := map[string]any{
 		"uniqueName": uniqueName,
 	}
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return 500, err.New("neodb environment variable is empty")
 	}
 
@@ -78,7 +78,7 @@ func checkUniqueUser(ctx context.Context, neo neo4j.DriverWithContext, uniqueNam
 	if nErr != nil {
 		return 500, err.NewFromErr(nErr)
 	}
-	if len(result.Records) > 0{
+	if len(result.Records) > 0 {
 		return 422, err.New("user id already in use")
 	}
 

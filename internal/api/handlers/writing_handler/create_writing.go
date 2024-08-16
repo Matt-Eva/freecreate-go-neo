@@ -18,13 +18,13 @@ import (
 )
 
 type PostedWriting struct {
-	CreatorId string `json:"creatorId`
-	Title string `json:"title"`
-	Description string `json:"description"`
-	WritingType string `json:"writingType"`
-	Font string `json:"font"`
-	Genres []string `json:"genres'`
-	Tags []string `json:"tags"`
+	CreatorId   string   `json:"creatorId`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	WritingType string   `json:"writingType"`
+	Font        string   `json:"font"`
+	Genres      []string `json:"genres'`
+	Tags        []string `json:"tags"`
 }
 
 func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, store *redisstore.RedisStore) http.HandlerFunc {
@@ -83,14 +83,14 @@ func handleCreateWriting(w http.ResponseWriter, r *http.Request, ctx context.Con
 	returnedWriting.Tags = createdWriting.Tags
 	returnedWriting.Uid = createdWriting.Uid
 
-	if e := validateReturnedWriting((*returnedWriting), postedWriting.Genres, postedWriting.Tags) ; e.E != nil {
+	if e := validateReturnedWriting((*returnedWriting), postedWriting.Genres, postedWriting.Tags); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	if e:= json.NewEncoder(w).Encode(returnedWriting); e!= nil {
+	if e := json.NewEncoder(w).Encode(returnedWriting); e != nil {
 		newFromE := err.NewFromErr(e)
 		newFromE.Log()
 		http.Error(w, e.Error(), http.StatusInternalServerError)

@@ -12,19 +12,18 @@ import (
 )
 
 type CreatedWriting struct {
-	Uid string
-	CreatorId string
-	Title string
-	Description string
-	Font string
-	Author string
+	Uid              string
+	CreatorId        string
+	Title            string
+	Description      string
+	Font             string
+	Author           string
 	UniqueAuthorName string
-	Genres []string
-	Tags [] string
+	Genres           []string
+	Tags             []string
 }
 
-
-func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId string, writing models.Writing, genres, tags []string)(CreatedWriting, int, err.Error){
+func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId string, writing models.Writing, genres, tags []string) (CreatedWriting, int, err.Error) {
 	status, aErr := checkAuthorizedUserCreator(ctx, neo, userId, writing.CreatorId)
 	if aErr.E != nil {
 		return CreatedWriting{}, status, aErr
@@ -38,14 +37,14 @@ func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId stri
 	writingParams := utils.StructToMap(writing)
 
 	params := map[string]any{
-		"userId": userId,
-		"creatorId": writing.CreatorId,
-		"tags": tags,
+		"userId":        userId,
+		"creatorId":     writing.CreatorId,
+		"tags":          tags,
 		"writingParams": writingParams,
 	}
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return CreatedWriting{}, 500, err.New("db env variable is empty")
 	}
 
@@ -69,8 +68,7 @@ func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId stri
 	return createdWriting, 201, err.Error{}
 }
 
-
-func buildCreateWritingQuery(genres []string)(string, err.Error){
+func buildCreateWritingQuery(genres []string) (string, err.Error) {
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return "", uErr
@@ -132,7 +130,7 @@ func buildCreateWritingQuery(genres []string)(string, err.Error){
 		c.name AS Author, 
 		c.uniqueName AS UniqueAuthorName
 	`
-	
+
 	query := matchQuery + createQuery + tagQuery + returnQuery
 
 	return query, err.Error{}

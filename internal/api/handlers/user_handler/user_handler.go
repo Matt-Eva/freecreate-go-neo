@@ -16,7 +16,7 @@ import (
 
 type ReturnUser struct {
 	Uid        string `json:"uid"`
-	UniqueName     string `json:"uniqueName"`
+	UniqueName string `json:"uniqueName"`
 	Username   string `json:"username"`
 	Email      string `json:"email"`
 	BirthDay   int    `json:"birthDay"`
@@ -61,7 +61,7 @@ func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisst
 }
 
 type PostedUser struct {
-	UniqueName               string `json:"uniqueName"`
+	UniqueName           string `json:"uniqueName"`
 	Username             string `json:"username"`
 	Email                string `json:"email"`
 	BirthDay             int    `json:"birthDay"`
@@ -139,7 +139,7 @@ func UpdateUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisst
 }
 
 type PatchedUser struct {
-	UniqueName     string `json:"uniqueName"`
+	UniqueName string `json:"uniqueName"`
 	Username   string `json:"username"`
 	Email      string `json:"email"`
 	BirthDay   int    `json:"birthDay"`

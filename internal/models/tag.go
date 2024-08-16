@@ -30,6 +30,6 @@ func (p PostedTag) GenerateTag() (Tag, err.Error) {
 	if e := tag.validateTag(); e.E != nil {
 		return tag, e
 	}
-	
+
 	return tag, err.Error{}
 }
