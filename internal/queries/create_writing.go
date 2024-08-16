@@ -29,7 +29,7 @@ func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId stri
 		return CreatedWriting{}, status, aErr
 	}
 
-	query, qErr := buildCreateWritingQuery(genres)
+	query, qErr := buildCreateWritingQuery(genres, tags)
 	if qErr.E != nil {
 		return CreatedWriting{}, 500, qErr
 	}
@@ -68,7 +68,7 @@ func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId stri
 	return createdWriting, 201, err.Error{}
 }
 
-func buildCreateWritingQuery(genres []string) (string, err.Error) {
+func buildCreateWritingQuery(genres, tags []string) (string, err.Error) {
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return "", uErr
@@ -131,7 +131,12 @@ func buildCreateWritingQuery(genres []string) (string, err.Error) {
 		c.uniqueName AS UniqueAuthorName
 	`
 
-	query := matchQuery + createQuery + tagQuery + returnQuery
+	query := ""
+	if len(tags) > 0{
+		query = matchQuery + createQuery + tagQuery + returnQuery
+	} else {
+		query = matchQuery + createQuery + returnQuery
+	}
 
 	return query, err.Error{}
 }

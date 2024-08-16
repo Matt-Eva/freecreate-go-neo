@@ -128,6 +128,7 @@ func MakeWriting(p PostedWriting, year int) (Writing, err.Error) {
 		Thumbnail:    "",
 		WritingType:  p.WritingType,
 		CreatorId:    p.CreatorId,
+		Font: p.Font,
 		CreatedAt:    now,
 		UpdatedAt:    now,
 		OriginalYear: year,

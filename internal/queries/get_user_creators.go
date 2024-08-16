@@ -13,7 +13,7 @@ import (
 type RetrievedUserCreator struct {
 	Name      string
 	Uid       string
-	CreatorId string
+	UniqueName string
 	About     string
 }
 
@@ -24,8 +24,8 @@ func (r RetrievedUserCreator) validatedRetrievedUserCreator() err.Error {
 	if r.Uid == "" {
 		return err.New("retrieved user creator Uid cannot be empty")
 	}
-	if r.CreatorId == "" {
-		return err.New("retrieved user creator CreatorId cannot be empty")
+	if r.UniqueName == "" {
+		return err.New("retrieved user creator UniqueName cannot be empty")
 	}
 	return err.Error{}
 }
@@ -83,7 +83,7 @@ func buildGetUserCreatorsQuery() (string, err.Error) {
 	}
 
 	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId}) -[:%s] -(c:%s)", userLabel, isCreatorLabel, creatorLabel)
-	returnQuery := `RETURN c.name AS Name, c.uid AS Uid, c.about AS About, c.creatorId AS CreatorId`
+	returnQuery := `RETURN c.name AS Name, c.uid AS Uid, c.about AS About, c.uniqueName AS UniqueName`
 	query := matchQuery + returnQuery
 
 	return query, err.Error{}

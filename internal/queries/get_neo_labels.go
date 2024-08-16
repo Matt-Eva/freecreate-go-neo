@@ -13,6 +13,7 @@ var nodeLabelMap = map[string]string{
 	"Writing": "Writing",
 	"User":    "User",
 	"Creator": "Creator",
+	"Tag": "Tag",
 }
 
 func GetNodeLabel(label string) (string, err.Error) {
