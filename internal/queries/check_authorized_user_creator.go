@@ -9,7 +9,7 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-func checkAuthorizedUserCreator(ctx context.Context, neo neo4j.DriverWithContext, userId, creatorId string) (int, err.Error) {
+func CheckAuthorizedUserCreator(ctx context.Context, neo neo4j.DriverWithContext, userId, creatorId string) (int, err.Error) {
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return 500, uErr

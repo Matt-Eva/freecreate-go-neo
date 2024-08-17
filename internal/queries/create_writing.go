@@ -24,7 +24,7 @@ type CreatedWriting struct {
 }
 
 func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId string, writing models.Writing, genres, tags []string) (CreatedWriting, int, err.Error) {
-	status, aErr := checkAuthorizedUserCreator(ctx, neo, userId, writing.CreatorId)
+	status, aErr := CheckAuthorizedUserCreator(ctx, neo, userId, writing.CreatorId)
 	if aErr.E != nil {
 		return CreatedWriting{}, status, aErr
 	}

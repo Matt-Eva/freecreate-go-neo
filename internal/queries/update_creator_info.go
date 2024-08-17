@@ -20,7 +20,7 @@ type UpdatedCreator struct {
 
 // return creator, if creatorId already exists, http status, error
 func UpdateCreatorInfo(ctx context.Context, neo neo4j.DriverWithContext, info models.UpdatedCreatorInfo, userId string) (UpdatedCreator, bool, int, err.Error) {
-	status, aErr := checkAuthorizedUserCreator(ctx, neo, userId, info.Uid)
+	status, aErr := CheckAuthorizedUserCreator(ctx, neo, userId, info.Uid)
 	if aErr.E != nil {
 		return UpdatedCreator{}, false, status, aErr
 	}
