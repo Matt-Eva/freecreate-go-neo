@@ -103,8 +103,8 @@ func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo
 	router.HandleFunc("/api/user/creators", creator_handler.GetUserCreators(ctx, neo, store)).Methods("GET")
 
 	// WRITING ROUTES
-	router.HandleFunc("/api/writing", writing_handler.GetWriting(ctx, neo, mongo)).Methods("GET")
-	router.HandleFunc("/api/writing", writing_handler.CreateWriting(ctx, neo, mongo, store)).Methods("POST")
+	router.HandleFunc("/api/writing", writing_handler.GetWriting(ctx, neo)).Methods("GET")
+	router.HandleFunc("/api/writing", writing_handler.CreateWriting(ctx, neo, store)).Methods("POST")
 	router.HandleFunc("/api/writing", writing_handler.UpdateWriting(ctx, neo, store)).Methods("PATCH")
 	router.HandleFunc("/api/writing", writing_handler.DeleteWriting()).Methods("DELETE")
 

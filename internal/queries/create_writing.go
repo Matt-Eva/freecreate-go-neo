@@ -21,6 +21,7 @@ type CreatedWriting struct {
 	UniqueAuthorName string
 	Genres           []string
 	Tags             []string
+	Published bool
 }
 
 func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId string, writing models.Writing, genres, tags []string) (CreatedWriting, int, err.Error) {
@@ -127,6 +128,7 @@ func buildCreateWritingQuery(genres, tags []string) (string, err.Error) {
 		w.title AS Title, 
 		w.description AS Description, 
 		w.font AS Font, 
+		w.published AS Published,
 		c.name AS Author, 
 		c.uniqueName AS UniqueAuthorName
 	`

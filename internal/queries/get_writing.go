@@ -20,6 +20,7 @@ type RetrievedNeoWriting struct {
 	UniqueAuthorName string
 	CreatorId        string
 	Font             string
+	Published	bool
 }
 
 func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedNeoWriting, int, err.Error) {
@@ -150,6 +151,7 @@ func buildNeoGetWritingQuery() (string, err.Error) {
 		w.title AS Title,
 		w.description AS Description,
 		w.font AS Font,
+		w.published AS Published,
 		labels(w) AS Genres,
 		t.tag AS Tag,
 		c.name AS Author,

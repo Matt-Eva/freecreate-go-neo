@@ -8,16 +8,15 @@ import (
 	"net/http"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client) http.HandlerFunc {
+func GetWriting(ctx context.Context, neo neo4j.DriverWithContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		getWriting(w, r, ctx, neo, mongo)
+		getWriting(w, r, ctx, neo)
 	}
 }
 
-func getWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client) {
+func getWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext) {
 	urlParams := r.URL.Query()
 	creatorIds, ok := urlParams["creatorId"]
 	if !ok {
@@ -65,6 +64,7 @@ func getWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	returnedWriting.CreatorId = retrievedWriting.CreatorId
 	returnedWriting.UniqueAuthorName = retrievedWriting.UniqueAuthorName
 	returnedWriting.Font = retrievedWriting.Font
+	returnedWriting.Published = retrievedWriting.Published
 
 	if e := validateReturnedWriting(*returnedWriting, retrievedWriting.Genres, retrievedWriting.Tags); e.E != nil {
 		e.Log()

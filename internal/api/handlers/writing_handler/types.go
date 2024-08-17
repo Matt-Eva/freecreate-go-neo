@@ -12,6 +12,7 @@ type ReturnedWriting struct {
 	Genres           []string `json:"genres"`
 	Tags             []string `json:"tags"`
 	CreatorId        string   `json:"creatorId"`
+	Published 	bool `json:"published"`
 }
 
 func validateReturnedWriting(r ReturnedWriting, genres, tags []string) err.Error {
