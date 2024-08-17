@@ -6,19 +6,11 @@ import (
 	"freecreate/internal/err"
 	"freecreate/internal/utils"
 	"os"
-	"runtime"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"gopkg.in/mgo.v2/bson"
 )
 
-type RetrievedChapter struct {
-	Title  string `bson:"title"`
-	Number int    `bson:"chapter_number"`
-	Uid    string `bson:"uid"`
-}
+
 
 type RetrievedNeoWriting struct {
 	Uid         string
@@ -27,68 +19,29 @@ type RetrievedNeoWriting struct {
 	Genres      []string
 	Tags        []string
 	Author      string
+	UniqueAuthorName string
 	CreatorId   string
+	Font string
 }
 
-type RetrievedWriting struct {
-	Uid         string
-	Title       string
-	Description string
-	Author      string
-	Genres      []string
-	Tags        []string
-	CreatorId   string
-	Chapters    []RetrievedChapter
+
+
+func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedNeoWriting, int, err.Error) {
+
+	retrievedNeoWriting,status, nErr := getNeoWriting(ctx, neo, creatorId, writingId)
+	if nErr.E != nil {
+		return retrievedNeoWriting, status, nErr
+	}
+
+	return retrievedNeoWriting, status, err.Error{}
 }
 
-func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, creatorId, writingId string) (RetrievedWriting, err.Error) {
-	neoChan := make(chan RetrievedNeoWriting)
-	neoErrorChan := make(chan err.Error)
-	go getNeoWriting(ctx, neo, creatorId, writingId, neoChan, neoErrorChan)
+func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedNeoWriting, int, err.Error) {
 
-	mongoChan := make(chan []RetrievedChapter)
-	mongoErrorChan := make(chan err.Error)
-	go getMongoChapters(ctx, mongo, creatorId, writingId, mongoChan, mongoErrorChan)
-
-	for e := range neoErrorChan {
-		return RetrievedWriting{}, e
-	}
-	for e := range mongoErrorChan {
-		return RetrievedWriting{}, e
-	}
-
-	if len(neoChan) > 1 {
-		return RetrievedWriting{}, err.New("multiple writing nodes returned")
-	}
-	if len(mongoChan) > 1 {
-		return RetrievedWriting{}, err.New("mutiple sets of chapters returned")
-	}
-
-	retrievedWriting := &RetrievedWriting{}
-	for w := range neoChan {
-		retrievedWriting.Uid = w.Uid
-		retrievedWriting.Title = w.Title
-		retrievedWriting.Description = w.Description
-		retrievedWriting.Author = w.Author
-		retrievedWriting.Genres = w.Genres
-		retrievedWriting.Tags = w.Tags
-		retrievedWriting.CreatorId = w.CreatorId
-	}
-	for c := range mongoChan {
-		retrievedWriting.Chapters = c
-	}
-
-	return (*retrievedWriting), err.Error{}
-}
-
-func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string, neoChan chan RetrievedNeoWriting, errorChan chan err.Error) {
-	defer close(neoChan)
-	defer close(errorChan)
 
 	neoQuery, qErr := buildNeoGetWritingQuery()
 	if qErr.E != nil {
-		errorChan <- qErr
-		runtime.Goexit()
+		return RetrievedNeoWriting{}, 500, qErr
 	}
 
 	neoParams := map[string]any{
@@ -98,34 +51,46 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 
 	neoDb := os.Getenv("NEO_DB")
 	if neoDb == "" {
-		errorChan <- err.New("could not get neo db env variable")
-		runtime.Goexit()
+		return RetrievedNeoWriting{}, 500, err.New("could not get neo db env variable")
 	}
 
 	neoResult, nErr := neo4j.ExecuteQuery(ctx, neo, neoQuery, neoParams, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(neoDb))
 	if nErr != nil {
-		errorChan <- err.NewFromErr(nErr)
-		runtime.Goexit()
+		return RetrievedNeoWriting{}, 500, err.NewFromErr(nErr)
 	}
 	if len(neoResult.Records) < 1 {
-		errorChan <- err.New("no records returned from database query")
-		runtime.Goexit()
+		return RetrievedNeoWriting{}, 404, err.New("no records returned from database")
 	}
 
 	resultMap := make(map[string]any)
 	tagSlice := make([]string, 0)
+	genreMap := make(map[string]bool, 0)
 
 	for _, record := range neoResult.Records {
 		recordMap := record.AsMap()
 		for key, val := range recordMap {
+			if val == nil {
+				continue
+			}
+
 			if key == "Tag" {
 				stringVal, ok := val.(string)
 				if !ok {
-					errorChan <- err.New("tag field from record could not be converted to string")
-					runtime.Goexit()
+					return RetrievedNeoWriting{}, 500, err.New("tag field from record could not be converted to string")
 				}
 
 				tagSlice = append(tagSlice, stringVal)
+				continue
+			} else if key == "Genres"{
+				fmt.Println(val)
+				if genres, ok := val.([]any); ok {
+					for _, genre := range genres {
+						if g, ok := genre.(string); ok {
+							genreMap[g] = true
+						}
+					}
+				}
+				continue
 			}
 
 			_, ok := resultMap[key]
@@ -135,14 +100,19 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 		}
 	}
 
-	resultMap["Tags"] = tagSlice
+	
 	var retrievedNeoWriting RetrievedNeoWriting
 	if e := utils.MapToStruct(resultMap, &retrievedNeoWriting); e.E != nil {
-		errorChan <- e
-		runtime.Goexit()
+		return retrievedNeoWriting, 500, e
 	}
 
-	neoChan <- retrievedNeoWriting
+	for val, _ := range genreMap {
+		retrievedNeoWriting.Genres = append(retrievedNeoWriting.Genres, val)
+	}
+
+	retrievedNeoWriting.Tags = tagSlice
+
+	return retrievedNeoWriting, 200, err.Error{}
 }
 
 func buildNeoGetWritingQuery() (string, err.Error) {
@@ -172,49 +142,23 @@ func buildNeoGetWritingQuery() (string, err.Error) {
 	}
 
 	matchWritQuery := fmt.Sprintf("MATCH (w:%s {uid: $writingId})", writingLabel)
-	matchCreatorQuery := fmt.Sprintf("MATCH (w) <- [:%s] - (c:%s)", createdLabel, creatorLabel)
-	matchTagQuery := fmt.Sprintf("MATCH (w) - [:%s] -> (t:%s)", hasTagRelationship, tagLabel)
+	matchCreatorQuery := fmt.Sprintf("MATCH (w) <- [:%s] - (c:%s {uid: $creatorId})", createdLabel, creatorLabel)
+	matchTagQuery := fmt.Sprintf("OPTIONAL MATCH (w) - [:%s] -> (t:%s)", hasTagRelationship, tagLabel)
 
 	returnQuery := `
 		RETURN w.uid AS Uid,
 		w.title AS Title,
 		w.description AS Description,
+		w.font AS Font,
 		labels(w) AS Genres,
 		t.tag AS Tag,
 		c.name AS Author,
+		c.uniqueName AS UniqueAuthorName,
 		c.uid As CreatorId
 	`
 
 	query := matchWritQuery + matchCreatorQuery + matchTagQuery + returnQuery
 
 	return query, err.Error{}
-
-}
-
-func getMongoChapters(ctx context.Context, mongo *mongo.Client, creatorId, writingId string, mongoChan chan []RetrievedChapter, errorChan chan err.Error) {
-	defer close(mongoChan)
-	defer close(errorChan)
-
-	filter := bson.D{{"creator_id", creatorId}, {"neo_id", writingId}}
-
-	chapterColl := mongo.Database("freecreate").Collection("chapters")
-
-	queryOptions := options.Find().SetProjection(bson.D{{"title", 1}, {"chatper_number", 1}})
-
-	cursor, mErr := chapterColl.Find(ctx, filter, queryOptions)
-	if mErr != nil {
-		e := err.NewFromErr(mErr)
-		errorChan <- e
-		runtime.Goexit()
-	}
-
-	var results []RetrievedChapter
-	if e := cursor.All(ctx, &results); e != nil {
-		newE := err.NewFromErr(e)
-		errorChan <- newE
-		runtime.Goexit()
-	}
-
-	mongoChan <- results
 
 }

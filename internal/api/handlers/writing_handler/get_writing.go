@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"freecreate/internal/err"
 	"freecreate/internal/queries"
-	"freecreate/internal/utils"
 	"net/http"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -48,22 +47,34 @@ func getWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 	creatorId := creatorIds[0]
 	writingId := writingIds[0]
 
-	retrievedWriting, qErr := queries.GetWriting(ctx, neo, mongo, creatorId, writingId)
+	retrievedWriting, status, qErr := queries.GetWriting(ctx, neo, creatorId, writingId)
 	if qErr.E != nil {
 		qErr.Log()
-		http.Error(w, qErr.E.Error(), http.StatusInternalServerError)
+		http.Error(w, qErr.E.Error(), status)
 		return
 	}
 
-	var returnedWriting ReturnedWriting
-	if e := utils.StructToStruct(retrievedWriting, &returnedWriting); e.E != nil {
+	returnedWriting := &ReturnedWriting{}
+
+	returnedWriting.Author = retrievedWriting.Author
+	returnedWriting.Uid = retrievedWriting.Uid
+	returnedWriting.Description = retrievedWriting.Description
+	returnedWriting.Title = retrievedWriting.Title
+	returnedWriting.Genres = retrievedWriting.Genres
+	returnedWriting.Tags = retrievedWriting.Tags
+	returnedWriting.CreatorId = retrievedWriting.CreatorId
+	returnedWriting.UniqueAuthorName = retrievedWriting.UniqueAuthorName
+	returnedWriting.Font = retrievedWriting.Font
+
+	if e := validateReturnedWriting(*returnedWriting, retrievedWriting.Genres, retrievedWriting.Tags); e.E != nil {
 		e.Log()
-		http.Error(w, e.E.Error(), http.StatusInternalServerError)
+		http.Error(w, e.E.Error(), http.StatusUnprocessableEntity)
 		return
 	}
+	
 
 	w.Header().Set("Content-Type", "application/json")
-	if e := json.NewEncoder(w).Encode(returnedWriting); e != nil {
+	if e := json.NewEncoder(w).Encode((*returnedWriting)); e != nil {
 		newE := err.NewFromErr(e)
 		newE.Log()
 		http.Error(w, e.Error(), http.StatusInternalServerError)
