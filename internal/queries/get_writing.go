@@ -79,10 +79,11 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 					return RetrievedNeoWriting{}, 500, err.New("tag field from record could not be converted to string")
 				}
 
+				fmt.Println(val)
+
 				tagSlice = append(tagSlice, stringVal)
 				continue
 			} else if key == "Genres"{
-				fmt.Println(val)
 				if genres, ok := val.([]any); ok {
 					for _, genre := range genres {
 						if g, ok := genre.(string); ok {
@@ -106,11 +107,16 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 		return retrievedNeoWriting, 500, e
 	}
 
-	for val, _ := range genreMap {
-		retrievedNeoWriting.Genres = append(retrievedNeoWriting.Genres, val)
+	labels := make([]string, 0)
+
+	for val, _ := range genreMap{
+		labels = append(labels, val)
 	}
 
+	genres, _ := validateGenreLabels(labels)
+
 	retrievedNeoWriting.Tags = tagSlice
+	retrievedNeoWriting.Genres = genres
 
 	return retrievedNeoWriting, 200, err.Error{}
 }
