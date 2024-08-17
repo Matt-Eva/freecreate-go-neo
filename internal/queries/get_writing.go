@@ -109,8 +109,8 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 
 	labels := make([]string, 0)
 
-	for val, _ := range genreMap{
-		labels = append(labels, val)
+	for key := range genreMap{
+		labels = append(labels, key)
 	}
 
 	genres, _ := validateGenreLabels(labels)
