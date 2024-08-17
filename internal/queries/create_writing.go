@@ -132,7 +132,7 @@ func buildCreateWritingQuery(genres, tags []string) (string, err.Error) {
 	`
 
 	query := ""
-	if len(tags) > 0{
+	if len(tags) > 0 {
 		query = matchQuery + createQuery + tagQuery + returnQuery
 	} else {
 		query = matchQuery + createQuery + returnQuery

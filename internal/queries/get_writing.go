@@ -10,25 +10,21 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-
-
 type RetrievedNeoWriting struct {
-	Uid         string
-	Title       string
-	Description string
-	Genres      []string
-	Tags        []string
-	Author      string
+	Uid              string
+	Title            string
+	Description      string
+	Genres           []string
+	Tags             []string
+	Author           string
 	UniqueAuthorName string
-	CreatorId   string
-	Font string
+	CreatorId        string
+	Font             string
 }
-
-
 
 func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedNeoWriting, int, err.Error) {
 
-	retrievedNeoWriting,status, nErr := getNeoWriting(ctx, neo, creatorId, writingId)
+	retrievedNeoWriting, status, nErr := getNeoWriting(ctx, neo, creatorId, writingId)
 	if nErr.E != nil {
 		return retrievedNeoWriting, status, nErr
 	}
@@ -37,7 +33,6 @@ func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, wri
 }
 
 func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedNeoWriting, int, err.Error) {
-
 
 	neoQuery, qErr := buildNeoGetWritingQuery()
 	if qErr.E != nil {
@@ -83,7 +78,7 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 
 				tagSlice = append(tagSlice, stringVal)
 				continue
-			} else if key == "Genres"{
+			} else if key == "Genres" {
 				if genres, ok := val.([]any); ok {
 					for _, genre := range genres {
 						if g, ok := genre.(string); ok {
@@ -101,7 +96,6 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 		}
 	}
 
-	
 	var retrievedNeoWriting RetrievedNeoWriting
 	if e := utils.MapToStruct(resultMap, &retrievedNeoWriting); e.E != nil {
 		return retrievedNeoWriting, 500, e
@@ -109,7 +103,7 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 
 	labels := make([]string, 0)
 
-	for key := range genreMap{
+	for key := range genreMap {
 		labels = append(labels, key)
 	}
 

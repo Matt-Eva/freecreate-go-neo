@@ -14,6 +14,6 @@ func UpdateWriting(ctx context.Context, neo neo4j.DriverWithContext, store *redi
 	}
 }
 
-func updateWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+func updateWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
 
 }

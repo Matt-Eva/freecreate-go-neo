@@ -71,7 +71,6 @@ func getWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		http.Error(w, e.E.Error(), http.StatusUnprocessableEntity)
 		return
 	}
-	
 
 	w.Header().Set("Content-Type", "application/json")
 	if e := json.NewEncoder(w).Encode((*returnedWriting)); e != nil {

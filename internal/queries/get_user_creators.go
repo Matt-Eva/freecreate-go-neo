@@ -11,10 +11,10 @@ import (
 )
 
 type RetrievedUserCreator struct {
-	Name      string
-	Uid       string
+	Name       string
+	Uid        string
 	UniqueName string
-	About     string
+	About      string
 }
 
 func (r RetrievedUserCreator) validatedRetrievedUserCreator() err.Error {
