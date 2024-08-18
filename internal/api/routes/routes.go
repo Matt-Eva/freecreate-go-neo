@@ -107,6 +107,7 @@ func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo
 	router.HandleFunc("/api/writing", writing_handler.CreateWriting(ctx, neo, store)).Methods("POST")
 	router.HandleFunc("/api/writing", writing_handler.UpdateWriting(ctx, neo, store)).Methods("PATCH")
 	router.HandleFunc("/api/writing", writing_handler.DeleteWriting()).Methods("DELETE")
+	router.HandleFunc("/api/writing/user", writing_handler.GetUserWriting(ctx, neo, store))
 
 	// DONATION ROUTES
 	router.HandleFunc("/api/donation/given", donation_handler.GetGivenDonations).Methods("GET")

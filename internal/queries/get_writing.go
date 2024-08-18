@@ -10,20 +10,7 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-type RetrievedNeoWriting struct {
-	Uid              string
-	Title            string
-	Description      string
-	Genres           []string
-	Tags             []string
-	Author           string
-	UniqueAuthorName string
-	CreatorId        string
-	Font             string
-	Published	bool
-}
-
-func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedNeoWriting, int, err.Error) {
+func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedWriting, int, err.Error) {
 
 	retrievedNeoWriting, status, nErr := getNeoWriting(ctx, neo, creatorId, writingId)
 	if nErr.E != nil {
@@ -33,11 +20,11 @@ func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, wri
 	return retrievedNeoWriting, status, err.Error{}
 }
 
-func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedNeoWriting, int, err.Error) {
+func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedWriting, int, err.Error) {
 
 	neoQuery, qErr := buildNeoGetWritingQuery()
 	if qErr.E != nil {
-		return RetrievedNeoWriting{}, 500, qErr
+		return RetrievedWriting{}, 500, qErr
 	}
 
 	neoParams := map[string]any{
@@ -47,15 +34,15 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 
 	neoDb := os.Getenv("NEO_DB")
 	if neoDb == "" {
-		return RetrievedNeoWriting{}, 500, err.New("could not get neo db env variable")
+		return RetrievedWriting{}, 500, err.New("could not get neo db env variable")
 	}
 
 	neoResult, nErr := neo4j.ExecuteQuery(ctx, neo, neoQuery, neoParams, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(neoDb))
 	if nErr != nil {
-		return RetrievedNeoWriting{}, 500, err.NewFromErr(nErr)
+		return RetrievedWriting{}, 500, err.NewFromErr(nErr)
 	}
 	if len(neoResult.Records) < 1 {
-		return RetrievedNeoWriting{}, 404, err.New("no records returned from database")
+		return RetrievedWriting{}, 404, err.New("no records returned from database")
 	}
 
 	resultMap := make(map[string]any)
@@ -72,7 +59,7 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 			if key == "Tag" {
 				stringVal, ok := val.(string)
 				if !ok {
-					return RetrievedNeoWriting{}, 500, err.New("tag field from record could not be converted to string")
+					return RetrievedWriting{}, 500, err.New("tag field from record could not be converted to string")
 				}
 
 				fmt.Println(val)
@@ -97,7 +84,7 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 		}
 	}
 
-	var retrievedNeoWriting RetrievedNeoWriting
+	var retrievedNeoWriting RetrievedWriting
 	if e := utils.MapToStruct(resultMap, &retrievedNeoWriting); e.E != nil {
 		return retrievedNeoWriting, 500, e
 	}
