@@ -6,6 +6,8 @@ import (
 	"freecreate/internal/err"
 	"freecreate/internal/utils"
 	"os"
+	"slices"
+	"strings"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
@@ -89,6 +91,10 @@ func GetUserWriting(ctx context.Context, neo neo4j.DriverWithContext, userId str
 	for _, val := range writingHash {
 		writing = append(writing, (*val))
 	}
+
+	slices.SortFunc(writing, func (i, j RetrievedWriting)int{
+		return strings.Compare(i.Title, j.Title)
+	})
 
 	return writing, 200, err.Error{}
 }

@@ -22,9 +22,6 @@ func validateReturnedWriting(r ReturnedWriting, genres, tags []string) err.Error
 	if r.Title == "" {
 		return err.New("return writing title cannot be empty")
 	}
-	if r.Description == "" {
-		return err.New("return writing Description cannot be empty")
-	}
 	if r.Author == "" {
 		return err.New("return writing Author cannot be empty")
 	}

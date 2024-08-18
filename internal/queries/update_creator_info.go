@@ -14,7 +14,7 @@ import (
 type UpdatedCreator struct {
 	Uid       string
 	Name      string
-	CreatorId string
+	UniqueName string
 	About     string
 }
 
@@ -68,7 +68,7 @@ func checkUniqueCreatorId(ctx context.Context, neo neo4j.DriverWithContext, uniq
 		return false, cErr
 	}
 
-	query := fmt.Sprintf("MATCH (c:%s {creatorId: $creatorId}) RETURN c.uniqueName AS UniqueName", creatorLabel)
+	query := fmt.Sprintf("MATCH (c:%s {uniqueName: $uniqueName}) RETURN c.uniqueName AS UniqueName", creatorLabel)
 	params := map[string]any{
 		"uniqueName": uniqueName,
 	}
