@@ -45,6 +45,10 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 		return RetrievedWriting{}, 404, err.New("no records returned from database")
 	}
 
+	fmt.Println("getting writing")
+
+	// return convertNeoMapToRetrievedWriting(*neoResult)
+
 	resultMap := make(map[string]any)
 	tagSlice := make([]string, 0)
 	genreMap := make(map[string]bool, 0)
