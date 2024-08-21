@@ -21,6 +21,7 @@ type CreatedWriting struct {
 	UniqueAuthorName string
 	Genres           []string
 	Tags             []string
+	WritingType string
 	Published bool
 }
 
@@ -129,6 +130,7 @@ func buildCreateWritingQuery(genres, tags []string) (string, err.Error) {
 		w.description AS Description, 
 		w.font AS Font, 
 		w.published AS Published,
+		w.writingType AS WritingType,
 		c.name AS Author, 
 		c.uniqueName AS UniqueAuthorName
 	`

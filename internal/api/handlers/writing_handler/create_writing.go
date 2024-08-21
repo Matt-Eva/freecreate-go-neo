@@ -80,6 +80,7 @@ func handleCreateWriting(w http.ResponseWriter, r *http.Request, ctx context.Con
 	returnedWriting.Genres = createdWriting.Genres
 	returnedWriting.Tags = createdWriting.Tags
 	returnedWriting.Uid = createdWriting.Uid
+	returnedWriting.WritingType = createdWriting.WritingType
 
 	if e := validateReturnedWriting((*returnedWriting), postedWriting.Genres, postedWriting.Tags); e.E != nil {
 		e.Log()
