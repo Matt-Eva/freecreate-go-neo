@@ -10,9 +10,9 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedWriting, int, err.Error) {
+func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, writingId string) (RetrievedWriting, int, err.Error) {
 
-	retrievedNeoWriting, status, nErr := getNeoWriting(ctx, neo, creatorId, writingId)
+	retrievedNeoWriting, status, nErr := getNeoWriting(ctx, neo, writingId)
 	if nErr.E != nil {
 		return retrievedNeoWriting, status, nErr
 	}
@@ -20,7 +20,7 @@ func GetWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, wri
 	return retrievedNeoWriting, status, err.Error{}
 }
 
-func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, writingId string) (RetrievedWriting, int, err.Error) {
+func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, writingId string) (RetrievedWriting, int, err.Error) {
 
 	neoQuery, qErr := buildNeoGetWritingQuery()
 	if qErr.E != nil {
@@ -28,7 +28,6 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, creatorId, 
 	}
 
 	neoParams := map[string]any{
-		"creatorId": creatorId,
 		"writingId": writingId,
 	}
 
@@ -134,7 +133,7 @@ func buildNeoGetWritingQuery() (string, err.Error) {
 	}
 
 	matchWritQuery := fmt.Sprintf("MATCH (w:%s {uid: $writingId})", writingLabel)
-	matchCreatorQuery := fmt.Sprintf("MATCH (w) <- [:%s] - (c:%s {uid: $creatorId})", createdLabel, creatorLabel)
+	matchCreatorQuery := fmt.Sprintf("MATCH (w) <- [:%s] - (c:%s)", createdLabel, creatorLabel)
 	matchTagQuery := fmt.Sprintf("OPTIONAL MATCH (w) - [:%s] -> (t:%s)", hasTagRelationship, tagLabel)
 
 	returnQuery := `

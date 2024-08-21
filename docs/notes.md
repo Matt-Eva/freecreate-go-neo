@@ -196,9 +196,9 @@ We could then simply store the cached queries as lists in the document.
 
 ## Chapters & Draft_Chapters
 
-Shard key: creator name / creator id / title / neo id
+Shard key: writingId.
 
-Overarching
+Can't use creator id
 
 ## Weighting
 
