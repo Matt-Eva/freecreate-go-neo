@@ -16,6 +16,10 @@ func UpdateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId stri
 	if aErr.E != nil {
 		return RetrievedWriting{}, status, aErr
 	}
+	status, uErr := CheckAuthorizedUserCreator(ctx, neo, userId, updateInfo.CreatorId)
+	if uErr.E != nil {
+		return RetrievedWriting{}, status, uErr
+	}
 
 	query, qErr := buildUpdateWritingQuery(updateInfo.Genres, updateInfo.Tags)
 	if qErr.E != nil {
@@ -98,7 +102,7 @@ func buildUpdateWritingQuery(genres []string, tags []string)(string, err.Error){
 
 	matchQuery := fmt.Sprintf("MATCH (u:%s {uid: $userId}) - [:%s] -> (:%s) - [cr:%s] -> (w:%s {uid: $uid})", userLabel, isCreatorLabel, creatorLabel, createdLabel, writingLabel)
 
-	matchCreatorQuery := fmt.Sprintf("MATCH (c:%s {uid: $creatorId})", creatorLabel)
+	matchCreatorQuery := fmt.Sprintf("MATCH (u) - [:%s] -> (c:%s {uid: $creatorId})", isCreatorLabel, creatorLabel)
 
 	optionalMatchTagQuery := fmt.Sprintf("OPTIONAL MATCH (w) - [h:%s] -> (:%s)", hasTagLabel, tagLabel)
 
