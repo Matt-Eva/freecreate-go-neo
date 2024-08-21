@@ -5,6 +5,7 @@ import (
 
 	"freecreate/internal/api/handlers/auth_handler"
 	"freecreate/internal/api/handlers/bookshelf_handler"
+	"freecreate/internal/api/handlers/chapter_handler"
 	"freecreate/internal/api/handlers/creator_handler"
 	"freecreate/internal/api/handlers/donation_handler"
 	"freecreate/internal/api/handlers/follow_handler"
@@ -108,6 +109,9 @@ func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo
 	router.HandleFunc("/api/writing", writing_handler.UpdateWriting(ctx, neo, store)).Methods("PATCH")
 	router.HandleFunc("/api/writing", writing_handler.DeleteWriting()).Methods("DELETE")
 	router.HandleFunc("/api/writing/user", writing_handler.GetUserWriting(ctx, neo, store))
+
+	// CHAPTER ROUTES
+	router.HandleFunc("/api/chapter", chapter_handler.CreateChapter(ctx, neo, store)).Methods("POST")
 
 	// DONATION ROUTES
 	router.HandleFunc("/api/donation/given", donation_handler.GetGivenDonations).Methods("GET")
