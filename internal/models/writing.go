@@ -166,6 +166,9 @@ func (u UpdateWriting) validateUpdateWriting() err.Error{
 	if u.Font == ""{
 		return err.New("Font cannot be empty")
 	}
+	if u.WritingType == "" {
+		return err.New("Writing type cannot be empty")
+	}
 	return err.Error{}
 }
 
@@ -190,6 +193,7 @@ func MakeUpdateWriting(p PatchedWriting)(UpdateWriting, err.Error){
 	u.Genres = p.Genres
 	u.Tags = p.Tags
 	u.Font = p.Font
+	u.WritingType = p.WritingType
 
 	vErr := u.validateUpdateWriting()
 	if vErr.E != nil {

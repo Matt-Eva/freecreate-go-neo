@@ -44,7 +44,6 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, writingId s
 		return RetrievedWriting{}, 404, err.New("no records returned from database")
 	}
 
-	fmt.Println("getting writing")
 
 	// return convertNeoMapToRetrievedWriting(*neoResult)
 
@@ -87,6 +86,8 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, writingId s
 		}
 	}
 
+	fmt.Println("resultMap", resultMap)
+
 	var retrievedNeoWriting RetrievedWriting
 	if e := utils.MapToStruct(resultMap, &retrievedNeoWriting); e.E != nil {
 		return retrievedNeoWriting, 500, e
@@ -102,6 +103,8 @@ func getNeoWriting(ctx context.Context, neo neo4j.DriverWithContext, writingId s
 
 	retrievedNeoWriting.Tags = tagSlice
 	retrievedNeoWriting.Genres = genres
+
+	fmt.Println("retrieved writing", retrievedNeoWriting)
 
 	return retrievedNeoWriting, 200, err.Error{}
 }
@@ -142,6 +145,7 @@ func buildNeoGetWritingQuery() (string, err.Error) {
 		w.description AS Description,
 		w.font AS Font,
 		w.published AS Published,
+		w.writingType AS WritingType,
 		labels(w) AS Genres,
 		t.tag AS Tag,
 		c.name AS Author,

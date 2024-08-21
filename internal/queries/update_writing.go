@@ -135,6 +135,7 @@ func buildUpdateWritingQuery(genres []string, tags []string)(string, err.Error){
 		w.description AS Description,
 		w.font AS Font,
 		w.published AS Published,
+		w.writingType AS WritingType,
 		c.name AS Author,
 		c.uniqueName AS UniqueAuthorName,
 		c.uid As CreatorId

@@ -18,6 +18,7 @@ func convertRetrievwedWritingToReturnedWriting(retrieved queries.RetrievedWritin
 	r.Tags = retrieved.Tags
 	r.Published = retrieved.Published
 	r.CreatorId = retrieved.CreatorId
+	r.WritingType = retrieved.WritingType
 
 	if e:= validateReturnedWriting(*r, r.Genres, r.Tags); e.E != nil {
 		return *r, e

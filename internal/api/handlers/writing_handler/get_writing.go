@@ -41,27 +41,15 @@ func getWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		return
 	}
 
-	returnedWriting := &ReturnedWriting{}
-
-	returnedWriting.Author = retrievedWriting.Author
-	returnedWriting.Uid = retrievedWriting.Uid
-	returnedWriting.Description = retrievedWriting.Description
-	returnedWriting.Title = retrievedWriting.Title
-	returnedWriting.Genres = retrievedWriting.Genres
-	returnedWriting.Tags = retrievedWriting.Tags
-	returnedWriting.CreatorId = retrievedWriting.CreatorId
-	returnedWriting.UniqueAuthorName = retrievedWriting.UniqueAuthorName
-	returnedWriting.Font = retrievedWriting.Font
-	returnedWriting.Published = retrievedWriting.Published
-
-	if e := validateReturnedWriting(*returnedWriting, retrievedWriting.Genres, retrievedWriting.Tags); e.E != nil {
-		e.Log()
-		http.Error(w, e.E.Error(), http.StatusUnprocessableEntity)
+	returnedWriting, rErr := convertRetrievwedWritingToReturnedWriting(retrievedWriting)
+	if rErr.E != nil {
+		rErr.Log()
+		http.Error(w, rErr.E.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	if e := json.NewEncoder(w).Encode((*returnedWriting)); e != nil {
+	if e := json.NewEncoder(w).Encode(returnedWriting); e != nil {
 		newE := err.NewFromErr(e)
 		newE.Log()
 		http.Error(w, e.Error(), http.StatusInternalServerError)

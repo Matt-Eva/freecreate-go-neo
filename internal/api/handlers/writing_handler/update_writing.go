@@ -3,6 +3,7 @@ package writing_handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"freecreate/internal/api/middleware"
 	"freecreate/internal/err"
 	"freecreate/internal/models"
@@ -46,6 +47,8 @@ func updateWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
+	fmt.Println("patchedWriting", patchedWriting)
+
 	patchedWritingModel :=  &models.PatchedWriting{}
 	patchedWritingModel.Uid = patchedWriting.Uid
 	patchedWritingModel.CreatorId = patchedWriting.CreatorId
@@ -54,6 +57,7 @@ func updateWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 	patchedWritingModel.Genres = patchedWriting.Genres
 	patchedWritingModel.Tags = patchedWriting.Tags
 	patchedWritingModel.Font = patchedWriting.Font
+	patchedWritingModel.WritingType = patchedWriting.WritingType
 
 	updateWritingModel, mErr := models.MakeUpdateWriting(*patchedWritingModel)
 	if mErr.E != nil {
