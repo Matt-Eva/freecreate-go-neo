@@ -12,10 +12,10 @@ import (
 )
 
 type UpdatedCreator struct {
-	Uid       string
-	Name      string
+	Uid        string
+	Name       string
 	UniqueName string
-	About     string
+	About      string
 }
 
 // return creator, if creatorId already exists, http status, error

@@ -5,7 +5,7 @@ import (
 	"freecreate/internal/queries"
 )
 
-func convertRetrievwedWritingToReturnedWriting(retrieved queries.RetrievedWriting)(ReturnedWriting, err.Error){
+func convertRetrievwedWritingToReturnedWriting(retrieved queries.RetrievedWriting) (ReturnedWriting, err.Error) {
 	r := &ReturnedWriting{}
 
 	r.Uid = retrieved.Uid
@@ -20,7 +20,7 @@ func convertRetrievwedWritingToReturnedWriting(retrieved queries.RetrievedWritin
 	r.CreatorId = retrieved.CreatorId
 	r.WritingType = retrieved.WritingType
 
-	if e:= validateReturnedWriting(*r, r.Genres, r.Tags); e.E != nil {
+	if e := validateReturnedWriting(*r, r.Genres, r.Tags); e.E != nil {
 		return *r, e
 	}
 

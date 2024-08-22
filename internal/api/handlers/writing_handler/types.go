@@ -12,8 +12,8 @@ type ReturnedWriting struct {
 	Genres           []string `json:"genres"`
 	Tags             []string `json:"tags"`
 	CreatorId        string   `json:"creatorId"`
-	WritingType string 	`json:"writingType"`
-	Published 	bool `json:"published"`
+	WritingType      string   `json:"writingType"`
+	Published        bool     `json:"published"`
 }
 
 func validateReturnedWriting(r ReturnedWriting, genres, tags []string) err.Error {
@@ -35,7 +35,7 @@ func validateReturnedWriting(r ReturnedWriting, genres, tags []string) err.Error
 	if r.CreatorId == "" {
 		return err.New("return writing CreatorId cannot be empty")
 	}
-	if r.WritingType == ""{
+	if r.WritingType == "" {
 		return err.New("return writing type cannot be empty")
 	}
 	if len(r.Genres) != len(genres) {

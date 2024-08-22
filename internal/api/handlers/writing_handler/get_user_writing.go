@@ -12,13 +12,13 @@ import (
 	"github.com/rbcervilla/redisstore/v9"
 )
 
-func GetUserWriting(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc{
-return func (w http.ResponseWriter, r *http.Request){
-getUserWriting(w, r, ctx, neo, store)
-}
+func GetUserWriting(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		getUserWriting(w, r, ctx, neo, store)
+	}
 }
 
-func getUserWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore){
+func getUserWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
 	user, aErr := middleware.AuthenticateUser(r, store)
 	if aErr.E != nil {
 		aErr.Log()

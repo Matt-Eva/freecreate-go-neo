@@ -8,7 +8,7 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-func convertNeoMapToRetrievedWriting(neoResult neo4j.EagerResult)(RetrievedWriting, int, err.Error){
+func convertNeoMapToRetrievedWriting(neoResult neo4j.EagerResult) (RetrievedWriting, int, err.Error) {
 	resultMap := make(map[string]any)
 	tagSlice := make([]string, 0)
 	genreMap := make(map[string]bool, 0)

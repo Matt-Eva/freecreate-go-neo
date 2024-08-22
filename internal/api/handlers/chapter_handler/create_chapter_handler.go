@@ -16,18 +16,18 @@ import (
 )
 
 func CreateChapter(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, store *redisstore.RedisStore) http.HandlerFunc {
-return func (w http.ResponseWriter, r *http.Request){
-	createChapter(w, r, ctx, neo, mongo, store)
-}
+	return func(w http.ResponseWriter, r *http.Request) {
+		createChapter(w, r, ctx, neo, mongo, store)
+	}
 }
 
 type PostedChapter struct {
-	Title string `json:"title"`
-	ChapterNumber int `json:"chapterNumber"`
-	WritingId string `json:"writingId"`
+	Title         string `json:"title"`
+	ChapterNumber int    `json:"chapterNumber"`
+	WritingId     string `json:"writingId"`
 }
 
-func createChapter(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, store *redisstore.RedisStore){
+func createChapter(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, store *redisstore.RedisStore) {
 	user, aErr := middleware.AuthenticateUser(r, store)
 	if aErr.E != nil {
 		aErr.Log()
@@ -36,7 +36,7 @@ func createChapter(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 	}
 
 	var postedChapter PostedChapter
-	if e:= json.NewDecoder(r.Body).Decode(&postedChapter); e != nil {
+	if e := json.NewDecoder(r.Body).Decode(&postedChapter); e != nil {
 		newFromE := err.NewFromErr(e)
 		newFromE.Log()
 		http.Error(w, e.Error(), http.StatusBadRequest)

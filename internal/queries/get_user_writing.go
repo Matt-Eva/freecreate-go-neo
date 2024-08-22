@@ -12,9 +12,8 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-
-func GetUserWriting(ctx context.Context, neo neo4j.DriverWithContext, userId string)([]RetrievedWriting, int, err.Error){
-	query, qErr := buildGetUserWritingQuery();
+func GetUserWriting(ctx context.Context, neo neo4j.DriverWithContext, userId string) ([]RetrievedWriting, int, err.Error) {
+	query, qErr := buildGetUserWritingQuery()
 	if qErr.E != nil {
 		return []RetrievedWriting{}, 500, qErr
 	}
@@ -24,7 +23,7 @@ func GetUserWriting(ctx context.Context, neo neo4j.DriverWithContext, userId str
 	}
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return []RetrievedWriting{}, 500, err.New("could not get db environment variable")
 	}
 
@@ -32,10 +31,10 @@ func GetUserWriting(ctx context.Context, neo neo4j.DriverWithContext, userId str
 	if nErr != nil {
 		return []RetrievedWriting{}, 500, err.NewFromErr(nErr)
 	}
-	
+
 	writingHash := make(map[string]*RetrievedWriting)
 
-	for _, record := range result.Records{
+	for _, record := range result.Records {
 		recordMap := record.AsMap()
 		resultMap := make(map[string]any)
 		uid, ok := recordMap["Uid"]
@@ -54,10 +53,10 @@ func GetUserWriting(ctx context.Context, neo neo4j.DriverWithContext, userId str
 		}
 		retWrit := writingHash[uidString]
 
-		for key, val := range recordMap{
-			if key == "Genres"{
+		for key, val := range recordMap {
+			if key == "Genres" {
 				genres := make([]string, 0)
-				if slice, ok := val.([]any);ok {
+				if slice, ok := val.([]any); ok {
 					for _, g := range slice {
 						if strG, ok := g.(string); ok {
 							genres = append(genres, strG)
@@ -66,15 +65,15 @@ func GetUserWriting(ctx context.Context, neo neo4j.DriverWithContext, userId str
 				}
 				retWrit.Genres = genres
 				continue
-			} 
+			}
 
-			if key == "Tag"{
+			if key == "Tag" {
 				if tag, ok := val.(string); ok {
 					retWrit.Tags = append(retWrit.Tags, tag)
 				}
 				continue
 			}
-			
+
 			_, ok := resultMap[key]
 			if !ok {
 				resultMap[key] = val
@@ -92,14 +91,14 @@ func GetUserWriting(ctx context.Context, neo neo4j.DriverWithContext, userId str
 		writing = append(writing, (*val))
 	}
 
-	slices.SortFunc(writing, func (i, j RetrievedWriting)int{
+	slices.SortFunc(writing, func(i, j RetrievedWriting) int {
 		return strings.Compare(i.Title, j.Title)
 	})
 
 	return writing, 200, err.Error{}
 }
 
-func buildGetUserWritingQuery()(string, err.Error){
+func buildGetUserWritingQuery() (string, err.Error) {
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return "", uErr

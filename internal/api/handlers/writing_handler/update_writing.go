@@ -15,14 +15,14 @@ import (
 )
 
 type patchedWriting struct {
-	Uid string	`json:"uid"`
-	CreatorId string `json:"creatorId"`
-	Title string `json:"title"`
-	Description string `json:"description"`
-	Genres []string `json:"genres"`
-	Tags []string `json:"tags"`
-	Font string `json:"font"`
-	WritingType string `json:"writingType"`
+	Uid         string   `json:"uid"`
+	CreatorId   string   `json:"creatorId"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Genres      []string `json:"genres"`
+	Tags        []string `json:"tags"`
+	Font        string   `json:"font"`
+	WritingType string   `json:"writingType"`
 }
 
 func UpdateWriting(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
@@ -49,7 +49,7 @@ func updateWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 
 	fmt.Println("patchedWriting", patchedWriting)
 
-	patchedWritingModel :=  &models.PatchedWriting{}
+	patchedWritingModel := &models.PatchedWriting{}
 	patchedWritingModel.Uid = patchedWriting.Uid
 	patchedWritingModel.CreatorId = patchedWriting.CreatorId
 	patchedWritingModel.Title = patchedWriting.Title
@@ -81,7 +81,7 @@ func updateWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	if e:= json.NewEncoder(w).Encode(returnedWriting); e!= nil {
+	if e := json.NewEncoder(w).Encode(returnedWriting); e != nil {
 		nE := err.NewFromErr(e)
 		nE.Log()
 		http.Error(w, e.Error(), http.StatusInternalServerError)

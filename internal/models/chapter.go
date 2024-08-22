@@ -12,17 +12,17 @@ import (
 // query for chapter is creatorid/neoid/uid
 
 type Chapter struct {
-	Uid       string         `bson:"uid"`
+	Uid           string         `bson:"uid"`
 	WritingId     string         `bson:"writing_id"`
-	Title     string         `bson:"title"`
-	ChapterNumber int `bson:"chapter_number"`
-	Published bool           `bson:"published"`
-	CreatedAt int64          `bson:"created_at"`
-	UpdatedAt int64          `bson:"updated_at`
-	Content   map[string]any `bson:"content"`
+	Title         string         `bson:"title"`
+	ChapterNumber int            `bson:"chapter_number"`
+	Published     bool           `bson:"published"`
+	CreatedAt     int64          `bson:"created_at"`
+	UpdatedAt     int64          `bson:"updated_at`
+	Content       map[string]any `bson:"content"`
 }
 
-func (c Chapter) validateChapter()err.Error{
+func (c Chapter) validateChapter() err.Error {
 	if c.Uid == "" {
 		return err.New("uid cannot be empty")
 	}
@@ -52,12 +52,12 @@ func (c Chapter) validateChapter()err.Error{
 }
 
 type PostedChapter struct {
-	WritingId string
-	Title string
+	WritingId     string
+	Title         string
 	ChapterNumber int
 }
 
-func MakeChapter(p PostedChapter)(Chapter, err.Error){
+func MakeChapter(p PostedChapter) (Chapter, err.Error) {
 	chapter := &Chapter{}
 
 	chapter.WritingId = p.WritingId

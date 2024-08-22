@@ -11,7 +11,7 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-func UpdateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId string, updateInfo models.UpdateWriting)(RetrievedWriting, int, err.Error){
+func UpdateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId string, updateInfo models.UpdateWriting) (RetrievedWriting, int, err.Error) {
 	status, aErr := checkAuthorizedUserWriting(ctx, neo, userId, updateInfo.Uid)
 	if aErr.E != nil {
 		return RetrievedWriting{}, status, aErr
@@ -23,14 +23,14 @@ func UpdateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId stri
 
 	query, qErr := buildUpdateWritingQuery(updateInfo.Genres, updateInfo.Tags)
 	if qErr.E != nil {
-		return RetrievedWriting{}, 500 , qErr
+		return RetrievedWriting{}, 500, qErr
 	}
 
 	params := utils.StructToMap(updateInfo)
 	params["userId"] = userId
 
 	db := os.Getenv("NEO_DB")
-	if db == ""{
+	if db == "" {
 		return RetrievedWriting{}, 500, err.New("db env variable is empty")
 	}
 
@@ -38,7 +38,7 @@ func UpdateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId stri
 	if nErr != nil {
 		return RetrievedWriting{}, 500, err.NewFromErr(nErr)
 	}
-	if len(result.Records) < 1{
+	if len(result.Records) < 1 {
 		return RetrievedWriting{}, 404, err.New("no records returned from database")
 	}
 
@@ -54,7 +54,7 @@ func UpdateWriting(ctx context.Context, neo neo4j.DriverWithContext, userId stri
 	return retrievedWriting, 200, err.Error{}
 }
 
-func buildUpdateWritingQuery(genres []string, tags []string)(string, err.Error){
+func buildUpdateWritingQuery(genres []string, tags []string) (string, err.Error) {
 	userLabel, uErr := GetNodeLabel("User")
 	if uErr.E != nil {
 		return "", uErr
@@ -96,7 +96,7 @@ func buildUpdateWritingQuery(genres []string, tags []string)(string, err.Error){
 	}
 
 	writingNodeLabels := writingLabel
-	for _, label := range genreLabels{
+	for _, label := range genreLabels {
 		writingNodeLabels += label
 	}
 

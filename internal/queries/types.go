@@ -10,6 +10,6 @@ type RetrievedWriting struct {
 	UniqueAuthorName string
 	CreatorId        string
 	Font             string
-	WritingType string
-	Published	bool
+	WritingType      string
+	Published        bool
 }

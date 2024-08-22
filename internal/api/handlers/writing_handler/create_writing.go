@@ -25,13 +25,13 @@ type PostedWriting struct {
 	Tags        []string `json:"tags"`
 }
 
-func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext,  store *redisstore.RedisStore) http.HandlerFunc {
+func CreateWriting(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		handleCreateWriting(w, r, ctx, neo,  store)
+		handleCreateWriting(w, r, ctx, neo, store)
 	}
 }
 
-func handleCreateWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext,  store *redisstore.RedisStore) {
+func handleCreateWriting(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
 	user, aErr := middleware.AuthenticateUser(r, store)
 	if aErr.E != nil {
 		aErr.Log()

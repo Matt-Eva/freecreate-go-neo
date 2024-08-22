@@ -143,27 +143,27 @@ func MakeWriting(p PostedWriting, year int) (Writing, err.Error) {
 }
 
 type UpdateWriting struct {
-	Uid string	
-	CreatorId string 
-	Title string 
-	Description string 
-	Genres []string 
-	Tags []string 
-	Font string 
+	Uid         string
+	CreatorId   string
+	Title       string
+	Description string
+	Genres      []string
+	Tags        []string
+	Font        string
 	WritingType string
 }
 
-func (u UpdateWriting) validateUpdateWriting() err.Error{
-	if u.Uid == ""{
+func (u UpdateWriting) validateUpdateWriting() err.Error {
+	if u.Uid == "" {
 		return err.New("uid cannot be empty")
 	}
-	if u.CreatorId == ""{
+	if u.CreatorId == "" {
 		return err.New("CreatorId cannot be empty")
 	}
-	if u.Title == ""{
+	if u.Title == "" {
 		return err.New("Title cannot be empty")
 	}
-	if u.Font == ""{
+	if u.Font == "" {
 		return err.New("Font cannot be empty")
 	}
 	if u.WritingType == "" {
@@ -173,19 +173,19 @@ func (u UpdateWriting) validateUpdateWriting() err.Error{
 }
 
 type PatchedWriting struct {
-	Uid string	
-	CreatorId string 
-	Title string 
-	Description string 
-	Genres []string 
-	Tags []string 
-	Font string 
+	Uid         string
+	CreatorId   string
+	Title       string
+	Description string
+	Genres      []string
+	Tags        []string
+	Font        string
 	WritingType string
 }
 
-func MakeUpdateWriting(p PatchedWriting)(UpdateWriting, err.Error){
+func MakeUpdateWriting(p PatchedWriting) (UpdateWriting, err.Error) {
 	u := &UpdateWriting{}
-	
+
 	u.Uid = p.Uid
 	u.CreatorId = p.CreatorId
 	u.Title = p.Title
