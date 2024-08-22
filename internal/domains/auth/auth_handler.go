@@ -1,7 +1,7 @@
-package auth_handler
+package auth
 
 import (
-	"freecreate/internal/api/middleware"
+	"freecreate/internal/middleware"
 	"net/http"
 
 	"github.com/rbcervilla/redisstore/v9"

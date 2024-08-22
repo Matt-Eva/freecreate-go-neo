@@ -1,10 +1,10 @@
-package creator_handler
+package creators
 
 import (
 	"context"
 	"encoding/json"
-	"freecreate/internal/api/middleware"
 	"freecreate/internal/err"
+	"freecreate/internal/middleware"
 	"freecreate/internal/models"
 	"freecreate/internal/queries"
 	"freecreate/internal/utils"

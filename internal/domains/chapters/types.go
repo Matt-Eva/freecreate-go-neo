@@ -1,4 +1,4 @@
-package chapter_handler
+package chapters
 
 type ReturnChapterNoContent struct {
 	Uid           string `json:"uid"`

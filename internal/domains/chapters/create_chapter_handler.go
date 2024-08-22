@@ -1,10 +1,10 @@
-package chapter_handler
+package chapters
 
 import (
 	"context"
 	"encoding/json"
-	"freecreate/internal/api/middleware"
 	"freecreate/internal/err"
+	"freecreate/internal/middleware"
 	"freecreate/internal/models"
 	"freecreate/internal/queries"
 	"freecreate/internal/utils"
@@ -15,9 +15,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CreateChapter(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, store *redisstore.RedisStore) http.HandlerFunc {
+func CreateChapterHandler(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, store *redisstore.RedisStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		createChapter(w, r, ctx, neo, mongo, store)
+		createChapterHandler(w, r, ctx, neo, mongo, store)
 	}
 }
 
@@ -27,7 +27,7 @@ type PostedChapter struct {
 	WritingId     string `json:"writingId"`
 }
 
-func createChapter(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, store *redisstore.RedisStore) {
+func createChapterHandler(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, store *redisstore.RedisStore) {
 	user, aErr := middleware.AuthenticateUser(r, store)
 	if aErr.E != nil {
 		aErr.Log()

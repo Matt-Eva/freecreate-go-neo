@@ -1,4 +1,4 @@
-package chapter_handler
+package chapters
 
 import (
 	"context"
@@ -12,13 +12,13 @@ import (
 )
 
 
-func GetChapters(ctx context.Context, mongo *mongo.Client) http.HandlerFunc{
+func GetChaptersHandler(ctx context.Context, mongo *mongo.Client) http.HandlerFunc{
 	return func (w http.ResponseWriter, r *http.Request){
-		getChapters(w, r, ctx, mongo)
+		getChaptersHandler(w, r, ctx, mongo)
 	}
 }
 
-func getChapters(w http.ResponseWriter, r *http.Request, ctx context.Context, mongo *mongo.Client){
+func getChaptersHandler(w http.ResponseWriter, r *http.Request, ctx context.Context, mongo *mongo.Client){
 	params := r.URL.Query()
 	idSlice, ok := params["writingId"]
 	if !ok {
