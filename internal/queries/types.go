@@ -13,3 +13,10 @@ type RetrievedWriting struct {
 	WritingType      string
 	Published        bool
 }
+
+type RetrievedChapterNoContent struct {
+	Uid           string `bson:"uid"`
+	Title         string `bson:"title"`
+	WritingId     string `bson:"writing_id"`
+	ChapterNumber int `bson:"chapter_number"`
+}

@@ -11,12 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type RetrievedChapterNoContent struct {
-	Uid           string
-	Title         string
-	WritingId     string
-	ChapterNumber int
-}
+
 
 func CreateChapter(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo.Client, chapter models.Chapter, userId string) (RetrievedChapterNoContent, int, err.Error) {
 	status, uErr := checkAuthorizedUserWriting(ctx, neo, userId, chapter.WritingId)
