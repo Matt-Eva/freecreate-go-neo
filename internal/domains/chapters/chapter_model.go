@@ -13,6 +13,7 @@ import (
 
 type Chapter struct {
 	Uid           string         `bson:"uid"`
+	UserId		  string		`bson:"user_id"`
 	WritingId     string         `bson:"writing_id"`
 	Title         string         `bson:"title"`
 	ChapterNumber int            `bson:"chapter_number"`
@@ -25,6 +26,9 @@ type Chapter struct {
 func (c Chapter) validateChapter() err.Error {
 	if c.Uid == "" {
 		return err.New("uid cannot be empty")
+	}
+	if c.UserId == ""{
+		return err.New("userId cannot be empty")
 	}
 	if c.WritingId == "" {
 		return err.New("WritingId cannot be empty")
@@ -51,7 +55,7 @@ func (c Chapter) validateChapter() err.Error {
 	return err.Error{}
 }
 
-func MakeChapter(p PostedChapter) (Chapter, err.Error) {
+func MakeChapter(p PostedChapter, userId string) (Chapter, err.Error) {
 	chapter := &Chapter{}
 
 	chapter.WritingId = p.WritingId
@@ -64,6 +68,8 @@ func MakeChapter(p PostedChapter) (Chapter, err.Error) {
 
 	uid := uuid.New().String()
 	chapter.Uid = uid
+
+	chapter.UserId = userId
 
 	vErr := chapter.validateChapter()
 	if vErr.E != nil {

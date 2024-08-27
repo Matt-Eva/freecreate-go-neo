@@ -40,7 +40,7 @@ func createChapterHandler(w http.ResponseWriter, r *http.Request, ctx context.Co
 		return
 	}
 
-	chapterModel, vErr := MakeChapter(postedChapter)
+	chapterModel, vErr := MakeChapter(postedChapter, user.Uid)
 	if vErr.E != nil {
 		vErr.Log()
 		http.Error(w, vErr.E.Error(), http.StatusUnprocessableEntity)
