@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"freecreate/internal/err"
-	"freecreate/internal/queries"
-	"freecreate/internal/utils"
 	"net/http"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -34,26 +32,15 @@ func getChaptersHandler(w http.ResponseWriter, r *http.Request, ctx context.Cont
 
 	writingId := idSlice[0]
 
-	results, mErr := queries.GetChapters(ctx, mongo, writingId)
+	results, mErr := GetChapters(ctx, mongo, writingId)
 	if mErr.E != nil {
 		mErr.Log()
 		http.Error(w, mErr.E.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	returnedChapters := []ReturnChapterNoContent{}
-	for _, result := range results {
-		var returnedChapter ReturnChapterNoContent
-		if e := utils.StructToStruct(result, &returnedChapter); e.E != nil {
-			e.Log()
-			http.Error(w, e.E.Error(), http.StatusInternalServerError)
-			return
-		}
-		returnedChapters = append(returnedChapters, returnedChapter)
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	if e := json.NewEncoder(w).Encode(returnedChapters); e != nil {
+	if e := json.NewEncoder(w).Encode(results); e != nil {
 		ne := err.NewFromErr(e)
 		ne.Log()
 		http.Error(w, e.Error(), http.StatusInternalServerError)

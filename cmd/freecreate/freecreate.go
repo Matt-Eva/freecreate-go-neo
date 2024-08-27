@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"freecreate/internal/api/routes"
 	"freecreate/internal/config"
 	"freecreate/internal/err"
+	"freecreate/internal/routes"
 	"os"
 
 	"github.com/joho/godotenv"

@@ -3,8 +3,8 @@ package seeds
 import (
 	"context"
 	"fmt"
+	"freecreate/internal/domains/creators"
 	"freecreate/internal/err"
-	"freecreate/internal/models"
 	"freecreate/internal/utils"
 
 	"github.com/go-faker/faker/v4"
@@ -99,16 +99,16 @@ func seedCreator(ctx context.Context, neo neo4j.DriverWithContext, userId string
 	return err.Error{}
 }
 
-func makeSeedCreator(userId string) (models.Creator, err.Error) {
-	p := models.NewCreator{
+func makeSeedCreator(userId string) (creators.Creator, err.Error) {
+	p := creators.NewCreator{
 		Name:       faker.Name(),
 		UniqueName: faker.Username(),
 		About:      faker.Paragraph(),
 	}
 
-	c, gErr := models.GenerateCreator(userId, p)
+	c, gErr := creators.GenerateCreator(userId, p)
 	if gErr.E != nil {
-		return models.Creator{}, gErr
+		return creators.Creator{}, gErr
 	}
 
 	return c, err.Error{}

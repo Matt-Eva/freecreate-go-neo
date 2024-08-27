@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"freecreate/internal/err"
 	"freecreate/internal/middleware"
-	"freecreate/internal/models"
-	"freecreate/internal/queries"
 	"freecreate/internal/utils"
 	"net/http"
 
@@ -62,7 +60,7 @@ func getCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		http.Error(w, e.E.Error(), http.StatusBadRequest)
 	}
 
-	creator, cErr := queries.GetCreator(ctx, neo, creatorIds[0])
+	creator, cErr := GetCreatorQuery(ctx, neo, creatorIds[0])
 	if cErr.E != nil {
 		cErr.Log()
 		http.Error(w, cErr.E.Error(), http.StatusInternalServerError)
@@ -107,7 +105,7 @@ func getUserCreators(w http.ResponseWriter, r *http.Request, ctx context.Context
 		return
 	}
 
-	retrievedUserCreators, qErr := queries.GetUserCreators(ctx, neo, user.Uid)
+	retrievedUserCreators, qErr := GetUserCreatorsQuery(ctx, neo, user.Uid)
 	if qErr.E != nil {
 		qErr.Log()
 		http.Error(w, qErr.E.Error(), http.StatusInternalServerError)
@@ -167,21 +165,21 @@ func createCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
-	var newCreator models.NewCreator
+	var newCreator NewCreator
 	if e := utils.StructToStruct(postedCreator, &newCreator); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	creatorModel, mErr := models.GenerateCreator(user.Uid, newCreator)
+	creatorModel, mErr := GenerateCreator(user.Uid, newCreator)
 	if mErr.E != nil {
 		mErr.Log()
 		http.Error(w, mErr.E.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
-	createdCreator, cErr := queries.CreateCreator(ctx, neo, user, creatorModel)
+	createdCreator, cErr := CreateCreatorQuery(ctx, neo, user, creatorModel)
 	if cErr.E != nil {
 		cErr.Log()
 		http.Error(w, cErr.E.Error(), http.StatusInternalServerError)
@@ -241,21 +239,21 @@ func updateCreator(w http.ResponseWriter, r *http.Request, ctx context.Context, 
 		return
 	}
 
-	var incomingInfo models.IncomingUpdatedCreatorInfo
+	var incomingInfo IncomingUpdatedCreatorInfo
 	if e := utils.StructToStruct(patchedInfo, &incomingInfo); e.E != nil {
 		e.Log()
 		http.Error(w, e.E.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	updatedCreatorInfo, cErr := models.MakeUpdatedCreatorInfo(incomingInfo)
+	updatedCreatorInfo, cErr := MakeUpdatedCreatorInfo(incomingInfo)
 	if cErr.E != nil {
 		cErr.Log()
 		http.Error(w, cErr.E.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
-	updatedCreator, exists, status, qErr := queries.UpdateCreatorInfo(ctx, neo, updatedCreatorInfo, user.Uid)
+	updatedCreator, exists, status, qErr := UpdateCreatorInfo(ctx, neo, updatedCreatorInfo, user.Uid)
 	if qErr.E != nil && exists {
 		qErr.Log()
 		http.Error(w, qErr.E.Error(), status)

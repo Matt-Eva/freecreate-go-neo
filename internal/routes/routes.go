@@ -3,15 +3,15 @@ package routes
 import (
 	"context"
 
-	"freecreate/internal/api/handlers/creator_handler"
-	"freecreate/internal/api/handlers/search_handler"
-	"freecreate/internal/api/handlers/user_handler"
-	"freecreate/internal/api/handlers/writing_handler"
-	"freecreate/internal/api/middleware"
-	"freecreate/internal/api/test_handlers"
 	"freecreate/internal/domains/auth"
 	"freecreate/internal/domains/chapters"
+	"freecreate/internal/domains/creators"
+	search_handler "freecreate/internal/domains/search"
+	"freecreate/internal/domains/users"
+	"freecreate/internal/domains/writing"
 	"freecreate/internal/err"
+	"freecreate/internal/middleware"
+	"freecreate/internal/test_handlers"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -58,10 +58,10 @@ func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo
 	router.HandleFunc("/api/logout", auth.Logout(store)).Methods("DELETE")
 
 	// USER ROUTES
-	router.HandleFunc("/api/user", user_handler.GetUser(store)).Methods("GET")
-	router.HandleFunc("/api/user", user_handler.CreateUser(ctx, neo, store)).Methods("POST")
-	router.HandleFunc("/api/user", user_handler.UpdateUser(ctx, neo, store)).Methods("PATCH")
-	router.HandleFunc("/api/user", user_handler.DeleteUser(ctx, neo, store)).Methods("DELETE")
+	router.HandleFunc("/api/user", users.GetUser(store)).Methods("GET")
+	router.HandleFunc("/api/user", users.CreateUserHandler(ctx, neo, store)).Methods("POST")
+	router.HandleFunc("/api/user", users.UpdateUser(ctx, neo, store)).Methods("PATCH")
+	router.HandleFunc("/api/user", users.DeleteUser(ctx, neo, store)).Methods("DELETE")
 
 	// router.HandleFunc("/api/user/likes", like_handler.GetLikes).Methods("GET")
 	// router.HandleFunc("/api/user/likes", like_handler.CreateLike).Methods("POST")
@@ -90,18 +90,18 @@ func CreateRoutes(ctx context.Context, neo neo4j.DriverWithContext, mongo *mongo
 	// router.HandleFunc("/api/user/following", follow_handler.Unfollow).Methods("DELETE")
 
 	// CREATOR ROUTES - creator handler
-	router.HandleFunc("/api/creator", creator_handler.GetCreator(ctx, neo)).Methods("GET")
-	router.HandleFunc("/api/creator", creator_handler.CreateCreator(ctx, neo, store)).Methods("POST")
-	router.HandleFunc("/api/creator", creator_handler.UpdateCreator(ctx, neo, store)).Methods("PATCH")
-	router.HandleFunc("/api/creator", creator_handler.DeleteCreator).Methods("DELETE")
-	router.HandleFunc("/api/user/creators", creator_handler.GetUserCreators(ctx, neo, store)).Methods("GET")
+	router.HandleFunc("/api/creator", creators.GetCreator(ctx, neo)).Methods("GET")
+	router.HandleFunc("/api/creator", creators.CreateCreator(ctx, neo, store)).Methods("POST")
+	router.HandleFunc("/api/creator", creators.UpdateCreator(ctx, neo, store)).Methods("PATCH")
+	router.HandleFunc("/api/creator", creators.DeleteCreator).Methods("DELETE")
+	router.HandleFunc("/api/user/creators", creators.GetUserCreators(ctx, neo, store)).Methods("GET")
 
 	// WRITING ROUTES
-	router.HandleFunc("/api/writing", writing_handler.GetWriting(ctx, neo)).Methods("GET")
-	router.HandleFunc("/api/writing", writing_handler.CreateWriting(ctx, neo, store)).Methods("POST")
-	router.HandleFunc("/api/writing", writing_handler.UpdateWriting(ctx, neo, store)).Methods("PATCH")
-	router.HandleFunc("/api/writing", writing_handler.DeleteWriting()).Methods("DELETE")
-	router.HandleFunc("/api/writing/user", writing_handler.GetUserWriting(ctx, neo, store))
+	router.HandleFunc("/api/writing", writing.GetWritingHandler(ctx, neo)).Methods("GET")
+	router.HandleFunc("/api/writing", writing.CreateWritingHandler(ctx, neo, store)).Methods("POST")
+	router.HandleFunc("/api/writing", writing.UpdateWritingHandler(ctx, neo, store)).Methods("PATCH")
+	router.HandleFunc("/api/writing", writing.DeleteWriting()).Methods("DELETE")
+	router.HandleFunc("/api/writing/user", writing.GetUserWritingHandler(ctx, neo, store))
 
 	// CHAPTER ROUTES
 	router.HandleFunc("/api/chapter", chapters.CreateChapterHandler(ctx, neo, mongo, store)).Methods("POST")

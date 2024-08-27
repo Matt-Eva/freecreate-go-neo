@@ -1,4 +1,4 @@
-package writing_handler
+package writing
 
 import "net/http"
 

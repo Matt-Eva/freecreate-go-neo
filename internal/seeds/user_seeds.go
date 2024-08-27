@@ -3,8 +3,8 @@ package seeds
 import (
 	"context"
 	"fmt"
+	"freecreate/internal/domains/users"
 	"freecreate/internal/err"
-	"freecreate/internal/models"
 	"freecreate/internal/utils"
 	"os"
 	"strconv"
@@ -100,8 +100,8 @@ func seedMasterUser(neo neo4j.DriverWithContext, ctx context.Context) err.Error 
 	return err.Error{}
 }
 
-func createMasterUser() (models.User, err.Error) {
-	p := models.PostedUser{
+func createMasterUser() (users.User, err.Error) {
+	p := users.PostedUser{
 		UniqueName:           "Matt",
 		Username:             "Matt",
 		Email:                faker.Email(),
@@ -112,9 +112,9 @@ func createMasterUser() (models.User, err.Error) {
 		BirthDay:             1,
 	}
 
-	u, vErr := models.GenerateUser(p)
+	u, vErr := users.GenerateUser(p)
 	if vErr.E != nil {
-		return models.User{}, vErr
+		return users.User{}, vErr
 	}
 
 	return u, err.Error{}
@@ -156,14 +156,14 @@ func seedUser(ctx context.Context, neo neo4j.DriverWithContext) err.Error {
 	return err.Error{}
 }
 
-func makeSeedUser() (models.User, err.Error) {
+func makeSeedUser() (users.User, err.Error) {
 	password := faker.Password()
 	birthYear, cErr := strconv.Atoi(faker.YearString())
 	if cErr != nil {
 		e := err.NewFromErr(cErr)
-		return models.User{}, e
+		return users.User{}, e
 	}
-	p := models.PostedUser{
+	p := users.PostedUser{
 		UniqueName:           faker.Username(),
 		Username:             faker.Name(),
 		Email:                faker.Email(),
@@ -174,7 +174,7 @@ func makeSeedUser() (models.User, err.Error) {
 		BirthDay:             1,
 	}
 
-	u, vErr := models.GenerateUser(p)
+	u, vErr := users.GenerateUser(p)
 	if vErr.E != nil {
 		return u, vErr
 	}

@@ -6,8 +6,8 @@ import (
 	"slices"
 )
 
-func buildGenreLabels(genres []string) (string, err.Error) {
-	validatedGenres, vErr := validateGenreLabels(genres)
+func BuildGenreLabels(genres []string) (string, err.Error) {
+	validatedGenres, vErr := ValidateGenreLabels(genres)
 	if vErr.E != nil {
 		return "", vErr
 	}
@@ -25,7 +25,7 @@ func buildGenreLabels(genres []string) (string, err.Error) {
 	return genreLabels, err.Error{}
 }
 
-func validateGenreLabels(genreLabels []string) ([]string, err.Error) {
+func ValidateGenreLabels(genreLabels []string) ([]string, err.Error) {
 	genres := GetGenres()
 	validatedLabels := make([]string, 0, 3)
 	validatedMap := make(map[string]bool)

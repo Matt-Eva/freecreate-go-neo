@@ -1,12 +1,10 @@
-package user_handler
+package users
 
 import (
 	"context"
 	"encoding/json"
-	"freecreate/internal/api/middleware"
 	"freecreate/internal/err"
-	"freecreate/internal/models"
-	"freecreate/internal/queries"
+	"freecreate/internal/middleware"
 	"freecreate/internal/utils"
 	"net/http"
 
@@ -14,16 +12,6 @@ import (
 	"github.com/rbcervilla/redisstore/v9"
 )
 
-type ReturnUser struct {
-	Uid        string `json:"uid"`
-	UniqueName string `json:"uniqueName"`
-	Username   string `json:"username"`
-	Email      string `json:"email"`
-	BirthDay   int    `json:"birthDay"`
-	BirthYear  int    `json:"birthYear"`
-	BirthMonth int    `json:"birthMonth"`
-	ProfilePic string `json:"profilePic"`
-}
 
 func GetUser(store *redisstore.RedisStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -54,9 +42,9 @@ func getUser(w http.ResponseWriter, r *http.Request, store *redisstore.RedisStor
 	}
 }
 
-func CreateUser(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
+func CreateUserHandler(ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		createUser(w, r, ctx, neo, store)
+		createUserHandler(w, r, ctx, neo, store)
 	}
 }
 
@@ -72,7 +60,7 @@ type PostedUser struct {
 	PasswordConfirmation string `json:"passwordConfirmation"`
 }
 
-func createUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
+func createUserHandler(w http.ResponseWriter, r *http.Request, ctx context.Context, neo neo4j.DriverWithContext, store *redisstore.RedisStore) {
 	var postedUser PostedUser
 	if e := json.NewDecoder(r.Body).Decode(&postedUser); e != nil {
 		newE := err.NewFromErr(e)
@@ -81,21 +69,14 @@ func createUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		return
 	}
 
-	var postedUserModel models.PostedUser
-	if e := utils.StructToStruct(postedUser, &postedUserModel); e.E != nil {
-		e.Log()
-		http.Error(w, e.E.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	userModel, mErr := models.GenerateUser(postedUserModel)
+	userModel, mErr := GenerateUser(postedUser)
 	if mErr.E != nil {
 		mErr.Log()
 		http.Error(w, mErr.E.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
-	createdUser, cErr := queries.CreateUser(ctx, neo, userModel)
+	createdUser, cErr := CreateUserQuery(ctx, neo, userModel)
 	if cErr.E != nil {
 		cErr.Log()
 		http.Error(w, cErr.E.Error(), http.StatusInternalServerError)
@@ -163,21 +144,14 @@ func updateUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		return
 	}
 
-	var patchedUserModel models.PatchedUser
-	if e := utils.StructToStruct(patchedUser, &patchedUserModel); e.E != nil {
-		e.Log()
-		http.Error(w, e.E.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	updatedUserModel, vErr := models.GenerateUpdatedUserInfo(patchedUserModel)
+	updatedUserModel, vErr := GenerateUpdatedUserInfo(patchedUser)
 	if vErr.E != nil {
 		vErr.Log()
 		http.Error(w, vErr.E.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
-	updatedUser, uErr := queries.UpdateUserInfo(ctx, neo, authenticatedUser.Uid, updatedUserModel)
+	updatedUser, uErr := UpdateUserInfo(ctx, neo, authenticatedUser.Uid, updatedUserModel)
 	if uErr.E != nil {
 		uErr.Log()
 		http.Error(w, uErr.E.Error(), http.StatusInternalServerError)
@@ -228,7 +202,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request, ctx context.Context, neo
 		return
 	}
 
-	dErr := queries.DeleteUser(ctx, neo, authenticatedUser.Uid)
+	dErr := DeleteUserQuery(ctx, neo, authenticatedUser.Uid)
 	if dErr.E != nil {
 		dErr.Log()
 		http.Error(w, dErr.E.Error(), http.StatusInternalServerError)
